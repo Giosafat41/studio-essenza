@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{$titolo_pagina | default:'Studio Essenza - Pilates Boutique'}</title>
+    <title>{$titolo_pagina|default:'Studio Essenza - Pilates Boutique'}</title>
 
     <!-- Link al file CSS (creeremo il file general.css tra poco) -->
     <link rel="stylesheet" href="Smarty/css/general.css">
