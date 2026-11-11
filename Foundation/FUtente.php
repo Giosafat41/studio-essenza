@@ -60,5 +60,35 @@ class FUtente {
         
         return null; // Utente non trovato
     }
+    // Recupera un utente dal database tramite la sua email (necessario per il login)
+    public static function loadByEmail($email) {
+        $db = FDatabase::getInstance()->getDb();
+        
+        $query = "SELECT * FROM Utente WHERE email = :email";
+        $stmt = $db->prepare($query);
+        $stmt->bindValue(':email', $email);
+        $stmt->execute();
+        
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($row) {
+            $utente = new EUtente(
+                $row['nome'], 
+                $row['cognome'], 
+                $row['email'], 
+                $row['password'], 
+                $row['telefono'], 
+                $row['ruolo'], 
+                $row['crediti_residui'], 
+                $row['scadenza_certificato']
+            );
+            $utente->setId($row['id']);
+            $utente->setDataRegistrazione($row['data_registrazione']);
+            
+            return $utente;
+        }
+        
+        return null; // Nessun utente trovato con quella email
+    }
 }
 ?>
