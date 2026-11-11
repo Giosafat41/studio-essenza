@@ -2,7 +2,7 @@
 class CFrontController {
 
     public function run() {
-        // Legge i parametri 'controller' e 'action' dall'URL (es: ?controller=utente&action=login)
+        // Legge i parametri 'controller' e 'action' dall'URL
         $controller = isset($_GET['controller']) ? $_GET['controller'] : 'utente';
         $action = isset($_GET['action']) ? $_GET['action'] : 'home';
 
@@ -16,6 +16,9 @@ class CFrontController {
                 break;
             case 'admin':
                 $controllerClass = 'CAdmin';
+                break;
+            case 'info':                     // <-- ECCO IL BLOCCO AGGIUNTO
+                $controllerClass = 'CInfo';
                 break;
             default:
                 // Se il controller non è riconosciuto, mostra un errore
@@ -39,7 +42,6 @@ class CFrontController {
     }
 
     private function mostraErrore($messaggio) {
-        // Qui potremo richiamare la View per mostrare una pagina di errore
         echo "<h1>Errore di Routing</h1>";
         echo "<p>$messaggio</p>";
     }
