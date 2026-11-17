@@ -72,5 +72,14 @@ class FPrenotazione {
         }
         return $prenotazioni;
     }
+
+    // Elimina una prenotazione
+    public static function delete($id_prenotazione) {
+        $db = FDatabase::getInstance()->getDb();
+        $query = "DELETE FROM Prenotazione WHERE id = :id";
+        $stmt = $db->prepare($query);
+        $stmt->bindValue(':id', $id_prenotazione);
+        return $stmt->execute();
+    }
 }
 ?>

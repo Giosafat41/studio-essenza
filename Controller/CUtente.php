@@ -95,22 +95,33 @@ class CUtente {
 
     // Mostra la dashboard protetta dell'allievo
     public function dashboard() {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        // Controllo: se non c'è una sessione attiva, caccia via l'utente e rimandalo al login
+        if (session_status() == PHP_SESSION_NONE) session_start();
         if (!isset($_SESSION['utente_id'])) {
             header("Location: index.php?controller=utente&action=login");
             exit;
         }
 
-        // Recupera i dati freschi dell'utente dal DB
         $id_utente = $_SESSION['utente_id'];
         $utente = FUtente::load($id_utente);
         
-        // Passa l'oggetto utente alla View per mostrarlo in Smarty
+        // RECUPERIAMO LE PRENOTAZIONI DELL'ALLIEVO
+        $prenotazioni_entity = FPrenotazione::loadByUtente($id_utente);
+        $lista_prenotazioni = [];
+        
+        foreach ($prenotazioni_entity as $p) {
+            $lezione = FLezione::load($p->getIdLezione());
+            $corso = FCorso::load($lezione->getIdCorso());
+            
+            $lista_prenotazioni[] = [
+                'id_prenotazione' => $p->getId(),
+                'nome_corso' => $corso->getNome(),
+                'data_ora' => date('d/m/Y H:i', strtotime($lezione->getDataOraInizio()))
+            ];
+        }
+
         $view = new VUtente();
+        // Aggiorniamo la chiamata passando anche l'array delle prenotazioni
+        $view->smarty->assign('mie_prenotazioni', $lista_prenotazioni);
         $view->mostraDashboardAllievo($utente);
     }
 

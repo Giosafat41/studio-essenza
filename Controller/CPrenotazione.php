@@ -76,5 +76,32 @@ class CPrenotazione {
             $view->mostraErrore("Crediti esauriti. Non puoi prenotare questa lezione. Passa in segreteria.");
         }
     }
+
+    // Disdice la lezione e rimborsa il credito
+    public function cancella() {
+        if (session_status() == PHP_SESSION_NONE) session_start();
+        if (!isset($_SESSION['utente_id']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header("Location: index.php?controller=utente&action=login");
+            exit;
+        }
+
+        $id_prenotazione = $_POST['id_prenotazione'];
+        $prenotazione = FPrenotazione::load($id_prenotazione);
+
+        // Controllo di sicurezza: verifichiamo che la prenotazione esista e sia di questo utente
+        if ($prenotazione && $prenotazione->getIdUtente() == $_SESSION['utente_id']) {
+            // 1. Eliminiamo la prenotazione
+            FPrenotazione::delete($id_prenotazione);
+            
+            // 2. Ricarichiamo 1 credito all'utente
+            $utente = FUtente::load($_SESSION['utente_id']);
+            $utente->ricaricaCrediti(1);
+            FUtente::update($utente);
+        }
+
+        // Torniamo alla dashboard
+        header("Location: index.php?controller=utente&action=dashboard");
+        exit;
+    }
 }
 ?>

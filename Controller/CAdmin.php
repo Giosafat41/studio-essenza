@@ -64,5 +64,38 @@ class CAdmin {
             $view->mostraFormLezione($corsi, $istruttori);
         }
     }
+    
+    // Mostra l'appello per una specifica lezione
+    public function appello() {
+        if (session_status() == PHP_SESSION_NONE) session_start();
+        if (!isset($_SESSION['utente_id']) || $_SESSION['ruolo'] !== 'admin') exit;
+
+        $view = new VAdmin();
+        
+        if (isset($_GET['id_lezione'])) {
+            $id_lezione = $_GET['id_lezione'];
+            $prenotazioni = FPrenotazione::loadByLezione($id_lezione);
+            
+            $iscritti = [];
+            foreach ($prenotazioni as $p) {
+                $allievo = FUtente::load($p->getIdUtente());
+                $iscritti[] = [
+                    'nome' => $allievo->getNome(),
+                    'cognome' => $allievo->getCognome(),
+                    'telefono' => $allievo->getTelefono()
+                ];
+            }
+            
+            $lezione = FLezione::load($id_lezione);
+            $corso = FCorso::load($lezione->getIdCorso());
+            
+            $dettagli_lezione = $corso->getNome() . " del " . date('d/m/Y H:i', strtotime($lezione->getDataOraInizio()));
+            
+            $view->smarty->assign('dettagli_lezione', $dettagli_lezione);
+            $view->smarty->assign('iscritti', $iscritti);
+            $view->smarty->assign('titolo_pagina', 'Appello Iscritti');
+            $view->smarty->display('admin_appello.tpl');
+        }
+    }
 }
 ?>

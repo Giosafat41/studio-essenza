@@ -26,6 +26,18 @@
             <a href="index.php?controller=admin&action=aggiungiLezione" class="btn-primary" style="background-color: #7b8b6f; color:white;">Nuova Lezione</a>
         </div>
 
+        <!-- Blocco 3: Appello -->
+        <div class="card-tariffa">
+            <h3>Registro Appello</h3>
+            <p class="desc">Controlla la lista degli iscritti (inserisci l'ID della lezione).</p>
+            <br>
+            <form action="index.php" method="GET" style="display:flex; gap:10px; justify-content:center;">
+                <input type="hidden" name="controller" value="admin">
+                <input type="hidden" name="action" value="appello">
+                <input type="number" name="id_lezione" placeholder="ID Lez." required style="width:70px; padding:5px;">
+                <button type="submit" class="btn-primary" style="padding: 5px 10px;">Cerca</button>
+            </form>
+        </div>
     </div>
     
     <div style="text-align: center; margin-top: 40px;">
