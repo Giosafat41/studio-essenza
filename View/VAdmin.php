@@ -24,5 +24,15 @@ class VAdmin extends StartSmarty {
         if ($successo) $this->smarty->assign('messaggio_successo', $successo);
         $this->smarty->display('admin_lezione.tpl');
     }
+    public function mostraFormCertificato($successo = null, $errore = null) {
+        $this->smarty->assign('titolo_pagina', 'Gestione Certificato Medico - Studio Essenza');
+        if ($successo) {
+            $this->smarty->assign('messaggio_successo', $successo);
+        }
+        if ($errore) {
+            $this->smarty->assign('messaggio_errore', $errore);
+        }
+        $this->smarty->display('admin_certificato.tpl');
+    }
 }
 ?>

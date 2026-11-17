@@ -97,5 +97,35 @@ class CAdmin {
             $view->smarty->display('admin_appello.tpl');
         }
     }
+
+    // Gestione aggiornamento scadenza Certificato Medico
+    public function aggiornaCertificato() {
+        if (session_status() == PHP_SESSION_NONE) session_start();
+        if (!isset($_SESSION['utente_id']) || $_SESSION['ruolo'] !== 'admin') {
+            header("Location: index.php?controller=utente&action=login");
+            exit;
+        }
+
+        $view = new VAdmin();
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $email = trim($_POST['email_allievo']);
+            $scadenza = $_POST['scadenza_certificato'];
+
+            $utente = FUtente::loadByEmail($email);
+            
+            if ($utente && $utente->getRuolo() === 'allievo') {
+                $utente->setScadenzaCertificato($scadenza);
+                FUtente::update($utente);
+                
+                $data_leggibile = date('d/m/Y', strtotime($scadenza));
+                $view->mostraFormCertificato("Certificato aggiornato! Nuova scadenza per {$utente->getNome()} {$utente->getCognome()}: {$data_leggibile}");
+            } else {
+                $view->mostraFormCertificato(null, "Allievo non trovato o email non associata a un profilo allievo.");
+            }
+        } else {
+            $view->mostraFormCertificato();
+        }
+    }
 }
 ?>

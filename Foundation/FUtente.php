@@ -62,13 +62,18 @@ class FUtente {
     }
     
     // Aggiorna i dati di un utente esistente
+   // Aggiorna i crediti e la scadenza del certificato medico di un utente
     public static function update(EUtente $utente) {
         $db = FDatabase::getInstance()->getDb();
         
-        $query = "UPDATE Utente SET crediti_residui = :crediti WHERE id = :id";
+        $query = "UPDATE Utente 
+                  SET crediti_residui = :crediti, 
+                      scadenza_certificato = :scadenza 
+                  WHERE id = :id";
         $stmt = $db->prepare($query);
         
         $stmt->bindValue(':crediti', $utente->getCreditiResidui());
+        $stmt->bindValue(':scadenza', $utente->getScadenzaCertificato());
         $stmt->bindValue(':id', $utente->getId());
         
         return $stmt->execute();
