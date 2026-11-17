@@ -6,7 +6,7 @@ require_once __DIR__ . '/Smarty/Smarty.class.php';
 
 class StartSmarty {
 
-    protected $smarty;
+    public $smarty; //prima era protected
 
     public function __construct() {
 
