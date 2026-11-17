@@ -1,33 +1,79 @@
 <?php
+// File: Controller/CPrenotazione.php
+
 class CPrenotazione {
+    
+    // Mostra il calendario delle lezioni future
+    public function calendario() {
+        if (session_status() == PHP_SESSION_NONE) session_start();
+        if (!isset($_SESSION['utente_id'])) {
+            header("Location: index.php?controller=utente&action=login");
+            exit;
+        }
 
-    // Metodo per effettuare una nuova prenotazione
+        // Carica l'utente per sapere quanti crediti ha
+        $utente = FUtente::load($_SESSION['utente_id']);
+        
+        // Calcola la data di oggi e quella tra 7 giorni
+        $oggi = date('Y-m-d H:i:s');
+        $prossimaSettimana = date('Y-m-d H:i:s', strtotime('+7 days'));
+        
+        // Recupera le lezioni dal DB
+        $lezioni_entity = FLezione::loadByDateRange($oggi, $prossimaSettimana);
+        
+        // Prepariamo un array più comodo per Smarty, unendo la Lezione al nome del Corso
+        $calendario_dati = [];
+        foreach ($lezioni_entity as $lezione) {
+            $corso = FCorso::load($lezione->getIdCorso());
+            
+            $calendario_dati[] = [
+                'id_lezione' => $lezione->getId(),
+                'nome_corso' => $corso->getNome(),
+                // Formattiamo la data per renderla leggibile (es. 15 Nov - 18:00)
+                'data_formattata' => date('d M - H:i', strtotime($lezione->getDataOraInizio()))
+            ];
+        }
+
+        $view = new VPrenotazione();
+        $view->mostraCalendario($calendario_dati, $utente->getCreditiResidui());
+    }
+
+    // Gestisce il click sul pulsante "Prenota"
     public function prenota() {
-        // Simuliamo l'id utente loggato e l'id lezione scelti (in futuro arriveranno dalla sessione e dal form)
-        $id_utente_loggato = 1; // Esempio: Utente ID 1
-        $id_lezione_scelta = 2; // Esempio: Lezione ID 2
+        if (session_status() == PHP_SESSION_NONE) session_start();
+        if (!isset($_SESSION['utente_id']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header("Location: index.php?controller=utente&action=login");
+            exit;
+        }
 
-        // 1. Carica l'utente per controllare i crediti
-        $utente = FUtente::load($id_utente_loggato);
+        $id_lezione = $_POST['id_lezione'];
+        $id_utente = $_SESSION['utente_id'];
 
+        $utente = FUtente::load($id_utente);
+        $view = new VPrenotazione();
+
+        // Controllo Crediti
         if ($utente->getCreditiResidui() > 0) {
-            // 2. L'utente ha crediti. Scaliamo un credito.
-            $utente->scalaCredito();
-            // (Qui andrebbe un UPDATE nel database per salvare il nuovo saldo crediti tramite FUtente)
-
-            // 3. Creiamo l'Entity Prenotazione
-            $prenotazione = new EPrenotazione($id_utente_loggato, $id_lezione_scelta);
-
-            // 4. Salviamo la prenotazione nel DB
-            $esito = FPrenotazione::store($prenotazione);
-
-            if ($esito) {
-                echo "Prenotazione effettuata con successo! Crediti residui: " . $utente->getCreditiResidui();
-            } else {
-                echo "Errore durante la prenotazione.";
+            
+            $prenotazione = new EPrenotazione($id_utente, $id_lezione);
+            
+            // Salviamo la prenotazione
+            try {
+                $esito = FPrenotazione::store($prenotazione);
+                if ($esito) {
+                    // Scaliamo il credito
+                    $utente->scalaCredito();
+                    FUtente::update($utente); // Ora funziona grazie al metodo aggiunto prima!
+                    
+                    // Rimandiamo alla dashboard
+                    header("Location: index.php?controller=utente&action=dashboard");
+                    exit;
+                }
+            } catch (Exception $e) {
+                $view->mostraErrore("Hai già prenotato questa lezione!");
             }
         } else {
-            echo "Non hai abbastanza crediti per prenotare. Passa in segreteria.";
+            $view->mostraErrore("Crediti esauriti. Non puoi prenotare questa lezione. Passa in segreteria.");
         }
     }
 }

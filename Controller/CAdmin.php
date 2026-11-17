@@ -1,59 +1,67 @@
 <?php
+// File: Controller/CAdmin.php
+
 class CAdmin {
     
-    // Mostra la dashboard principale della segreteria
     public function dashboard() {
-        // (In futuro) Controllo di sicurezza: se l'utente non è admin, lo rimanda alla home
-        
-        echo "<h1>Pannello di Controllo - Studio Essenza</h1>";
-        echo "<p>Benvenuto in Segreteria. Scegli un'operazione:</p>";
-        // ... (HTML con pulsanti per Gestione Utenti, Gestione Calendario, ecc.)
+        if (session_status() == PHP_SESSION_NONE) session_start();
+        if (!isset($_SESSION['utente_id']) || $_SESSION['ruolo'] !== 'admin') {
+            header("Location: index.php?controller=utente&action=login");
+            exit;
+        }
+        $admin = FUtente::load($_SESSION['utente_id']);
+        $view = new VAdmin();
+        $view->mostraDashboard($admin->getNome());
     }
 
-    // Azione per ricaricare manualmente i crediti di un allievo (dopo pagamento in sede)
+    // Gestione Ricarica Crediti
     public function ricaricaCrediti() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id_utente = $_POST['id_utente'];
-            $quantita_crediti = $_POST['quantita'];
+        if (session_status() == PHP_SESSION_NONE) session_start();
+        if (!isset($_SESSION['utente_id']) || $_SESSION['ruolo'] !== 'admin') exit;
 
-            // 1. Carica l'utente dal database tramite il livello Foundation
-            $utente = FUtente::load($id_utente);
+        $view = new VAdmin();
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $email = $_POST['email_allievo'];
+            $quantita = (int)$_POST['quantita_crediti'];
+
+            $utente = FUtente::loadByEmail($email);
             
-            if ($utente) {
-                // 2. Modifica i crediti nell'oggetto Entity
-                $utente->ricaricaCrediti($quantita_crediti);
-                
-                // 3. Salva la modifica nel database
-                // (Qui supponiamo di avere un metodo update() in FUtente)
-                $esito = FUtente::update($utente); 
-                
-                if ($esito) {
-                    echo "Ricarica effettuata! Il nuovo saldo di " . $utente->getNome() . " è: " . $utente->getCreditiResidui();
-                } else {
-                    echo "Errore durante l'aggiornamento nel database.";
-                }
+            if ($utente && $utente->getRuolo() === 'allievo') {
+                $utente->ricaricaCrediti($quantita);
+                FUtente::update($utente);
+                $view->mostraFormRicarica("Successo! Nuovi crediti di {$utente->getNome()}: {$utente->getCreditiResidui()}");
             } else {
-                echo "Utente non trovato.";
+                $view->mostraFormRicarica(null, "Allievo non trovato o email errata.");
             }
         } else {
-            // Mostra il form di ricarica
-            echo "<h2>Ricarica Crediti Allievo</h2>";
-            // ... (HTML del form)
+            $view->mostraFormRicarica();
         }
     }
 
-    // Azione per creare una nuova lezione a calendario
+    // Gestione Creazione Nuova Lezione
     public function aggiungiLezione() {
+        if (session_status() == PHP_SESSION_NONE) session_start();
+        if (!isset($_SESSION['utente_id']) || $_SESSION['ruolo'] !== 'admin') exit;
+
+        $view = new VAdmin();
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id_corso = $_POST['id_corso'];
             $id_istruttore = $_POST['id_istruttore'];
-            $data_inizio = $_POST['data_ora_inizio'];
-            $data_fine = $_POST['data_ora_fine'];
+            // Converte le date dal form HTML nel formato MySQL (YYYY-MM-DD HH:MM:SS)
+            $data_inizio = str_replace('T', ' ', $_POST['data_ora_inizio']) . ':00';
+            $data_fine = str_replace('T', ' ', $_POST['data_ora_fine']) . ':00';
 
             $lezione = new ELezione($id_corso, $id_istruttore, $data_inizio, $data_fine);
-            $id_lezione = FLezione::store($lezione);
+            FLezione::store($lezione);
 
-            echo "Lezione inserita con successo a calendario (ID: $id_lezione).";
+            $view->mostraFormLezione([], [], "Lezione inserita con successo nel palinsesto!");
+        } else {
+            // Se la richiesta è GET, carichiamo i dati per i menu a tendina
+            $corsi = FCorso::loadAll();
+            $istruttori = FUtente::loadIstruttori();
+            $view->mostraFormLezione($corsi, $istruttori);
         }
     }
 }

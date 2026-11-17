@@ -60,6 +60,20 @@ class FUtente {
         
         return null; // Utente non trovato
     }
+    
+    // Aggiorna i dati di un utente esistente
+    public static function update(EUtente $utente) {
+        $db = FDatabase::getInstance()->getDb();
+        
+        $query = "UPDATE Utente SET crediti_residui = :crediti WHERE id = :id";
+        $stmt = $db->prepare($query);
+        
+        $stmt->bindValue(':crediti', $utente->getCreditiResidui());
+        $stmt->bindValue(':id', $utente->getId());
+        
+        return $stmt->execute();
+    }
+
     // Recupera un utente dal database tramite la sua email (necessario per il login)
     public static function loadByEmail($email) {
         $db = FDatabase::getInstance()->getDb();
@@ -89,6 +103,21 @@ class FUtente {
         }
         
         return null; // Nessun utente trovato con quella email
+    }
+
+    // Recupera tutti gli istruttori (o admin) per i menu a tendina del calendario
+    public static function loadIstruttori() {
+        $db = FDatabase::getInstance()->getDb();
+        $query = "SELECT * FROM Utente WHERE ruolo IN ('istruttore', 'admin')";
+        $stmt = $db->query($query);
+        
+        $istruttori = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $istruttore = new EUtente($row['nome'], $row['cognome'], $row['email'], $row['password'], $row['telefono'], $row['ruolo']);
+            $istruttore->setId($row['id']);
+            $istruttori[] = $istruttore;
+        }
+        return $istruttori;
     }
 }
 ?>
