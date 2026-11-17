@@ -3,8 +3,25 @@
    STUDIO ESSENZA - STILE GENERALE
    ========================================= */
 
+@font-face {
+    font-family: 'Futura';
+    src: url('../doc/fonts/FuturaCyrillicBook.ttf') format('truetype');
+    font-weight: 400;
+}
+
+ @font-face {
+    font-family: 'Futura';
+    src: url('../doc/fonts/FuturaCyrillicMedium.ttf') format('truetype');
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: 'Futura';
+    src: url('../doc/fonts/FuturaCyrillicDemi.ttf') format('truetype');
+    font-weight: 600;
+}
+
 body {
-    font-family: 'Helvetica Neue', Arial, sans-serif;
     color: #4a4a4a;
     background-color: #faf9f7;
     margin: 0;
@@ -32,6 +49,7 @@ body {
 /* MENU DI NAVIGAZIONE */
 
 .main-menu ul {
+    align-items: center;
     list-style: none;
     display: flex;
     gap: 20px;
@@ -42,7 +60,31 @@ body {
 .main-menu a {
     text-decoration: none;
     color: #4a4a4a;
-    font-weight: 300;
+    font-weight: 400;
+    font-size: 22px;
+}
+
+.main-menu ul li {
+    padding: 0 18px;
+    border-right: 1px solid #d8cfc5;
+}
+
+/* Rimuove il separatore dall'ultima voce */
+.main-menu ul li:last-child {
+    border-right: none;
+}
+
+.logo img {
+    height: 85px;
+    width: auto;
+    display: block;
+    object-fit: contain;
+}
+
+.logo a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
 }
 
 /* CONTENUTO PRINCIPALE */
@@ -92,4 +134,17 @@ body {
     text-align: center;
     padding: 25px;
     margin-top: 40px;
+}
+
+body {
+    font-family: 'Futura', sans-serif !important;
+    font-weight: 400;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Futura', sans-serif !important;
+}
+
+a, p, span, li, button, input {
+    font-family: 'Futura', sans-serif !important;
 }

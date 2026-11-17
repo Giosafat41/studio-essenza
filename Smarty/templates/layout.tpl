@@ -11,7 +11,9 @@
     <!-- HEADER E MENU DI NAVIGAZIONE -->
     <header class="main-header">
         <div class="logo">
-            <a href="index.php?controller=utente&action=home">Studio Essenza</a>
+            <a href="index.php?controller=utente&action=home">
+                <img src="/studio-essenza/doc/img/logo.png" alt="Studio Essenza">
+            </a>
         </div>
         <nav class="main-menu">
             <ul>
