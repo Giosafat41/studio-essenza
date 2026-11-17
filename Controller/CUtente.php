@@ -95,7 +95,10 @@ class CUtente {
 
     // Mostra la dashboard protetta dell'allievo
     public function dashboard() {
-        if (session_status() == PHP_SESSION_NONE) session_start();
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
         if (!isset($_SESSION['utente_id'])) {
             header("Location: index.php?controller=utente&action=login");
             exit;
@@ -104,25 +107,27 @@ class CUtente {
         $id_utente = $_SESSION['utente_id'];
         $utente = FUtente::load($id_utente);
         
-        // RECUPERIAMO LE PRENOTAZIONI DELL'ALLIEVO
+        // Recupera le prenotazioni attive dell'allievo
         $prenotazioni_entity = FPrenotazione::loadByUtente($id_utente);
         $lista_prenotazioni = [];
         
         foreach ($prenotazioni_entity as $p) {
             $lezione = FLezione::load($p->getIdLezione());
-            $corso = FCorso::load($lezione->getIdCorso());
-            
-            $lista_prenotazioni[] = [
-                'id_prenotazione' => $p->getId(),
-                'nome_corso' => $corso->getNome(),
-                'data_ora' => date('d/m/Y H:i', strtotime($lezione->getDataOraInizio()))
-            ];
+            if ($lezione) {
+                $corso = FCorso::load($lezione->getIdCorso());
+                $istruttore = FUtente::load($lezione->getIdIstruttore());
+                
+                $lista_prenotazioni[] = [
+                    'id_prenotazione' => $p->getId(),
+                    'nome_corso' => $corso ? $corso->getNome() : 'Corso',
+                    'nome_istruttore' => $istruttore ? ($istruttore->getNome() . ' ' . $istruttore->getCognome()) : 'Staff',
+                    'data_ora' => date('d/m/Y - H:i', strtotime($lezione->getDataOraInizio()))
+                ];
+            }
         }
 
         $view = new VUtente();
-        // Aggiorniamo la chiamata passando anche l'array delle prenotazioni
-        $view->smarty->assign('mie_prenotazioni', $lista_prenotazioni);
-        $view->mostraDashboardAllievo($utente);
+        $view->mostraDashboardAllievo($utente, $lista_prenotazioni);
     }
 
     // Gestione Logout

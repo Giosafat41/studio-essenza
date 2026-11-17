@@ -93,3 +93,149 @@ body {
     padding: 25px;
     margin-top: 40px;
 }
+
+/* --- STILI DASHBOARD E COMPONENTI --- */
+.dashboard-wrapper {
+    max-width: 950px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.dashboard-welcome {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    padding: 25px 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.dashboard-welcome h1 {
+    margin: 0 0 5px 0;
+    color: #7b8b6f;
+    font-size: 26px;
+}
+
+.dashboard-welcome .sottotitolo {
+    margin: 0;
+    color: #777;
+}
+
+.dashboard-grid {
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+
+.dashboard-card {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    flex: 1;
+    min-width: 280px;
+}
+
+.dashboard-card h3 {
+    margin-top: 0;
+    color: #7b8b6f;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 12px;
+}
+
+.crediti-badge {
+    font-size: 48px;
+    font-weight: bold;
+    color: #7b8b6f;
+    margin: 15px 0 5px 0;
+}
+
+.avviso-rinnovo {
+    background-color: #fff3cd;
+    color: #856404;
+    padding: 12px 15px;
+    border-radius: 6px;
+    margin-top: 15px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.profilo-lista {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.profilo-lista li {
+    padding: 10px 0;
+    border-bottom: 1px solid #f7f7f7;
+    font-size: 15px;
+}
+
+.lista-prenotazioni {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.riga-prenotazione {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: #faf9f7;
+    border: 1px solid #eee;
+    border-radius: 6px;
+}
+
+.info-prenotazione {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.corso-titolo {
+    font-weight: bold;
+    font-size: 17px;
+    color: #4a4a4a;
+}
+
+.corso-meta {
+    font-size: 14px;
+    color: #777;
+}
+
+.btn-primary {
+    background-color: #7b8b6f;
+    color: #ffffff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 15px;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.btn-primary:hover {
+    background-color: #68775d;
+}
+
+.btn-danger {
+    background-color: #d9534f;
+    color: #ffffff;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.btn-danger:hover {
+    background-color: #c9302c;
+}
