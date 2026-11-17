@@ -19,10 +19,14 @@
                 <li><a href="index.php?controller=info&action=metodo">Il Metodo</a></li>
                 <li><a href="index.php?controller=info&action=tariffe">Tariffe</a></li>
                 <li><a href="index.php?controller=info&action=contatti">Contatti</a></li>
-
-                <!-- Mostriamo link diversi se l'utente è loggato o meno -->
+                
                 {if isset($utente_loggato)}
-                    <li><a href="index.php?controller=utente&action=dashboard" class="btn-login">La mia Dashboard</a></li>
+                    {if $ruolo_loggato == 'admin'}
+                        <li><a href="index.php?controller=admin&action=dashboard" class="btn-login">Pannello Segreteria</a></li>
+                    {else}
+                        <li><a href="index.php?controller=utente&action=dashboard" class="btn-login">La mia Dashboard</a></li>
+                    {/if}
+                    <li><a href="index.php?controller=utente&action=logout" style="color: #d9534f;">Esci</a></li>
                 {else}
                     <li><a href="index.php?controller=utente&action=login" class="btn-login">Accedi / Registrati</a></li>
                 {/if}
