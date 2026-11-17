@@ -9,8 +9,16 @@
     </header>
 
     <div class="grid-tariffe" style="margin-top: 30px;">
-        
-        <!-- Blocco 1: Gestione Crediti -->
+
+    <!-- Blocco 1: Anagrafica e Gestione Utenti -->
+        <div class="card-tariffa">
+            <h3>Gestione Utenti</h3>
+            <p class="desc">Visualizza tutti gli iscritti, modifica i dati anagrafici, i certificati medici o crea nuovi utenti.</p>
+            <br>
+            <a href="index.php?controller=admin&action=utenti" class="btn-primary">Lista Utenti</a>
+        </div>
+
+        <!-- Blocco 2: Gestione Crediti -->
         <div class="card-tariffa">
             <h3>Ricarica Crediti</h3>
             <p class="desc">Aggiungi ingressi al profilo di un allievo dopo il pagamento in sede.</p>
@@ -18,7 +26,7 @@
             <a href="index.php?controller=admin&action=ricaricaCrediti" class="btn-primary">Vai alla Ricarica</a>
         </div>
         
-        <!-- Blocco 2: Gestione Calendario -->
+        <!-- Blocco 3: Gestione Calendario -->
         <div class="card-tariffa premium">
             <h3>Gestione Palinsesto</h3>
             <p class="desc">Inserisci nuove lezioni a calendario scegliendo corso, orario e istruttore.</p>
@@ -26,7 +34,7 @@
             <a href="index.php?controller=admin&action=aggiungiLezione" class="btn-primary" style="background-color: #7b8b6f; color:white;">Nuova Lezione</a>
         </div>
 
-        <!-- Blocco 3: Appello -->
+        <!-- Blocco 4: Appello -->
         <div class="card-tariffa">
             <h3>Registro Appello</h3>
             <p class="desc">Controlla la lista degli iscritti (inserisci l'ID della lezione).</p>

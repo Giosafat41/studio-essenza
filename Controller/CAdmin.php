@@ -97,9 +97,23 @@ class CAdmin {
             $view->smarty->display('admin_appello.tpl');
         }
     }
+    // 1. Mostra la tabella con tutti gli utenti iscritti
+    public function utenti() {
+        if (session_status() == PHP_SESSION_NONE) session_start();
+        if (!isset($_SESSION['utente_id']) || $_SESSION['ruolo'] !== 'admin') {
+            header("Location: index.php?controller=utente&action=login");
+            exit;
+        }
 
-    // Gestione aggiornamento scadenza Certificato Medico
-    public function aggiornaCertificato() {
+        $utenti = FUtente::loadAll();
+        $messaggio = isset($_GET['msg']) ? $_GET['msg'] : null;
+
+        $view = new VAdmin();
+        $view->mostraUtenti($utenti, $messaggio);
+    }
+
+    // 2. Modifica tutti i dati di un utente esistente (incluso certificato medico)
+    public function modificaUtente() {
         if (session_status() == PHP_SESSION_NONE) session_start();
         if (!isset($_SESSION['utente_id']) || $_SESSION['ruolo'] !== 'admin') {
             header("Location: index.php?controller=utente&action=login");
@@ -109,22 +123,85 @@ class CAdmin {
         $view = new VAdmin();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $email = trim($_POST['email_allievo']);
-            $scadenza = $_POST['scadenza_certificato'];
+            $id = (int)$_POST['id'];
+            $utente = FUtente::load($id);
 
-            $utente = FUtente::loadByEmail($email);
-            
-            if ($utente && $utente->getRuolo() === 'allievo') {
-                $utente->setScadenzaCertificato($scadenza);
-                FUtente::update($utente);
-                
-                $data_leggibile = date('d/m/Y', strtotime($scadenza));
-                $view->mostraFormCertificato("Certificato aggiornato! Nuova scadenza per {$utente->getNome()} {$utente->getCognome()}: {$data_leggibile}");
+            if (!$utente) {
+                header("Location: index.php?controller=admin&action=utenti");
+                exit;
+            }
+
+            $nuova_email = trim($_POST['email']);
+            // Verifica che la nuova email non appartenga già a un altro utente
+            $esistente = FUtente::loadByEmail($nuova_email);
+            if ($esistente && $esistente->getId() != $id) {
+                $view->mostraFormUtente($utente, "Errore: l'email inserita è già utilizzata da un altro utente.");
+                return;
+            }
+
+            $utente->setNome(trim($_POST['nome']));
+            $utente->setCognome(trim($_POST['cognome']));
+            $utente->setEmail($nuova_email);
+            $utente->setTelefono(trim($_POST['telefono']));
+            $utente->setRuolo($_POST['ruolo']);
+            $utente->setCreditiResidui((int)$_POST['crediti_residui']);
+            $utente->setScadenzaCertificato($_POST['scadenza_certificato']);
+
+            FUtente::update($utente);
+
+            header("Location: index.php?controller=admin&action=utenti&msg=" . urlencode("Dati di {$utente->getNome()} {$utente->getCognome()} aggiornati con successo."));
+            exit;
+        } else {
+            $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+            $utente = FUtente::load($id);
+            if (!$utente) {
+                header("Location: index.php?controller=admin&action=utenti");
+                exit;
+            }
+            $view->mostraFormUtente($utente);
+        }
+    }
+
+    // 3. Crea un nuovo utente direttamente dal pannello Admin
+    public function creaUtente() {
+        if (session_status() == PHP_SESSION_NONE) session_start();
+        if (!isset($_SESSION['utente_id']) || $_SESSION['ruolo'] !== 'admin') {
+            header("Location: index.php?controller=utente&action=login");
+            exit;
+        }
+
+        $view = new VAdmin();
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $nome = trim($_POST['nome']);
+            $cognome = trim($_POST['cognome']);
+            $email = trim($_POST['email']);
+            $password = $_POST['password'];
+            $telefono = trim($_POST['telefono']);
+            $ruolo = $_POST['ruolo'];
+            $crediti = (int)$_POST['crediti_residui'];
+            $scadenza = !empty($_POST['scadenza_certificato']) ? $_POST['scadenza_certificato'] : null;
+
+            if (FUtente::loadByEmail($email)) {
+                $view->mostraFormUtente(null, "Attenzione: esiste già un utente registrato con questa email.");
+                return;
+            }
+
+            $nuovoUtente = new EUtente($nome, $cognome, $email, $password, $telefono, $ruolo, $crediti, $scadenza);
+            $id = FUtente::store($nuovoUtente);
+
+            if ($id) {
+                // Assicura che ruolo, crediti iniziali e scadenza certificato vengano salvati anche se FUtente::store usa valori di default
+                $nuovoUtente->setId($id);
+                FUtente::update($nuovoUtente);
+
+                header("Location: index.php?controller=admin&action=utenti&msg=" . urlencode("Nuovo utente ({$nome} {$cognome}) creato con successo."));
+                exit;
             } else {
-                $view->mostraFormCertificato(null, "Allievo non trovato o email non associata a un profilo allievo.");
+                $view->mostraFormUtente(null, "Errore durante la creazione dell'utente.");
             }
         } else {
-            $view->mostraFormCertificato();
+            $view->mostraFormUtente(null);
         }
     }
 }

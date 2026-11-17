@@ -63,5 +63,18 @@ class EUtente {
     public function ricaricaCrediti($quantita) {
         $this->crediti_residui += $quantita;
     }
+
+    // Verifica se il certificato medico è presente e non scaduto alla data indicata (default: oggi)
+    public function haCertificatoValido($data_riferimento = null) {
+        if (empty($this->scadenza_certificato)) {
+            return false;
+        }
+        
+        $data_controllo = $data_riferimento 
+            ? date('Y-m-d', strtotime($data_riferimento)) 
+            : date('Y-m-d');
+            
+        return $this->scadenza_certificato >= $data_controllo;
+    }
 }
 ?>

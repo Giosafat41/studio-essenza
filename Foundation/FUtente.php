@@ -61,20 +61,31 @@ class FUtente {
         return null; // Utente non trovato
     }
     
-    // Aggiorna i dati di un utente esistente
-   // Aggiorna i crediti e la scadenza del certificato medico di un utente
+    // Aggiorna tutti i dati anagrafici e operativi di un utente
     public static function update(EUtente $utente) {
         $db = FDatabase::getInstance()->getDb();
         
         $query = "UPDATE Utente 
-                  SET crediti_residui = :crediti, 
+                  SET nome = :nome,
+                      cognome = :cognome,
+                      email = :email,
+                      telefono = :telefono,
+                      ruolo = :ruolo,
+                      crediti_residui = :crediti, 
                       scadenza_certificato = :scadenza 
                   WHERE id = :id";
         $stmt = $db->prepare($query);
         
-        $stmt->bindValue(':crediti', $utente->getCreditiResidui());
-        $stmt->bindValue(':scadenza', $utente->getScadenzaCertificato());
-        $stmt->bindValue(':id', $utente->getId());
+        $scadenza = $utente->getScadenzaCertificato();
+        
+        $stmt->bindValue(':nome', $utente->getNome());
+        $stmt->bindValue(':cognome', $utente->getCognome());
+        $stmt->bindValue(':email', $utente->getEmail());
+        $stmt->bindValue(':telefono', $utente->getTelefono());
+        $stmt->bindValue(':ruolo', $utente->getRuolo());
+        $stmt->bindValue(':crediti', $utente->getCreditiResidui(), PDO::PARAM_INT);
+        $stmt->bindValue(':scadenza', !empty($scadenza) ? $scadenza : null);
+        $stmt->bindValue(':id', $utente->getId(), PDO::PARAM_INT);
         
         return $stmt->execute();
     }
@@ -108,6 +119,33 @@ class FUtente {
         }
         
         return null; // Nessun utente trovato con quella email
+    }
+
+    // Recupera tutti gli utenti iscritti ordinati per cognome e nome
+    public static function loadAll() {
+        $db = FDatabase::getInstance()->getDb();
+        $query = "SELECT * FROM Utente ORDER BY cognome ASC, nome ASC";
+        $stmt = $db->query($query);
+        
+        $utenti = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $u = new EUtente(
+                $row['nome'], 
+                $row['cognome'], 
+                $row['email'], 
+                $row['password'], 
+                $row['telefono'], 
+                $row['ruolo'], 
+                $row['crediti_residui'], 
+                $row['scadenza_certificato']
+            );
+            $u->setId($row['id']);
+            if (isset($row['data_registrazione'])) {
+                $u->setDataRegistrazione($row['data_registrazione']);
+            }
+            $utenti[] = $u;
+        }
+        return $utenti;
     }
 
     // Recupera tutti gli istruttori (o admin) per i menu a tendina del calendario

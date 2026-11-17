@@ -24,15 +24,30 @@ class VAdmin extends StartSmarty {
         if ($successo) $this->smarty->assign('messaggio_successo', $successo);
         $this->smarty->display('admin_lezione.tpl');
     }
-    public function mostraFormCertificato($successo = null, $errore = null) {
-        $this->smarty->assign('titolo_pagina', 'Gestione Certificato Medico - Studio Essenza');
-        if ($successo) {
-            $this->smarty->assign('messaggio_successo', $successo);
+
+    // Mostra l'elenco completo degli utenti iscritti
+    public function mostraUtenti(array $utenti, $messaggio_successo = null) {
+        $this->smarty->assign('titolo_pagina', 'Gestione Utenti - Studio Essenza');
+        $this->smarty->assign('utenti', $utenti);
+        if ($messaggio_successo) {
+            $this->smarty->assign('messaggio_successo', $messaggio_successo);
         }
+        $this->smarty->display('admin_utenti.tpl');
+    }
+
+    // Mostra il form di creazione ($utente = null) o modifica ($utente = EUtente)
+    public function mostraFormUtente(?EUtente $utente = null, $errore = null) {
+        if ($utente) {
+            $this->smarty->assign('titolo_pagina', 'Modifica Utente - Studio Essenza');
+            $this->smarty->assign('utente', $utente);
+        } else {
+            $this->smarty->assign('titolo_pagina', 'Nuovo Utente - Studio Essenza');
+        }
+        
         if ($errore) {
             $this->smarty->assign('messaggio_errore', $errore);
         }
-        $this->smarty->display('admin_certificato.tpl');
+        $this->smarty->display('admin_utente_form.tpl');
     }
 }
 ?>
