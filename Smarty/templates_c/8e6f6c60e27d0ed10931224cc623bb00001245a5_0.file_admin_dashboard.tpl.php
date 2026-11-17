@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 5.8.5, created on 2026-11-17 15:31:09
+/* Smarty version 5.8.5, created on 2026-11-17 15:54:13
   from 'file:admin_dashboard.tpl' */
 
 /* @var \Smarty\Template $_smarty_tpl */
 if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   'version' => '5.8.5',
-  'unifunc' => 'content_6afc652d4fe686_50211123',
+  'unifunc' => 'content_6afc6a95966234_69154297',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '8e6f6c60e27d0ed10931224cc623bb00001245a5' => 
     array (
       0 => 'admin_dashboard.tpl',
-      1 => 1794925786,
+      1 => 1794927094,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   array (
   ),
 ))) {
-function content_6afc652d4fe686_50211123 (\Smarty\Template $_smarty_tpl) {
+function content_6afc6a95966234_69154297 (\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
 $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 ?>
@@ -28,11 +28,11 @@ $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 
 
 <?php 
-$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_10309255146afc652d4f9c30_56406416', "content");
+$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_6315506776afc6a95963525_73966859', "content");
 $_smarty_tpl->getInheritance()->endChild($_smarty_tpl, "layout.tpl", $_smarty_current_dir);
 }
 /* {block "content"} */
-class Block_10309255146afc652d4f9c30_56406416 extends \Smarty\Runtime\Block
+class Block_6315506776afc6a95963525_73966859 extends \Smarty\Runtime\Block
 {
 public function callBlock(\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
@@ -63,6 +63,18 @@ $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenz
             <a href="index.php?controller=admin&action=aggiungiLezione" class="btn-primary" style="background-color: #7b8b6f; color:white;">Nuova Lezione</a>
         </div>
 
+        <!-- Blocco 3: Appello -->
+        <div class="card-tariffa">
+            <h3>Registro Appello</h3>
+            <p class="desc">Controlla la lista degli iscritti (inserisci l'ID della lezione).</p>
+            <br>
+            <form action="index.php" method="GET" style="display:flex; gap:10px; justify-content:center;">
+                <input type="hidden" name="controller" value="admin">
+                <input type="hidden" name="action" value="appello">
+                <input type="number" name="id_lezione" placeholder="ID Lez." required style="width:70px; padding:5px;">
+                <button type="submit" class="btn-primary" style="padding: 5px 10px;">Cerca</button>
+            </form>
+        </div>
     </div>
     
     <div style="text-align: center; margin-top: 40px;">
