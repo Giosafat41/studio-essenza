@@ -10,13 +10,6 @@ class VAdmin extends StartSmarty {
         $this->smarty->display('admin_dashboard.tpl');
     }
 
-    public function mostraFormRicarica($successo = null, $errore = null) {
-        $this->smarty->assign('titolo_pagina', 'Ricarica Crediti');
-        if ($successo) $this->smarty->assign('messaggio_successo', $successo);
-        if ($errore) $this->smarty->assign('messaggio_errore', $errore);
-        $this->smarty->display('admin_ricarica.tpl');
-    }
-
     public function mostraFormLezione($corsi, $istruttori, $successo = null) {
         $this->smarty->assign('titolo_pagina', 'Nuova Lezione');
         $this->smarty->assign('corsi', $corsi);

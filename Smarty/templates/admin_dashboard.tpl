@@ -17,14 +17,6 @@
             <br>
             <a href="index.php?controller=admin&action=utenti" class="btn-primary">Lista Utenti</a>
         </div>
-
-        <!-- Blocco 2: Gestione Crediti -->
-        <div class="card-tariffa">
-            <h3>Ricarica Crediti</h3>
-            <p class="desc">Aggiungi ingressi al profilo di un allievo dopo il pagamento in sede.</p>
-            <br>
-            <a href="index.php?controller=admin&action=ricaricaCrediti" class="btn-primary">Vai alla Ricarica</a>
-        </div>
         
         <!-- Blocco 3: Gestione Calendario -->
         <div class="card-tariffa premium">

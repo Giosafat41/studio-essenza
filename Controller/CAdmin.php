@@ -14,30 +14,6 @@ class CAdmin {
         $view->mostraDashboard($admin->getNome());
     }
 
-    // Gestione Ricarica Crediti
-    public function ricaricaCrediti() {
-        if (session_status() == PHP_SESSION_NONE) session_start();
-        if (!isset($_SESSION['utente_id']) || $_SESSION['ruolo'] !== 'admin') exit;
-
-        $view = new VAdmin();
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $email = $_POST['email_allievo'];
-            $quantita = (int)$_POST['quantita_crediti'];
-
-            $utente = FUtente::loadByEmail($email);
-            
-            if ($utente && $utente->getRuolo() === 'allievo') {
-                $utente->ricaricaCrediti($quantita);
-                FUtente::update($utente);
-                $view->mostraFormRicarica("Successo! Nuovi crediti di {$utente->getNome()}: {$utente->getCreditiResidui()}");
-            } else {
-                $view->mostraFormRicarica(null, "Allievo non trovato o email errata.");
-            }
-        } else {
-            $view->mostraFormRicarica();
-        }
-    }
 
     // Gestione Creazione Nuova Lezione
     public function aggiungiLezione() {
