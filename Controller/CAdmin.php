@@ -180,5 +180,5 @@ class CAdmin {
             $view->mostraFormUtente(null);
         }
     }
-}
+} //
 ?>
