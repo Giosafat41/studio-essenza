@@ -79,9 +79,11 @@ class CUtente {
                 
                 // 5. Smistamento in base al ruolo: Admin o Allievo?
                 if ($utente->getRuolo() === 'admin') {
-                    header("Location: index.php?controller=admin&action=dashboard");
+                header("Location: index.php?controller=admin&action=dashboard");
+                } elseif ($utente->getRuolo() === 'istruttore') {
+                header("Location: index.php?controller=istruttore&action=dashboard");
                 } else {
-                    header("Location: index.php?controller=utente&action=dashboard");
+                header("Location: index.php?controller=utente&action=dashboard");
                 }
                 exit;
             } else {
@@ -101,28 +103,58 @@ class CUtente {
             exit;
         }
 
-        $id_utente = $_SESSION['utente_id'];
+        $id_utente = (int)$_SESSION['utente_id'];
         $utente = FUtente::load($id_utente);
-        
-        // RECUPERIAMO LE PRENOTAZIONI DELL'ALLIEVO
+        if (!$utente) {
+            header("Location: index.php?controller=utente&action=logout");
+            exit;
+        }
+
+        // 1. RECUPERIAMO LE PRENOTAZIONI AI CORSI DI GRUPPO DELL'ALLIEVO
         $prenotazioni_entity = FPrenotazione::loadByUtente($id_utente);
         $lista_prenotazioni = [];
-        
+
         foreach ($prenotazioni_entity as $p) {
             $lezione = FLezione::load($p->getIdLezione());
+            if (!$lezione) {
+                continue;
+            }
             $corso = FCorso::load($lezione->getIdCorso());
-            
+
             $lista_prenotazioni[] = [
                 'id_prenotazione' => $p->getId(),
-                'nome_corso' => $corso->getNome(),
+                'nome_corso' => $corso ? $corso->getNome() : 'Corso',
                 'data_ora' => date('d/m/Y H:i', strtotime($lezione->getDataOraInizio()))
             ];
         }
 
+        // 2. CARICA LE LEZIONI INDIVIDUALI DELL'ALLIEVO (prenotate e annullate dall'istruttore)
+        $individuali_entity = FLezioneIndividuale::loadByUtente($id_utente);
+        $lezioni_individuali_utente = [];
+        $oggi = date('Y-m-d H:i:s');
+
+        foreach ($individuali_entity as $slot) {
+            // Mostra lezioni future o annullate dall'istruttore
+            if ($slot->getDataOraInizio() < $oggi && $slot->getStato() !== 'annullata_istruttore') {
+                continue;
+            }
+            $istruttore = FUtente::load($slot->getIdIstruttore());
+            $lezioni_individuali_utente[] = [
+                'id' => $slot->getId(),
+                'istruttore' => $istruttore ? $istruttore->getNome() . ' ' . $istruttore->getCognome() : 'Istruttore',
+                'data' => date('d/m/Y', strtotime($slot->getDataOraInizio())),
+                'ora_inizio' => date('H:i', strtotime($slot->getDataOraInizio())),
+                'ora_fine' => date('H:i', strtotime($slot->getDataOraFine())),
+                'stato' => $slot->getStato(),
+                'motivazione' => $slot->getMotivazioneAnnullamento()
+            ];
+        }
+
+        $msg = $_GET['msg'] ?? null;
+        $err = $_GET['err'] ?? null;
+
         $view = new VUtente();
-        // Aggiorniamo la chiamata passando anche l'array delle prenotazioni
-        $view->smarty->assign('mie_prenotazioni', $lista_prenotazioni);
-        $view->mostraDashboardAllievo($utente);
+        $view->mostraDashboardAllievo($utente, $lista_prenotazioni, $lezioni_individuali_utente, $msg, $err);
     }
 
     // Gestione Logout

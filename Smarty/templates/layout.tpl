@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{$titolo_pagina|default:'Studio Essenza - Pilates Boutique'}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/studio-essenza/css/general.css">
 </head>
 <body>
@@ -25,6 +26,8 @@
                 {if isset($utente_loggato)}
                     {if $ruolo_loggato == 'admin'}
                         <li><a href="index.php?controller=admin&action=dashboard" class="btn-login">Pannello Segreteria</a></li>
+                    {elseif $ruolo_loggato == 'istruttore'}
+                        <li><a href="index.php?controller=istruttore&action=dashboard" class="btn-login">Area Istruttore</a></li>
                     {else}
                         <li><a href="index.php?controller=utente&action=dashboard" class="btn-login">La mia Dashboard</a></li>
                     {/if}
@@ -46,5 +49,6 @@
         <p>&copy; 2024 Studio Essenza Pilates. Tutti i diritti riservati.</p>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

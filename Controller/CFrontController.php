@@ -1,4 +1,5 @@
 <?php
+// File: Controller/CFrontController.php
 class CFrontController {
 
     public function run() {
@@ -17,11 +18,13 @@ class CFrontController {
             case 'admin':
                 $controllerClass = 'CAdmin';
                 break;
-            case 'info':                     // <-- ECCO IL BLOCCO AGGIUNTO
+            case 'istruttore':
+                $controllerClass = 'CIstruttore';
+                break;
+            case 'info':
                 $controllerClass = 'CInfo';
                 break;
             default:
-                // Se il controller non è riconosciuto, mostra un errore
                 $this->mostraErrore("Controller non valido.");
                 return;
         }
@@ -31,7 +34,6 @@ class CFrontController {
             $controllerObj = new $controllerClass();
             // Verifica se il metodo (azione) esiste nella classe
             if (method_exists($controllerObj, $action)) {
-                // Esegue il metodo
                 $controllerObj->$action();
             } else {
                 $this->mostraErrore("Azione non trovata nel controller.");

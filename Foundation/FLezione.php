@@ -55,5 +55,28 @@ class FLezione {
         }
         return $lezioni;
     }
+    // Recupera tutti i corsi di gruppo assegnati a uno specifico istruttore
+    public static function loadByIstruttore($id_istruttore) {
+        $db = FDatabase::getInstance()->getDb();
+        $query = "SELECT * FROM Lezione 
+                  WHERE id_istruttore = :id_istruttore 
+                  ORDER BY data_ora_inizio ASC";
+        $stmt = $db->prepare($query);
+        $stmt->bindValue(':id_istruttore', $id_istruttore, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $lezioni = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $lezione = new ELezione(
+                $row['id_corso'],
+                $row['id_istruttore'],
+                $row['data_ora_inizio'],
+                $row['data_ora_fine']
+            );
+            $lezione->setId($row['id']);
+            $lezioni[] = $lezione;
+        }
+        return $lezioni;
+    }
 }
 ?>

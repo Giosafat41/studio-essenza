@@ -162,5 +162,28 @@ class FUtente {
         }
         return $istruttori;
     }
+    // Recupera solo gli utenti con ruolo 'istruttore' (per le lezioni individuali)
+    public static function loadSoloIstruttori() {
+        $db = FDatabase::getInstance()->getDb();
+        $query = "SELECT * FROM Utente WHERE ruolo = 'istruttore' ORDER BY cognome ASC, nome ASC";
+        $stmt = $db->query($query);
+
+        $istruttori = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $u = new EUtente(
+                $row['nome'],
+                $row['cognome'],
+                $row['email'],
+                $row['password'],
+                $row['telefono'],
+                $row['ruolo'],
+                $row['crediti_residui'],
+                $row['scadenza_certificato']
+            );
+            $u->setId($row['id']);
+            $istruttori[] = $u;
+        }
+        return $istruttori;
+    }
 }
 ?>
