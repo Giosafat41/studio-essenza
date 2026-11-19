@@ -147,3 +147,864 @@ h1, h2, h3, h4, h5, h6 {
 a, p, span, li, button, input {
     font-family: 'Futura', sans-serif !important;
 }
+
+
+/* =========================================
+   PERSONALIZZAZIONE BOOTSTRAP 5
+   ========================================= */
+
+.btn-primary {
+    --bs-btn-bg: #7b8b6f;
+    --bs-btn-border-color: #7b8b6f;
+    --bs-btn-hover-bg: #68775d;
+    --bs-btn-hover-border-color: #68775d;
+    --bs-btn-active-bg: #5a6850;
+    --bs-btn-active-border-color: #5a6850;
+    --bs-btn-disabled-bg: #7b8b6f;
+    --bs-btn-disabled-border-color: #7b8b6f;
+    --bs-btn-color: #ffffff;
+    --bs-btn-hover-color: #ffffff;
+    --bs-btn-active-color: #ffffff;
+}
+
+
+/* =========================================
+   PAGINE AUTENTICAZIONE (LOGIN / REGISTRAZIONE)
+   ========================================= */
+
+.auth-section {
+    min-height: calc(70vh - 80px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 0;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 440px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    border: 1px solid rgba(123, 139, 111, 0.14);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.05);
+    padding: 40px 36px;
+}
+
+.auth-card-wide {
+    max-width: 500px;
+}
+
+.auth-badge {
+    display: inline-block;
+    background-color: #eef1ec;
+    color: #5f6e54;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 50rem;
+}
+
+.auth-title {
+    color: #4a4a4a;
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.auth-subtitle {
+    color: #777777;
+    font-size: 15px;
+    line-height: 1.5;
+    margin-bottom: 0;
+}
+
+.auth-alert-error {
+    background-color: #fdf2f2;
+    border: 1px solid #f2c9c8;
+    color: #a94442;
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+.auth-alert-error svg {
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.auth-alert-success {
+    background-color: #f1f6ef;
+    border: 1px solid #c9dcc2;
+    color: #425b39;
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+.auth-label {
+    color: #4a4a4a;
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 6px;
+}
+
+.auth-optional {
+    color: #96938d;
+    font-size: 13px;
+    font-weight: 400;
+}
+
+.auth-input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.auth-input-icon {
+    position: absolute;
+    left: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #8c9684;
+    pointer-events: none;
+    transition: color 0.2s ease;
+}
+
+.auth-input {
+    padding: 11px 14px 11px 42px;
+    font-size: 15px;
+    color: #4a4a4a;
+    background-color: #fcfbfa;
+    border: 1px solid #e2dfd9;
+    border-radius: 8px;
+    transition: border-color 0.2s ease,
+                box-shadow 0.2s ease,
+                background-color 0.2s ease;
+}
+
+.auth-input::placeholder {
+    color: #a6a39d;
+}
+
+.auth-input:focus {
+    background-color: #ffffff;
+    border-color: #7b8b6f;
+    box-shadow: 0 0 0 0.2rem rgba(123, 139, 111, 0.18);
+    color: #4a4a4a;
+}
+
+.auth-input-group:focus-within .auth-input-icon {
+    color: #7b8b6f;
+}
+
+.auth-input-password {
+    padding-right: 44px;
+}
+
+.auth-toggle-password {
+    position: absolute;
+    right: 8px;
+    background: transparent;
+    border: none;
+    padding: 6px;
+    border-radius: 6px;
+    color: #8c9684;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.auth-toggle-password:hover {
+    color: #5f6e54;
+    background-color: #eef1ec;
+}
+
+.auth-toggle-password:focus-visible {
+    outline: 2px solid #7b8b6f;
+    outline-offset: 1px;
+}
+
+.auth-submit-btn {
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 0.4px;
+    padding: 11px 20px;
+    border-radius: 8px;
+    transition: background-color 0.25s ease,
+                border-color 0.25s ease,
+                transform 0.15s ease;
+}
+
+.auth-submit-btn:active {
+    transform: translateY(1px);
+}
+
+.auth-divider {
+    border: 0;
+    border-top: 1px solid #eceae4;
+    opacity: 1;
+}
+
+.auth-footer {
+    text-align: center;
+    font-size: 15px;
+    color: #777777;
+}
+
+.auth-link {
+    color: #7b8b6f;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.auth-link:hover {
+    color: #5a6850;
+    text-decoration: underline;
+}
+
+.auth-support-note {
+    background-color: #f7f6f3;
+    border-radius: 8px;
+    padding: 11px 14px;
+    font-size: 13.5px;
+    color: #777777;
+    text-align: center;
+    line-height: 1.45;
+}
+
+.auth-support-note a {
+    color: #5f6e54;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.auth-support-note a:hover {
+    color: #4a5741;
+    text-decoration: underline;
+}
+
+@media (max-width: 576px) {
+    .auth-card {
+        padding: 28px 22px;
+    }
+
+    .auth-title {
+        font-size: 24px;
+    }
+}
+
+
+/* =========================================
+   DASHBOARD ALLIEVO
+   ========================================= */
+
+.dashboard-page {
+    max-width: 1020px;
+}
+
+.dashboard-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    border: 1px solid rgba(123, 139, 111, 0.14);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.05);
+    padding: 32px;
+}
+
+.dashboard-hero {
+    padding: 32px 36px;
+}
+
+.dashboard-title {
+    color: #4a4a4a;
+    font-size: 30px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.dashboard-subtitle {
+    color: #777777;
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 0;
+}
+
+.dashboard-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 11px 22px;
+    border-radius: 8px;
+    white-space: nowrap;
+}
+
+.dashboard-section-title {
+    color: #4a4a4a;
+    font-size: 21px;
+    font-weight: 600;
+    margin-bottom: 0;
+}
+
+.dashboard-count-badge {
+    display: inline-block;
+    background-color: #eef1ec;
+    color: #5f6e54;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: 50rem;
+}
+
+/* CARD SALDO CREDITI */
+
+.dashboard-saldo-label {
+    color: #777777;
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 12px;
+}
+
+.dashboard-saldo-box {
+    background-color: #f7f8f5;
+    border: 1px solid rgba(123, 139, 111, 0.16);
+    border-radius: 10px;
+    padding: 22px 20px;
+    text-align: center;
+}
+
+.dashboard-crediti-numero {
+    color: #7b8b6f;
+    font-size: 48px;
+    font-weight: 600;
+    line-height: 1;
+    margin-bottom: 6px;
+}
+
+.dashboard-crediti-unita {
+    color: #5f6e54;
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 0;
+}
+
+.dashboard-avviso-rinnovo {
+    background-color: #fdf6ec;
+    border: 1px solid #efd6b0;
+    color: #8a5a1b;
+    border-radius: 8px;
+    padding: 13px 14px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.dashboard-avviso-rinnovo svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: #c8842b;
+}
+
+.dashboard-saldo-ok {
+    background-color: #f7f6f3;
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 14px;
+    color: #666666;
+    line-height: 1.45;
+}
+
+/* LISTA PRENOTAZIONI */
+
+.dashboard-prenotazioni-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.dashboard-prenotazione-item {
+    background-color: #fcfbfa;
+    border: 1px solid #eceae4;
+    border-radius: 10px;
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-prenotazione-item:hover {
+    border-color: rgba(123, 139, 111, 0.4);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+}
+
+.dashboard-prenotazione-item.is-cancelled {
+    background-color: #fdf9f9;
+    border-color: #f2d5d4;
+}
+
+.dashboard-lesson-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background-color: #eef1ec;
+    color: #5f6e54;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.dashboard-prenotazione-item.is-cancelled .dashboard-lesson-icon {
+    background-color: #fceaea;
+    color: #b52b27;
+}
+
+.dashboard-lesson-title {
+    color: #4a4a4a;
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.dashboard-lesson-date {
+    color: #777777;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.dashboard-status-pill {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 50rem;
+}
+
+.dashboard-status-pill.is-confirmed {
+    background-color: #eef1ec;
+    color: #5f6e54;
+}
+
+.dashboard-status-pill.is-cancelled {
+    background-color: #fdf2f2;
+    border: 1px solid #f2c9c8;
+    color: #a94442;
+}
+
+.dashboard-cancel-reason {
+    margin-top: 8px;
+    padding: 8px 12px;
+    background-color: #ffffff;
+    border-left: 3px solid #d9534f;
+    border-radius: 6px;
+    font-size: 13.5px;
+    color: #777777;
+    line-height: 1.45;
+}
+
+.btn-disdici {
+    background-color: #ffffff;
+    border: 1px solid #e7b9b7;
+    color: #b52b27;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 7px 14px;
+    border-radius: 7px;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.btn-disdici:hover {
+    background-color: #d9534f;
+    border-color: #d9534f;
+    color: #ffffff;
+}
+
+/* STATO VUOTO PRENOTAZIONI */
+
+.dashboard-empty {
+    background-color: #faf9f7;
+    border: 1px dashed #dcd9d0;
+    border-radius: 10px;
+    padding: 30px 22px;
+    text-align: center;
+}
+
+.dashboard-empty-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: #eef1ec;
+    color: #7b8b6f;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.dashboard-empty-title {
+    color: #4a4a4a;
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.dashboard-empty-text {
+    color: #777777;
+    font-size: 14.5px;
+    margin-bottom: 0;
+}
+
+@media (max-width: 576px) {
+    .dashboard-card,
+    .dashboard-hero {
+        padding: 24px 20px;
+    }
+
+    .dashboard-title {
+        font-size: 24px;
+    }
+
+    .dashboard-prenotazione-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .dashboard-prenotazione-item form,
+    .btn-disdici {
+        width: 100%;
+    }
+}
+
+
+/* =========================================
+   CALENDARIO LEZIONI
+   ========================================= */
+
+.calendar-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #7b8b6f;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.calendar-back-link:hover {
+    color: #5a6850;
+}
+
+.calendar-status-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.calendar-crediti-pill {
+    background-color: #f7f8f5;
+    border: 1px solid rgba(123, 139, 111, 0.2);
+    border-radius: 10px;
+    padding: 12px 18px;
+    min-width: 155px;
+    text-align: center;
+}
+
+.calendar-crediti-pill.is-empty {
+    background-color: #fdf6ec;
+    border-color: #efd6b0;
+}
+
+.calendar-crediti-pill.is-invalid {
+    background-color: #fdf2f2;
+    border-color: #f2c9c8;
+}
+
+.calendar-crediti-label {
+    display: block;
+    color: #777777;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 4px;
+}
+
+.calendar-crediti-valore {
+    color: #7b8b6f;
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.15;
+}
+
+.calendar-crediti-pill.is-empty .calendar-crediti-valore {
+    color: #a86b1e;
+}
+
+.calendar-crediti-pill.is-invalid .calendar-crediti-valore {
+    color: #a94442;
+    font-size: 16px;
+}
+
+.calendar-crediti-valore small {
+    font-size: 14px;
+    font-weight: 400;
+    color: #5f6e54;
+}
+
+.calendar-crediti-pill.is-empty .calendar-crediti-valore small {
+    color: #8a5a1b;
+}
+
+/* LEZIONI INDIVIDUALI - ISTRUTTORI & MINI-CALENDARIO */
+
+#lista-istruttori {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#lista-istruttori .istruttore-item {
+    border: 1px solid #eceae4;
+    border-radius: 10px !important;
+    background-color: #fcfbfa;
+    color: #4a4a4a;
+    transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#lista-istruttori .istruttore-item:hover {
+    border-color: rgba(123, 139, 111, 0.45);
+    background-color: #f7f8f5;
+}
+
+#lista-istruttori .istruttore-item.active {
+    background-color: #7b8b6f;
+    border-color: #7b8b6f;
+    color: #ffffff;
+    box-shadow: 0 6px 18px rgba(123, 139, 111, 0.24);
+}
+
+.calendar-istruttore-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: #7b8b6f;
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+}
+
+#lista-istruttori .istruttore-item.active .calendar-istruttore-avatar {
+    background-color: rgba(255, 255, 255, 0.22);
+    color: #ffffff;
+}
+
+.calendar-slot-badge {
+    display: inline-block;
+    background-color: #eef1ec;
+    color: #5f6e54;
+    font-size: 12.5px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 50rem;
+}
+
+.calendar-slot-badge.is-zero {
+    background-color: #efeeea;
+    color: #888888;
+}
+
+#lista-istruttori .istruttore-item.active .calendar-slot-badge {
+    background-color: rgba(255, 255, 255, 0.22);
+    color: #ffffff;
+}
+
+.calendar-mini-panel {
+    background-color: #faf9f7;
+    border: 1px solid #eceae4;
+    border-radius: 10px;
+    padding: 22px;
+}
+
+.btn-giorno-cal {
+    background-color: #ffffff;
+    border: 1px solid #e2dfd9;
+    color: #4a4a4a;
+    border-radius: 8px;
+    padding: 8px 14px;
+    transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.btn-giorno-cal:hover {
+    border-color: #7b8b6f;
+    color: #5f6e54;
+    background-color: #ffffff;
+}
+
+.btn-giorno-cal.active {
+    background-color: #7b8b6f !important;
+    border-color: #7b8b6f !important;
+    color: #ffffff !important;
+}
+
+.calendar-slot-card {
+    background-color: #ffffff;
+    border: 1px solid #eceae4;
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.calendar-slot-card:hover {
+    border-color: rgba(123, 139, 111, 0.42);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+/* FILTRI RAPIDI CORSO */
+
+.calendar-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.calendar-filter-btn {
+    background-color: #ffffff;
+    border: 1px solid #e2dfd9;
+    color: #5a5a5a;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 6px 15px;
+    border-radius: 50rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.calendar-filter-btn:hover {
+    border-color: #7b8b6f;
+    color: #5f6e54;
+}
+
+.calendar-filter-btn.active {
+    background-color: #7b8b6f;
+    border-color: #7b8b6f;
+    color: #ffffff;
+}
+
+/* CARD SINGOLA LEZIONE DI GRUPPO */
+
+.calendar-lesson-card {
+    background-color: #fcfbfa;
+    border: 1px solid #eceae4;
+    border-radius: 12px;
+    padding: 22px;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.calendar-lesson-card:hover {
+    transform: translateY(-2px);
+    background-color: #ffffff;
+    border-color: rgba(123, 139, 111, 0.42);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+}
+
+.calendar-date-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #eef1ec;
+    color: #5f6e54;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 5px 11px;
+    border-radius: 50rem;
+}
+
+.calendar-lesson-title {
+    color: #4a4a4a;
+    font-size: 19px;
+    font-weight: 600;
+    margin: 12px 0 8px;
+    line-height: 1.3;
+}
+
+.calendar-lesson-meta {
+    color: #777777;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 5px;
+}
+
+.calendar-book-btn {
+    font-size: 15px;
+    font-weight: 500;
+    padding: 10px 16px;
+    border-radius: 8px;
+}
+
+/* PAGINA ERRORE */
+
+.error-state-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color: #fdf2f2;
+    border: 1px solid #f2c9c8;
+    color: #b52b27;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+
+/* =========================================
+   CAROSELLO HOME E AVATAR ISTRUTTORE
+   ========================================= */
+
+.carousel-card-essenza {
+    min-height: 220px;
+    max-width: 380px;
+}
+
+.avatar-istruttore {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background-color: #7b8b6f;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}

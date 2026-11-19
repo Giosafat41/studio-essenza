@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 5.8.5, created on 2026-11-17 15:53:40
+/* Smarty version 5.8.5, created on 2026-11-19 19:04:02
   from 'file:dashboard_allievo.tpl' */
 
 /* @var \Smarty\Template $_smarty_tpl */
 if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   'version' => '5.8.5',
-  'unifunc' => 'content_6afc6a74ceefd5_08041085',
+  'unifunc' => 'content_6aff3a12186689_94616468',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '4d0f866858d35b7213b1c9de60c707881f593db5' => 
     array (
       0 => 'dashboard_allievo.tpl',
-      1 => 1794926930,
+      1 => 1795111394,
       2 => 'file',
     ),
   ),
@@ -20,76 +20,304 @@ if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   array (
   ),
 ))) {
-function content_6afc6a74ceefd5_08041085 (\Smarty\Template $_smarty_tpl) {
+function content_6aff3a12186689_94616468 (\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
-?><!DOCTYPE html>
-<html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Allievo</title>
-    <!-- Collegamento al CSS nella cartella Smarty -->
-    <link rel="stylesheet" href="Smarty/css/general.css">
-</head>
-<body>
-    <header class="header-boutique">
-        <h1>Studio Essenza</h1>
-        <p>Bentornato, <?php echo $_smarty_tpl->getValue('nome_utente');?>
-!</p>
-    </header>
+$_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
+?>
+<!-- File: Smarty/templates/dashboard_allievo.tpl -->
 
-    <main class="dashboard-container">
-        <section class="saldo-crediti">
-            <h2>Il tuo Saldo Attuale</h2>
-            <p class="numero-grande"><?php echo $_smarty_tpl->getValue('crediti');?>
- lezioni disponibili</p>
 
-            <!-- Logica if/else direttamente in HTML tramite Smarty -->
-            <?php if ($_smarty_tpl->getValue('avviso_crediti')) {?>
-                <div class="avviso-rinnovo">
-                    <strong>Attenzione:</strong> i tuoi ingressi stanno per esaurirsi. 
-                    Ricordati di passare in segreteria per il rinnovo!
+<?php 
+$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_1991503436aff3a1216bcc0_70068439', "content");
+?>
+
+<?php $_smarty_tpl->getInheritance()->endChild($_smarty_tpl, "layout.tpl", $_smarty_current_dir);
+}
+/* {block "content"} */
+class Block_1991503436aff3a1216bcc0_70068439 extends \Smarty\Runtime\Block
+{
+public function callBlock(\Smarty\Template $_smarty_tpl) {
+$_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
+?>
+
+<div class="container dashboard-page py-2 py-md-3">
+
+    <!-- Intestazione Benvenuto + CTA Principale -->
+    <section class="dashboard-card dashboard-hero mb-4">
+        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+            <div>
+                <span class="auth-badge mb-2">Area Allievo</span>
+                <h1 class="dashboard-title">Bentornato/a, <?php echo htmlspecialchars((string)$_smarty_tpl->getValue('nome_utente'), ENT_QUOTES, 'UTF-8', true);?>
+!</h1>
+                <p class="dashboard-subtitle">
+                    Gestisci il tuo saldo crediti, i corsi di gruppo e le lezioni individuali in Studio Essenza.
+                </p>
+            </div>
+            <div class="flex-shrink-0">
+                <a href="index.php?controller=prenotazione&action=calendario" class="btn btn-primary dashboard-cta-btn w-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                        <line x1="12" y1="14" x2="12" y2="18"></line>
+                        <line x1="10" y1="16" x2="14" y2="16"></line>
+                    </svg>
+                    <span>Prenota una lezione</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Messaggi di conferma / errore -->
+    <?php if ((true && ($_smarty_tpl->hasVariable('messaggio_successo') && null !== ($_smarty_tpl->getValue('messaggio_successo') ?? null)))) {?>
+        <div class="alert auth-alert-success fade show d-flex align-items-center justify-content-between gap-2 mb-4" role="alert">
+            <span><?php echo htmlspecialchars((string)$_smarty_tpl->getValue('messaggio_successo'), ENT_QUOTES, 'UTF-8', true);?>
+</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Chiudi"></button>
+        </div>
+    <?php }?>
+    <?php if ((true && ($_smarty_tpl->hasVariable('messaggio_errore') && null !== ($_smarty_tpl->getValue('messaggio_errore') ?? null)))) {?>
+        <div class="alert auth-alert-error fade show d-flex align-items-center justify-content-between gap-2 mb-4" role="alert">
+            <span><?php echo htmlspecialchars((string)$_smarty_tpl->getValue('messaggio_errore'), ENT_QUOTES, 'UTF-8', true);?>
+</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Chiudi"></button>
+        </div>
+    <?php }?>
+
+    <!-- Griglia Contenuti: Saldo Crediti + Lezioni -->
+    <div class="row g-4 align-items-start">
+
+        <!-- Colonna Sinistra: Saldo Crediti -->
+        <div class="col-12 col-lg-4">
+            <section class="dashboard-card">
+                <h2 class="dashboard-saldo-label">Il tuo Saldo Attuale</h2>
+
+                <div class="dashboard-saldo-box mb-3">
+                    <div class="dashboard-crediti-numero"><?php echo $_smarty_tpl->getValue('crediti');?>
+</div>
+                    <p class="dashboard-crediti-unita">
+                        <?php if ($_smarty_tpl->getValue('crediti') == 1) {?>
+                            lezione disponibile
+                        <?php } else { ?>
+                            lezioni disponibili
+                        <?php }?>
+                    </p>
                 </div>
-            <?php }?>
-        </section>
 
-        <section class="azioni-rapide">
-            <a href="?controller=prenotazione&action=calendario" class="bottone-prenota">Prenota una nuova lezione</a>
-        </section>
+                <?php if ($_smarty_tpl->getValue('avviso_crediti')) {?>
+                    <div class="dashboard-avviso-rinnovo d-flex align-items-start gap-2 mb-3" role="alert">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                        <div>
+                            <strong>Ingressi in esaurimento:</strong> ricordati di passare in segreteria per rinnovare il tuo pacchetto.
+                        </div>
+                    </div>
+                <?php } else { ?>
+                    <div class="dashboard-saldo-ok mb-3">
+                        Il tuo pacchetto è attivo. Puoi prenotare corsi di gruppo e lezioni 1-to-1 dal calendario.
+                    </div>
+                <?php }?>
 
-        <section class="mie-prenotazioni" style="margin-top: 30px;">
-            <h2>Le tue prossime lezioni</h2>
-            <?php if ($_smarty_tpl->getSmarty()->getModifierCallback('count')($_smarty_tpl->getValue('mie_prenotazioni')) == 0) {?>
-                <p>Non hai ancora prenotato nessuna lezione.</p>
-            <?php } else { ?>
-                <ul style="list-style: none; padding: 0;">
-                <?php
-$_from = $_smarty_tpl->getSmarty()->getRuntime('Foreach')->init($_smarty_tpl, $_smarty_tpl->getValue('mie_prenotazioni'), 'pren');
+                <div class="auth-support-note">
+                    Vuoi aggiungere nuovi ingressi?
+                    <a href="index.php?controller=info&action=tariffe">Consulta le tariffe</a>
+                </div>
+            </section>
+        </div>
+
+        <!-- Colonna Destra: Lezioni Individuali + Corsi di Gruppo -->
+        <div class="col-12 col-lg-8 d-flex flex-column gap-4">
+
+            <!-- Sezione Lezioni Individuali (1-to-1) -->
+            <section class="dashboard-card">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4">
+                    <h2 class="dashboard-section-title">Le tue Lezioni Individuali (1-to-1)</h2>
+                    <span class="dashboard-count-badge">
+                        <?php if (( !$_smarty_tpl->hasVariable('lezioni_individuali') || empty($_smarty_tpl->getValue('lezioni_individuali')))) {?>
+                            0 lezioni
+                        <?php } else { ?>
+                            <?php echo $_smarty_tpl->getSmarty()->getModifierCallback('count')($_smarty_tpl->getValue('lezioni_individuali'));?>
+
+                            <?php if ($_smarty_tpl->getSmarty()->getModifierCallback('count')($_smarty_tpl->getValue('lezioni_individuali')) == 1) {?>lezione<?php } else { ?>lezioni<?php }?>
+                        <?php }?>
+                    </span>
+                </div>
+
+                <?php if (( !$_smarty_tpl->hasVariable('lezioni_individuali') || empty($_smarty_tpl->getValue('lezioni_individuali')))) {?>
+                    <div class="dashboard-empty">
+                        <div class="dashboard-empty-icon" aria-hidden="true">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </div>
+                        <p class="dashboard-empty-title">Nessuna lezione individuale</p>
+                        <p class="dashboard-empty-text">
+                            Non hai ancora prenotato una sessione 1-to-1 con un istruttore dedicato.
+                        </p>
+                    </div>
+                <?php } else { ?>
+                    <ul class="dashboard-prenotazioni-list">
+                        <?php
+$_from = $_smarty_tpl->getSmarty()->getRuntime('Foreach')->init($_smarty_tpl, $_smarty_tpl->getValue('lezioni_individuali'), 'ind');
 $foreach0DoElse = true;
-foreach ($_from ?? [] as $_smarty_tpl->getVariable('pren')->value) {
+foreach ($_from ?? [] as $_smarty_tpl->getVariable('ind')->value) {
 $foreach0DoElse = false;
 ?>
-                    <li style="background: white; padding: 15px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-                        <div>
-                            <strong><?php echo $_smarty_tpl->getValue('pren')['nome_corso'];?>
-</strong><br>
-                            <small><?php echo $_smarty_tpl->getValue('pren')['data_ora'];?>
-</small>
-                        </div>
-                        <form action="index.php?controller=prenotazione&action=cancella" method="POST" style="margin: 0;">
-                            <input type="hidden" name="id_prenotazione" value="<?php echo $_smarty_tpl->getValue('pren')['id_prenotazione'];?>
+                            <li class="dashboard-prenotazione-item <?php if ($_smarty_tpl->getValue('ind')['stato'] == 'annullata_istruttore') {?>is-cancelled<?php }?>">
+                                <div class="d-flex align-items-start gap-3">
+                                    <div class="dashboard-lesson-icon" aria-hidden="true">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                                            <circle cx="12" cy="7" r="4"></circle>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div class="d-flex align-items-center flex-wrap gap-2 mb-1">
+                                            <span class="dashboard-lesson-title mb-0">Istruttore: <?php echo htmlspecialchars((string)$_smarty_tpl->getValue('ind')['istruttore'], ENT_QUOTES, 'UTF-8', true);?>
+</span>
+                                            <?php if ($_smarty_tpl->getValue('ind')['stato'] == 'prenotata') {?>
+                                                <span class="dashboard-status-pill is-confirmed">Prenotata</span>
+                                            <?php } else { ?>
+                                                <span class="dashboard-status-pill is-cancelled">Annullata dall'istruttore</span>
+                                            <?php }?>
+                                        </div>
+                                        <div class="dashboard-lesson-date">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                                <polyline points="12 6 12 12 16 14"></polyline>
+                                            </svg>
+                                            <span><?php echo htmlspecialchars((string)$_smarty_tpl->getValue('ind')['data'], ENT_QUOTES, 'UTF-8', true);?>
+ &bull; <?php echo htmlspecialchars((string)$_smarty_tpl->getValue('ind')['ora_inizio'], ENT_QUOTES, 'UTF-8', true);?>
+ - <?php echo htmlspecialchars((string)$_smarty_tpl->getValue('ind')['ora_fine'], ENT_QUOTES, 'UTF-8', true);?>
+</span>
+                                        </div>
+                                        <?php if ($_smarty_tpl->getValue('ind')['stato'] == 'annullata_istruttore') {?>
+                                            <div class="dashboard-cancel-reason">
+                                                <strong class="text-danger">Motivazione:</strong> <?php echo htmlspecialchars((string)(($tmp = $_smarty_tpl->getValue('ind')['motivazione'] ?? null)===null||$tmp==='' ? 'Nessuna motivazione specificata.' ?? null : $tmp), ENT_QUOTES, 'UTF-8', true);?>
+<br>
+                                                <span>1 credito è stato rimborsato automaticamente sul tuo profilo.</span>
+                                            </div>
+                                        <?php }?>
+                                    </div>
+                                </div>
+
+                                <?php if ($_smarty_tpl->getValue('ind')['stato'] == 'prenotata') {?>
+                                    <form
+                                        action="index.php?controller=prenotazione&action=cancellaIndividuale"
+                                        method="POST"
+                                        class="m-0 flex-shrink-0"
+                                        onsubmit="return confirm('Vuoi davvero disdire questa lezione individuale? Il credito verrà restituito al tuo saldo.');"
+                                    >
+                                        <input type="hidden" name="id_slot" value="<?php echo $_smarty_tpl->getValue('ind')['id'];?>
 ">
-                            <button type="submit" class="btn-primary" style="background-color: #d9534f; padding: 8px 15px; font-size: 14px;">Disdici</button>
-                        </form>
-                    </li>
-                <?php
+                                        <button type="submit" class="btn-disdici">Disdici</button>
+                                    </form>
+                                <?php }?>
+                            </li>
+                        <?php
 }
 $_smarty_tpl->getSmarty()->getRuntime('Foreach')->restore($_smarty_tpl, 1);?>
-                </ul>
-            <?php }?>
-        </section>
-    </main>
-</body>
-</html>
-<?php }
+                    </ul>
+                <?php }?>
+            </section>
+
+            <!-- Sezione Corsi di Gruppo Prenotati -->
+            <section class="dashboard-card">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4">
+                    <h2 class="dashboard-section-title">I tuoi Corsi di Gruppo Prenotati</h2>
+                    <span class="dashboard-count-badge">
+                        <?php if (( !$_smarty_tpl->hasVariable('mie_prenotazioni') || empty($_smarty_tpl->getValue('mie_prenotazioni')))) {?>
+                            0 prenotazioni
+                        <?php } else { ?>
+                            <?php echo $_smarty_tpl->getSmarty()->getModifierCallback('count')($_smarty_tpl->getValue('mie_prenotazioni'));?>
+
+                            <?php if ($_smarty_tpl->getSmarty()->getModifierCallback('count')($_smarty_tpl->getValue('mie_prenotazioni')) == 1) {?>prenotazione<?php } else { ?>prenotazioni<?php }?>
+                        <?php }?>
+                    </span>
+                </div>
+
+                <?php if (( !$_smarty_tpl->hasVariable('mie_prenotazioni') || empty($_smarty_tpl->getValue('mie_prenotazioni')))) {?>
+                    <div class="dashboard-empty">
+                        <div class="dashboard-empty-icon" aria-hidden="true">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                        </div>
+                        <p class="dashboard-empty-title">Nessun corso di gruppo prenotato</p>
+                        <p class="dashboard-empty-text mb-3">
+                            Esplora il calendario della settimana per riservare il tuo posto in sala.
+                        </p>
+                        <a href="index.php?controller=prenotazione&action=calendario" class="btn btn-primary px-4 py-2">
+                            Vai al Calendario
+                        </a>
+                    </div>
+                <?php } else { ?>
+                    <ul class="dashboard-prenotazioni-list">
+                        <?php
+$_from = $_smarty_tpl->getSmarty()->getRuntime('Foreach')->init($_smarty_tpl, $_smarty_tpl->getValue('mie_prenotazioni'), 'pren');
+$foreach1DoElse = true;
+foreach ($_from ?? [] as $_smarty_tpl->getVariable('pren')->value) {
+$foreach1DoElse = false;
+?>
+                            <li class="dashboard-prenotazione-item">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="dashboard-lesson-icon" aria-hidden="true">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div class="dashboard-lesson-title"><?php echo htmlspecialchars((string)$_smarty_tpl->getValue('pren')['nome_corso'], ENT_QUOTES, 'UTF-8', true);?>
+</div>
+                                        <div class="dashboard-lesson-date">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                                <polyline points="12 6 12 12 16 14"></polyline>
+                                            </svg>
+                                            <span><?php echo htmlspecialchars((string)$_smarty_tpl->getValue('pren')['data_ora'], ENT_QUOTES, 'UTF-8', true);?>
+</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <form
+                                    action="index.php?controller=prenotazione&action=cancella"
+                                    method="POST"
+                                    class="m-0 flex-shrink-0"
+                                    onsubmit="return confirm('Vuoi davvero disdire questa lezione? Il credito verrà restituito al tuo saldo.');"
+                                >
+                                    <input type="hidden" name="id_prenotazione" value="<?php echo $_smarty_tpl->getValue('pren')['id_prenotazione'];?>
+">
+                                    <button type="submit" class="btn-disdici">Disdici</button>
+                                </form>
+                            </li>
+                        <?php
+}
+$_smarty_tpl->getSmarty()->getRuntime('Foreach')->restore($_smarty_tpl, 1);?>
+                    </ul>
+
+                    <div class="auth-support-note mt-4">
+                        Se disdici una prenotazione, 1 ingresso viene riaccreditato automaticamente sul tuo profilo.
+                    </div>
+                <?php }?>
+            </section>
+
+        </div>
+    </div>
+</div>
+<?php
+}
+}
+/* {/block "content"} */
 }

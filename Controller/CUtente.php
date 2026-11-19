@@ -3,10 +3,27 @@
 
 class CUtente {
     
-    // Homepage
+    // Mostra la home page con l'elenco degli istruttori per il carosello
     public function home() {
+        $istruttori_entity = FUtente::loadSoloIstruttori();
+        $istruttori_dati = [];
+
+        foreach ($istruttori_entity as $istr) {
+            $iniziali = strtoupper(
+                substr($istr->getNome(), 0, 1) . substr($istr->getCognome(), 0, 1)
+            );
+
+            $istruttori_dati[] = [
+                'id' => $istr->getId(),
+                'nome' => $istr->getNome(),
+                'cognome' => $istr->getCognome(),
+                'email' => $istr->getEmail(),
+                'iniziali' => $iniziali
+            ];
+        }
+
         $view = new VUtente();
-        $view->mostraHome();
+        $view->mostraHome($istruttori_dati);
     }
 
     // Gestione Registrazione

@@ -5,10 +5,11 @@ require_once('StartSmarty.php');
 class VUtente extends StartSmarty {
     
     // Mostra la homepage pubblica
-    public function mostraHome() {
+    public function mostraHome(array $istruttori = []) {
         $this->smarty->assign('titolo_pagina', 'Home - Studio Essenza');
         $this->smarty->assign('messaggio_benvenuto', 'Scopri il vero equilibrio con il Metodo Essenza.');
-        
+        $this->smarty->assign('istruttori', $istruttori);
+
         $this->smarty->display('home.tpl');
     }
 
