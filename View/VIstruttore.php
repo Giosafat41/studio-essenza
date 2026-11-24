@@ -22,6 +22,8 @@ class VIstruttore extends StartSmarty {
         $this->smarty->assign('cognome_istruttore', $istruttore->getCognome());
         $this->smarty->assign('iniziali_istruttore', $iniziali);
         $this->smarty->assign('immagine_profilo', $istruttore->getImmagineProfilo());
+        $this->smarty->assign('tariffa_individuale', $istruttore->getTariffaIndividuale());
+        $this->smarty->assign('tariffa_formattata', $istruttore->getTariffaFormattata());
         $this->smarty->assign('email_istruttore', $istruttore->getEmail());
         $this->smarty->assign('telefono_istruttore', $istruttore->getTelefono());
         $this->smarty->assign('oggi_input', date('Y-m-d'));

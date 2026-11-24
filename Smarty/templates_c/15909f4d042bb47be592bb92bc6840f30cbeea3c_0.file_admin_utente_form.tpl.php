@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 5.8.5, created on 2026-11-24 17:20:01
+/* Smarty version 5.8.5, created on 2026-11-24 17:35:45
   from 'file:admin_utente_form.tpl' */
 
 /* @var \Smarty\Template $_smarty_tpl */
 if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   'version' => '5.8.5',
-  'unifunc' => 'content_6b05b93196b087_28572593',
+  'unifunc' => 'content_6b05bce18ed285_38106273',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '15909f4d042bb47be592bb92bc6840f30cbeea3c' => 
     array (
       0 => 'admin_utente_form.tpl',
-      1 => 1795535475,
+      1 => 1795537814,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   array (
   ),
 ))) {
-function content_6b05b93196b087_28572593 (\Smarty\Template $_smarty_tpl) {
+function content_6b05bce18ed285_38106273 (\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
 $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 ?>
@@ -28,13 +28,13 @@ $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 
 
 <?php 
-$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_19166077236b05b93194d157_08030644', "content");
+$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_979896616b05bce18d2461_63262853', "content");
 ?>
 
 <?php $_smarty_tpl->getInheritance()->endChild($_smarty_tpl, "layout.tpl", $_smarty_current_dir);
 }
 /* {block "content"} */
-class Block_19166077236b05b93194d157_08030644 extends \Smarty\Runtime\Block
+class Block_979896616b05bce18d2461_63262853 extends \Smarty\Runtime\Block
 {
 public function callBlock(\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
@@ -212,6 +212,25 @@ echo htmlspecialchars((string)$_smarty_tpl->getValue('utente')->getScadenzaCerti
                     </div>
                 </div>
 
+                <div class="mb-3">
+                    <label for="tariffa_individuale" class="form-label auth-label">Tariffa Lezione Individuale (&euro;/ora) <span class="auth-optional">(opzionale)</span></label>
+                    <input
+                        type="number"
+                        id="tariffa_individuale"
+                        name="tariffa_individuale"
+                        class="form-control admin-input"
+                        min="1"
+                        max="9999.99"
+                        step="0.50"
+                        placeholder="Es. 45"
+                        value="<?php if ((true && ($_smarty_tpl->hasVariable('utente') && null !== ($_smarty_tpl->getValue('utente') ?? null))) && $_smarty_tpl->getValue('utente')->getTariffaIndividuale() !== null) {
+echo $_smarty_tpl->getValue('utente')->getTariffaIndividuale();
+}?>"
+                        <?php if (!$_smarty_tpl->getValue('mostra_campo_istruttore')) {?>disabled<?php }?>
+                    >
+                    <div class="form-text mt-1">L'istruttore potrà modificarla in autonomia dalla propria dashboard.</div>
+                </div>
+
                 <div>
                     <label for="descrizione" class="form-label auth-label">Descrizione Istruttore <span class="auth-optional">(visibile nella Home)</span></label>
                     <textarea
@@ -252,6 +271,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const creditiInput = document.getElementById('crediti_residui');
     const certificatoInput = document.getElementById('scadenza_certificato');
     const descrizioneInput = document.getElementById('descrizione');
+    const tariffaInput = document.getElementById('tariffa_individuale');
     const immagineInput = document.getElementById('immagine_profilo');
     const rimuoviImgCheckbox = document.getElementById('rimuovi_immagine');
     const avatarPreview = document.getElementById('admin-avatar-preview');
@@ -270,6 +290,9 @@ document.addEventListener('DOMContentLoaded', function () {
         campoIstruttore.classList.toggle('d-none', !isIstruttore);
         descrizioneInput.disabled = !isIstruttore;
         immagineInput.disabled = !isIstruttore;
+        if (tariffaInput) {
+            tariffaInput.disabled = !isIstruttore;
+        }
         if (rimuoviImgCheckbox) {
             rimuoviImgCheckbox.disabled = !isIstruttore;
         }

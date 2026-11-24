@@ -338,5 +338,47 @@ class CIstruttore {
         header("Location: index.php?controller=istruttore&action=dashboard&msg=" . urlencode("Immagine profilo rimossa."));
         exit;
     }
+
+    // Aggiorna la tariffa oraria dell'istruttore per le lezioni individuali (1-to-1)
+    public function aggiornaTariffa() {
+        $id_istruttore = $this->verificaIstruttore();
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header("Location: index.php?controller=istruttore&action=dashboard");
+            exit;
+        }
+
+        $istruttore = FUtente::load($id_istruttore);
+        if (!$istruttore) {
+            header("Location: index.php?controller=utente&action=logout");
+            exit;
+        }
+
+        $valore_raw = trim(str_replace(',', '.', $_POST['tariffa_individuale'] ?? ''));
+
+        if ($valore_raw === '') {
+            $istruttore->setTariffaIndividuale(null);
+            FUtente::update($istruttore);
+            header("Location: index.php?controller=istruttore&action=dashboard&msg=" . urlencode("Tariffa individuale rimossa (verrà mostrata come 'Su richiesta')."));
+            exit;
+        }
+
+        if (!is_numeric($valore_raw)) {
+            header("Location: index.php?controller=istruttore&action=dashboard&err=" . urlencode("Inserisci un importo numerico valido per la tariffa individuale."));
+            exit;
+        }
+
+        $importo = round((float)$valore_raw, 2);
+        if ($importo <= 0 || $importo > 9999.99) {
+            header("Location: index.php?controller=istruttore&action=dashboard&err=" . urlencode("La tariffa individuale deve essere compresa tra 1 € e 9999,99 €."));
+            exit;
+        }
+
+        $istruttore->setTariffaIndividuale($importo);
+        FUtente::update($istruttore);
+
+        header("Location: index.php?controller=istruttore&action=dashboard&msg=" . urlencode("Tariffa per le lezioni individuali aggiornata a {$istruttore->getTariffaFormattata()}!"));
+        exit;
+    }
 }
 ?>

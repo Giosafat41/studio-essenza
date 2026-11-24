@@ -161,6 +161,7 @@ class CUtente {
             $lezioni_individuali_utente[] = [
                 'id' => $slot->getId(),
                 'istruttore' => $istruttore ? $istruttore->getNome() . ' ' . $istruttore->getCognome() : 'Istruttore',
+                'tariffa_formattata' => $istruttore ? $istruttore->getTariffaFormattata() : null,
                 'data' => date('d/m/Y', strtotime($slot->getDataOraInizio())),
                 'ora_inizio' => date('H:i', strtotime($slot->getDataOraInizio())),
                 'ora_fine' => date('H:i', strtotime($slot->getDataOraFine())),

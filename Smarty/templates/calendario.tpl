@@ -106,7 +106,8 @@
                             <button type="button"
                                     class="list-group-item list-group-item-action d-flex align-items-center justify-content-between p-3 istruttore-item {if $istr@first}active{/if}"
                                     data-istruttore-id="{$istr.id}"
-                                    data-istruttore-nome="{$istr.nome|escape} {$istr.cognome|escape}">
+                                    data-istruttore-nome="{$istr.nome|escape} {$istr.cognome|escape}"
+                                    data-istruttore-tariffa="{if !empty($istr.tariffa_formattata)}{$istr.tariffa_formattata|escape}{else}Su richiesta{/if}">
                                 <div class="d-flex align-items-center gap-3">
                                     <div class="calendar-istruttore-avatar">
                                         {if !empty($istr.immagine_profilo)}
@@ -117,7 +118,13 @@
                                     </div>
                                     <div class="text-start">
                                         <div class="fw-semibold">{$istr.nome|escape} {$istr.cognome|escape}</div>
-                                        <small class="opacity-75">Istruttore certificato</small>
+                                        <small class="opacity-75">
+                                            {if !empty($istr.tariffa_formattata)}
+                                                {$istr.tariffa_formattata|escape} / ora &bull; Istruttore certificato
+                                            {else}
+                                                Tariffa su richiesta &bull; Istruttore certificato
+                                            {/if}
+                                        </small>
                                     </div>
                                 </div>
                                 <span class="calendar-slot-badge {if $istr.totale_slot == 0}is-zero{/if}">
@@ -135,7 +142,16 @@
                             <h3 class="h6 fw-semibold mb-0" style="color: #5f6e54;">
                                 Disponibilità di <span id="nome-istruttore-selezionato">{$istruttori[0].nome|escape} {$istruttori[0].cognome|escape}</span>
                             </h3>
-                            <span class="dashboard-count-badge">Durata: 60 min</span>
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                <span id="tariffa-istruttore-selezionato" class="dashboard-count-badge">
+                                    {if !empty($istruttori[0].tariffa_formattata)}
+                                        {$istruttori[0].tariffa_formattata|escape} / ora
+                                    {else}
+                                        Tariffa su richiesta
+                                    {/if}
+                                </span>
+                                <span class="dashboard-count-badge">Durata: 60 min</span>
+                            </div>
                         </div>
 
                         <!-- Barra dei giorni disponibili (mini-calendario) -->
@@ -267,16 +283,22 @@ document.addEventListener('DOMContentLoaded', function () {
     const containerGiorni = document.getElementById('mini-calendario-giorni');
     const containerOrari = document.getElementById('mini-calendario-orari');
     const labelIstruttore = document.getElementById('nome-istruttore-selezionato');
+    const labelTariffa = document.getElementById('tariffa-istruttore-selezionato');
     const bottoniIstruttori = document.querySelectorAll('.istruttore-item');
 
     if (jsonEl && containerGiorni && containerOrari) {
         const slotPerIstruttore = JSON.parse(jsonEl.textContent || '{}');
+        let tariffaCorrente = 'Su richiesta';
 
         function renderOrariGiorno(giornoObj) {
             if (!giornoObj || !giornoObj.orari || giornoObj.orari.length === 0) {
                 containerOrari.innerHTML = '<p class="text-muted small mb-0">Nessuna fascia oraria disponibile per questa data.</p>';
                 return;
             }
+
+            const etichettaPrezzo = tariffaCorrente && tariffaCorrente !== 'Su richiesta'
+                ? `Lezione 1-to-1 &bull; ${tariffaCorrente}`
+                : 'Lezione 1-to-1 &bull; Su richiesta';
 
             let html = '<div class="row g-2">';
             giornoObj.orari.forEach(function (slot) {
@@ -285,7 +307,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <div class="calendar-slot-card">
                             <div>
                                 <strong class="d-block" style="color: #4a4a4a;">${slot.ora_inizio} - ${slot.ora_fine}</strong>
-                                <small class="text-muted">Lezione 1-to-1</small>
+                                <small class="text-muted">${etichettaPrezzo}</small>
                             </div>
                             <form action="index.php?controller=prenotazione&action=prenotaIndividuale" method="POST" class="m-0">
                                 <input type="hidden" name="id_slot" value="${slot.id_slot}">
@@ -299,9 +321,15 @@ document.addEventListener('DOMContentLoaded', function () {
             containerOrari.innerHTML = html;
         }
 
-        function renderCalendarioIstruttore(idIstruttore, nomeIstruttore) {
+        function renderCalendarioIstruttore(idIstruttore, nomeIstruttore, tariffaIstruttore) {
+            tariffaCorrente = tariffaIstruttore || 'Su richiesta';
             if (labelIstruttore) {
                 labelIstruttore.textContent = nomeIstruttore;
+            }
+            if (labelTariffa) {
+                labelTariffa.textContent = tariffaCorrente !== 'Su richiesta'
+                    ? tariffaCorrente + ' / ora'
+                    : 'Tariffa su richiesta';
             }
             const giorni = slotPerIstruttore[idIstruttore] || [];
 
@@ -339,7 +367,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 btn.classList.add('active');
                 renderCalendarioIstruttore(
                     btn.getAttribute('data-istruttore-id'),
-                    btn.getAttribute('data-istruttore-nome')
+                    btn.getAttribute('data-istruttore-nome'),
+                    btn.getAttribute('data-istruttore-tariffa')
                 );
             });
         });
@@ -348,7 +377,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const primo = bottoniIstruttori[0];
             renderCalendarioIstruttore(
                 primo.getAttribute('data-istruttore-id'),
-                primo.getAttribute('data-istruttore-nome')
+                primo.getAttribute('data-istruttore-nome'),
+                primo.getAttribute('data-istruttore-tariffa')
             );
         }
     }

@@ -12,8 +12,9 @@ class VInfo extends StartSmarty {
     }
 
     // Mostra la pagina "Tariffe"
-    public function mostraTariffe() {
+    public function mostraTariffe(array $istruttori_tariffe = []) {
         $this->smarty->assign('titolo_pagina', 'Tariffe e Pacchetti - Studio Essenza');
+        $this->smarty->assign('istruttori_tariffe', $istruttori_tariffe);
         $this->smarty->display('tariffe.tpl');
     }
 

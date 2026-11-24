@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 5.8.5, created on 2026-11-24 17:20:02
+/* Smarty version 5.8.5, created on 2026-11-24 17:35:44
   from 'file:istruttore_dashboard.tpl' */
 
 /* @var \Smarty\Template $_smarty_tpl */
 if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   'version' => '5.8.5',
-  'unifunc' => 'content_6b05b9322a9ae8_87554161',
+  'unifunc' => 'content_6b05bce0e37e49_46261442',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '4c6721a054fb4f0c0a1fd302f4427c2e5bd1ae8c' => 
     array (
       0 => 'istruttore_dashboard.tpl',
-      1 => 1795537177,
+      1 => 1795537812,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   array (
   ),
 ))) {
-function content_6b05b9322a9ae8_87554161 (\Smarty\Template $_smarty_tpl) {
+function content_6b05bce0e37e49_46261442 (\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
 $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 ?>
@@ -28,11 +28,11 @@ $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 
 
 <?php 
-$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_6092985076b05b932273f07_57481898', "content");
+$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_2030439526b05bce0e08c06_83320612', "content");
 $_smarty_tpl->getInheritance()->endChild($_smarty_tpl, "layout.tpl", $_smarty_current_dir);
 }
 /* {block "content"} */
-class Block_6092985076b05b932273f07_57481898 extends \Smarty\Runtime\Block
+class Block_2030439526b05bce0e08c06_83320612 extends \Smarty\Runtime\Block
 {
 public function callBlock(\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
@@ -129,9 +129,49 @@ $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenz
     <!-- SEZIONE 1: GESTIONE LEZIONI INDIVIDUALI (1 ora) -->
     <div class="row g-4 mb-4">
 
-        <!-- Colonna Sinistra: Inserimento Fasce Orarie -->
-        <div class="col-12 col-lg-4">
-            <div class="bg-white rounded-3 shadow-sm p-4 h-100">
+        <!-- Colonna Sinistra: Tariffa Individuale + Inserimento Fasce Orarie -->
+        <div class="col-12 col-lg-4 d-flex flex-column gap-4">
+            <!-- Gestione Tariffa Individuale -->
+            <div class="bg-white rounded-3 shadow-sm p-4">
+                <div class="d-flex justify-content-between align-items-center gap-2 pb-2 mb-3 border-bottom">
+                    <h2 class="h5 mb-0" style="color: #7b8b6f;">Tariffa Lezione Individuale</h2>
+                    <span class="dashboard-count-badge">
+                        <?php if (!( !$_smarty_tpl->hasVariable('tariffa_formattata') || empty($_smarty_tpl->getValue('tariffa_formattata')))) {?>
+                            <?php echo htmlspecialchars((string)$_smarty_tpl->getValue('tariffa_formattata'), ENT_QUOTES, 'UTF-8', true);?>
+ / ora
+                        <?php } else { ?>
+                            Da impostare
+                        <?php }?>
+                    </span>
+                </div>
+                <p class="text-muted small mb-3">
+                    Imposta il costo della tua lezione 1-to-1 (60 min). Il prezzo verrà mostrato automaticamente agli allievi nel calendario e nella pagina Tariffe.
+                </p>
+
+                <form action="index.php?controller=istruttore&action=aggiornaTariffa" method="POST">
+                    <label for="tariffa_individuale" class="form-label fw-semibold">Costo per lezione (1 ora)</label>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text bg-light">&euro;</span>
+                        <input
+                            type="number"
+                            id="tariffa_individuale"
+                            name="tariffa_individuale"
+                            class="form-control"
+                            min="1"
+                            max="9999.99"
+                            step="0.50"
+                            placeholder="Es. 45"
+                            value="<?php if ($_smarty_tpl->getValue('tariffa_individuale') !== null) {
+echo $_smarty_tpl->getValue('tariffa_individuale');
+}?>"
+                        >
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Salva Tariffa</button>
+                </form>
+            </div>
+
+            <!-- Inserimento Fasce Orarie -->
+            <div class="bg-white rounded-3 shadow-sm p-4 flex-grow-1">
                 <h2 class="h5 pb-2 mb-3 border-bottom" style="color: #7b8b6f;">Inserisci Disponibilità</h2>
                 <p class="text-muted small">
                     Scegli giorno e fascia oraria: il sistema creerà automaticamente slot prenotabili da <strong>1 ora</strong>, evitando sovrapposizioni con i tuoi corsi.
@@ -213,9 +253,9 @@ echo ($_smarty_tpl->getValue('__smarty_section_h')['index'] ?? null);?>
                             <tbody>
                                 <?php
 $_from = $_smarty_tpl->getSmarty()->getRuntime('Foreach')->init($_smarty_tpl, $_smarty_tpl->getValue('lezioni_individuali'), 'slot');
-$foreach5DoElse = true;
+$foreach1DoElse = true;
 foreach ($_from ?? [] as $_smarty_tpl->getVariable('slot')->value) {
-$foreach5DoElse = false;
+$foreach1DoElse = false;
 ?>
                                     <tr>
                                         <td class="text-nowrap">
@@ -308,9 +348,9 @@ $_smarty_tpl->getSmarty()->getRuntime('Foreach')->restore($_smarty_tpl, 1);?>
                     <tbody>
                         <?php
 $_from = $_smarty_tpl->getSmarty()->getRuntime('Foreach')->init($_smarty_tpl, $_smarty_tpl->getValue('corsi_futuri'), 'corso');
-$foreach6DoElse = true;
+$foreach2DoElse = true;
 foreach ($_from ?? [] as $_smarty_tpl->getVariable('corso')->value) {
-$foreach6DoElse = false;
+$foreach2DoElse = false;
 ?>
                             <tr>
                                 <td><strong><?php echo $_smarty_tpl->getValue('corso')['nome_corso'];?>
@@ -359,9 +399,9 @@ $_smarty_tpl->getSmarty()->getRuntime('Foreach')->restore($_smarty_tpl, 1);?>
                     <tbody>
                         <?php
 $_from = $_smarty_tpl->getSmarty()->getRuntime('Foreach')->init($_smarty_tpl, $_smarty_tpl->getValue('corsi_passati'), 'corso');
-$foreach7DoElse = true;
+$foreach3DoElse = true;
 foreach ($_from ?? [] as $_smarty_tpl->getVariable('corso')->value) {
-$foreach7DoElse = false;
+$foreach3DoElse = false;
 ?>
                             <tr>
                                 <td><?php echo $_smarty_tpl->getValue('corso')['nome_corso'];?>

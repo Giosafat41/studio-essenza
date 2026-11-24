@@ -81,9 +81,46 @@
     <!-- SEZIONE 1: GESTIONE LEZIONI INDIVIDUALI (1 ora) -->
     <div class="row g-4 mb-4">
 
-        <!-- Colonna Sinistra: Inserimento Fasce Orarie -->
-        <div class="col-12 col-lg-4">
-            <div class="bg-white rounded-3 shadow-sm p-4 h-100">
+        <!-- Colonna Sinistra: Tariffa Individuale + Inserimento Fasce Orarie -->
+        <div class="col-12 col-lg-4 d-flex flex-column gap-4">
+            <!-- Gestione Tariffa Individuale -->
+            <div class="bg-white rounded-3 shadow-sm p-4">
+                <div class="d-flex justify-content-between align-items-center gap-2 pb-2 mb-3 border-bottom">
+                    <h2 class="h5 mb-0" style="color: #7b8b6f;">Tariffa Lezione Individuale</h2>
+                    <span class="dashboard-count-badge">
+                        {if !empty($tariffa_formattata)}
+                            {$tariffa_formattata|escape} / ora
+                        {else}
+                            Da impostare
+                        {/if}
+                    </span>
+                </div>
+                <p class="text-muted small mb-3">
+                    Imposta il costo della tua lezione 1-to-1 (60 min). Il prezzo verrà mostrato automaticamente agli allievi nel calendario e nella pagina Tariffe.
+                </p>
+
+                <form action="index.php?controller=istruttore&action=aggiornaTariffa" method="POST">
+                    <label for="tariffa_individuale" class="form-label fw-semibold">Costo per lezione (1 ora)</label>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text bg-light">&euro;</span>
+                        <input
+                            type="number"
+                            id="tariffa_individuale"
+                            name="tariffa_individuale"
+                            class="form-control"
+                            min="1"
+                            max="9999.99"
+                            step="0.50"
+                            placeholder="Es. 45"
+                            value="{if $tariffa_individuale !== null}{$tariffa_individuale}{/if}"
+                        >
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Salva Tariffa</button>
+                </form>
+            </div>
+
+            <!-- Inserimento Fasce Orarie -->
+            <div class="bg-white rounded-3 shadow-sm p-4 flex-grow-1">
                 <h2 class="h5 pb-2 mb-3 border-bottom" style="color: #7b8b6f;">Inserisci Disponibilità</h2>
                 <p class="text-muted small">
                     Scegli giorno e fascia oraria: il sistema creerà automaticamente slot prenotabili da <strong>1 ora</strong>, evitando sovrapposizioni con i tuoi corsi.

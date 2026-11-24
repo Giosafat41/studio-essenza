@@ -157,6 +157,23 @@
                     </div>
                 </div>
 
+                <div class="mb-3">
+                    <label for="tariffa_individuale" class="form-label auth-label">Tariffa Lezione Individuale (&euro;/ora) <span class="auth-optional">(opzionale)</span></label>
+                    <input
+                        type="number"
+                        id="tariffa_individuale"
+                        name="tariffa_individuale"
+                        class="form-control admin-input"
+                        min="1"
+                        max="9999.99"
+                        step="0.50"
+                        placeholder="Es. 45"
+                        value="{if isset($utente) && $utente->getTariffaIndividuale() !== null}{$utente->getTariffaIndividuale()}{/if}"
+                        {if !$mostra_campo_istruttore}disabled{/if}
+                    >
+                    <div class="form-text mt-1">L'istruttore potrà modificarla in autonomia dalla propria dashboard.</div>
+                </div>
+
                 <div>
                     <label for="descrizione" class="form-label auth-label">Descrizione Istruttore <span class="auth-optional">(visibile nella Home)</span></label>
                     <textarea
@@ -194,6 +211,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const creditiInput = document.getElementById('crediti_residui');
     const certificatoInput = document.getElementById('scadenza_certificato');
     const descrizioneInput = document.getElementById('descrizione');
+    const tariffaInput = document.getElementById('tariffa_individuale');
     const immagineInput = document.getElementById('immagine_profilo');
     const rimuoviImgCheckbox = document.getElementById('rimuovi_immagine');
     const avatarPreview = document.getElementById('admin-avatar-preview');
@@ -212,6 +230,9 @@ document.addEventListener('DOMContentLoaded', function () {
         campoIstruttore.classList.toggle('d-none', !isIstruttore);
         descrizioneInput.disabled = !isIstruttore;
         immagineInput.disabled = !isIstruttore;
+        if (tariffaInput) {
+            tariffaInput.disabled = !isIstruttore;
+        }
         if (rimuoviImgCheckbox) {
             rimuoviImgCheckbox.disabled = !isIstruttore;
         }

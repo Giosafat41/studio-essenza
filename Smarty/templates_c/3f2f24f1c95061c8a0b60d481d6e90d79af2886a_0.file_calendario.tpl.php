@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 5.8.5, created on 2026-11-24 17:20:02
+/* Smarty version 5.8.5, created on 2026-11-24 17:35:45
   from 'file:calendario.tpl' */
 
 /* @var \Smarty\Template $_smarty_tpl */
 if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   'version' => '5.8.5',
-  'unifunc' => 'content_6b05b9327ced60_50132614',
+  'unifunc' => 'content_6b05bce132f308_19659369',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '3f2f24f1c95061c8a0b60d481d6e90d79af2886a' => 
     array (
       0 => 'calendario.tpl',
-      1 => 1795536778,
+      1 => 1795537818,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   array (
   ),
 ))) {
-function content_6b05b9327ced60_50132614 (\Smarty\Template $_smarty_tpl) {
+function content_6b05bce132f308_19659369 (\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
 $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 ?>
@@ -28,13 +28,13 @@ $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 
 
 <?php 
-$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_1091562096b05b9327b7221_43111380', "content");
+$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_17210272246b05bce13136d3_73588093', "content");
 ?>
 
 <?php $_smarty_tpl->getInheritance()->endChild($_smarty_tpl, "layout.tpl", $_smarty_current_dir);
 }
 /* {block "content"} */
-class Block_1091562096b05b9327b7221_43111380 extends \Smarty\Runtime\Block
+class Block_17210272246b05bce13136d3_73588093 extends \Smarty\Runtime\Block
 {
 public function callBlock(\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
@@ -144,12 +144,12 @@ $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenz
                         <?php
 $_from = $_smarty_tpl->getSmarty()->getRuntime('Foreach')->init($_smarty_tpl, $_smarty_tpl->getValue('istruttori'), 'istr');
 $_smarty_tpl->getVariable('istr')->index = -1;
-$foreach8DoElse = true;
+$foreach4DoElse = true;
 foreach ($_from ?? [] as $_smarty_tpl->getVariable('istr')->value) {
-$foreach8DoElse = false;
+$foreach4DoElse = false;
 $_smarty_tpl->getVariable('istr')->index++;
 $_smarty_tpl->getVariable('istr')->first = !$_smarty_tpl->getVariable('istr')->index;
-$foreach8Backup = clone $_smarty_tpl->getVariable('istr');
+$foreach4Backup = clone $_smarty_tpl->getVariable('istr');
 ?>
                             <button type="button"
                                     class="list-group-item list-group-item-action d-flex align-items-center justify-content-between p-3 istruttore-item <?php if ($_smarty_tpl->getVariable('istr')->first) {?>active<?php }?>"
@@ -157,7 +157,10 @@ $foreach8Backup = clone $_smarty_tpl->getVariable('istr');
 "
                                     data-istruttore-nome="<?php echo htmlspecialchars((string)$_smarty_tpl->getValue('istr')['nome'], ENT_QUOTES, 'UTF-8', true);?>
  <?php echo htmlspecialchars((string)$_smarty_tpl->getValue('istr')['cognome'], ENT_QUOTES, 'UTF-8', true);?>
-">
+"
+                                    data-istruttore-tariffa="<?php if (!( !true || empty($_smarty_tpl->getValue('istr')['tariffa_formattata']))) {
+echo htmlspecialchars((string)$_smarty_tpl->getValue('istr')['tariffa_formattata'], ENT_QUOTES, 'UTF-8', true);
+} else { ?>Su richiesta<?php }?>">
                                 <div class="d-flex align-items-center gap-3">
                                     <div class="calendar-istruttore-avatar">
                                         <?php if (!( !true || empty($_smarty_tpl->getValue('istr')['immagine_profilo']))) {?>
@@ -174,7 +177,14 @@ $foreach8Backup = clone $_smarty_tpl->getVariable('istr');
                                         <div class="fw-semibold"><?php echo htmlspecialchars((string)$_smarty_tpl->getValue('istr')['nome'], ENT_QUOTES, 'UTF-8', true);?>
  <?php echo htmlspecialchars((string)$_smarty_tpl->getValue('istr')['cognome'], ENT_QUOTES, 'UTF-8', true);?>
 </div>
-                                        <small class="opacity-75">Istruttore certificato</small>
+                                        <small class="opacity-75">
+                                            <?php if (!( !true || empty($_smarty_tpl->getValue('istr')['tariffa_formattata']))) {?>
+                                                <?php echo htmlspecialchars((string)$_smarty_tpl->getValue('istr')['tariffa_formattata'], ENT_QUOTES, 'UTF-8', true);?>
+ / ora &bull; Istruttore certificato
+                                            <?php } else { ?>
+                                                Tariffa su richiesta &bull; Istruttore certificato
+                                            <?php }?>
+                                        </small>
                                     </div>
                                 </div>
                                 <span class="calendar-slot-badge <?php if ($_smarty_tpl->getValue('istr')['totale_slot'] == 0) {?>is-zero<?php }?>">
@@ -183,7 +193,7 @@ $foreach8Backup = clone $_smarty_tpl->getVariable('istr');
                                 </span>
                             </button>
                         <?php
-$_smarty_tpl->setVariable('istr', $foreach8Backup);
+$_smarty_tpl->setVariable('istr', $foreach4Backup);
 }
 $_smarty_tpl->getSmarty()->getRuntime('Foreach')->restore($_smarty_tpl, 1);?>
                     </div>
@@ -198,7 +208,17 @@ $_smarty_tpl->getSmarty()->getRuntime('Foreach')->restore($_smarty_tpl, 1);?>
  <?php echo htmlspecialchars((string)$_smarty_tpl->getValue('istruttori')[0]['cognome'], ENT_QUOTES, 'UTF-8', true);?>
 </span>
                             </h3>
-                            <span class="dashboard-count-badge">Durata: 60 min</span>
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                <span id="tariffa-istruttore-selezionato" class="dashboard-count-badge">
+                                    <?php if (!( !true || empty($_smarty_tpl->getValue('istruttori')[0]['tariffa_formattata']))) {?>
+                                        <?php echo htmlspecialchars((string)$_smarty_tpl->getValue('istruttori')[0]['tariffa_formattata'], ENT_QUOTES, 'UTF-8', true);?>
+ / ora
+                                    <?php } else { ?>
+                                        Tariffa su richiesta
+                                    <?php }?>
+                                </span>
+                                <span class="dashboard-count-badge">Durata: 60 min</span>
+                            </div>
                         </div>
 
                         <!-- Barra dei giorni disponibili (mini-calendario) -->
@@ -262,9 +282,9 @@ $_smarty_tpl->getSmarty()->getRuntime('Foreach')->restore($_smarty_tpl, 1);?>
             <div class="row g-4" id="calendarGrid">
                 <?php
 $_from = $_smarty_tpl->getSmarty()->getRuntime('Foreach')->init($_smarty_tpl, $_smarty_tpl->getValue('lezioni'), 'lez');
-$foreach9DoElse = true;
+$foreach5DoElse = true;
 foreach ($_from ?? [] as $_smarty_tpl->getVariable('lez')->value) {
-$foreach9DoElse = false;
+$foreach5DoElse = false;
 ?>
                     <div class="col-12 col-md-6 col-lg-4 calendar-lesson-col" data-corso="<?php echo htmlspecialchars((string)$_smarty_tpl->getValue('lez')['nome_corso'], ENT_QUOTES, 'UTF-8', true);?>
 ">
@@ -351,16 +371,22 @@ document.addEventListener('DOMContentLoaded', function () {
     const containerGiorni = document.getElementById('mini-calendario-giorni');
     const containerOrari = document.getElementById('mini-calendario-orari');
     const labelIstruttore = document.getElementById('nome-istruttore-selezionato');
+    const labelTariffa = document.getElementById('tariffa-istruttore-selezionato');
     const bottoniIstruttori = document.querySelectorAll('.istruttore-item');
 
     if (jsonEl && containerGiorni && containerOrari) {
         const slotPerIstruttore = JSON.parse(jsonEl.textContent || '{}');
+        let tariffaCorrente = 'Su richiesta';
 
         function renderOrariGiorno(giornoObj) {
             if (!giornoObj || !giornoObj.orari || giornoObj.orari.length === 0) {
                 containerOrari.innerHTML = '<p class="text-muted small mb-0">Nessuna fascia oraria disponibile per questa data.</p>';
                 return;
             }
+
+            const etichettaPrezzo = tariffaCorrente && tariffaCorrente !== 'Su richiesta'
+                ? `Lezione 1-to-1 &bull; ${tariffaCorrente}`
+                : 'Lezione 1-to-1 &bull; Su richiesta';
 
             let html = '<div class="row g-2">';
             giornoObj.orari.forEach(function (slot) {
@@ -369,7 +395,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <div class="calendar-slot-card">
                             <div>
                                 <strong class="d-block" style="color: #4a4a4a;">${slot.ora_inizio} - ${slot.ora_fine}</strong>
-                                <small class="text-muted">Lezione 1-to-1</small>
+                                <small class="text-muted">${etichettaPrezzo}</small>
                             </div>
                             <form action="index.php?controller=prenotazione&action=prenotaIndividuale" method="POST" class="m-0">
                                 <input type="hidden" name="id_slot" value="${slot.id_slot}">
@@ -383,9 +409,15 @@ document.addEventListener('DOMContentLoaded', function () {
             containerOrari.innerHTML = html;
         }
 
-        function renderCalendarioIstruttore(idIstruttore, nomeIstruttore) {
+        function renderCalendarioIstruttore(idIstruttore, nomeIstruttore, tariffaIstruttore) {
+            tariffaCorrente = tariffaIstruttore || 'Su richiesta';
             if (labelIstruttore) {
                 labelIstruttore.textContent = nomeIstruttore;
+            }
+            if (labelTariffa) {
+                labelTariffa.textContent = tariffaCorrente !== 'Su richiesta'
+                    ? tariffaCorrente + ' / ora'
+                    : 'Tariffa su richiesta';
             }
             const giorni = slotPerIstruttore[idIstruttore] || [];
 
@@ -423,7 +455,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 btn.classList.add('active');
                 renderCalendarioIstruttore(
                     btn.getAttribute('data-istruttore-id'),
-                    btn.getAttribute('data-istruttore-nome')
+                    btn.getAttribute('data-istruttore-nome'),
+                    btn.getAttribute('data-istruttore-tariffa')
                 );
             });
         });
@@ -432,7 +465,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const primo = bottoniIstruttori[0];
             renderCalendarioIstruttore(
                 primo.getAttribute('data-istruttore-id'),
-                primo.getAttribute('data-istruttore-nome')
+                primo.getAttribute('data-istruttore-nome'),
+                primo.getAttribute('data-istruttore-tariffa')
             );
         }
     }

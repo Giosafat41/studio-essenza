@@ -13,10 +13,11 @@ class EUtente {
     private $scadenza_certificato;
     private $descrizione;
     private $immagine_profilo;
+    private $tariffa_individuale;
     private $data_registrazione;
 
     // ID e data di registrazione vengono generati dal DB
-    public function __construct($nome, $cognome, $email, $password, $telefono = null, $ruolo = 'allievo', $crediti_residui = 0, $scadenza_certificato = null, $descrizione = null, $immagine_profilo = null) {
+    public function __construct($nome, $cognome, $email, $password, $telefono = null, $ruolo = 'allievo', $crediti_residui = 0, $scadenza_certificato = null, $descrizione = null, $immagine_profilo = null, $tariffa_individuale = null) {
         $this->nome = $nome;
         $this->cognome = $cognome;
         $this->email = $email;
@@ -27,6 +28,7 @@ class EUtente {
         $this->scadenza_certificato = $scadenza_certificato;
         $this->descrizione = $descrizione;
         $this->immagine_profilo = $immagine_profilo;
+        $this->tariffa_individuale = ($tariffa_individuale !== null && $tariffa_individuale !== '') ? (float)$tariffa_individuale : null;
     }
 
     // --- GETTER METODI ---
@@ -41,6 +43,7 @@ class EUtente {
     public function getScadenzaCertificato() { return $this->scadenza_certificato; }
     public function getDescrizione() { return $this->descrizione; }
     public function getImmagineProfilo() { return $this->immagine_profilo; }
+    public function getTariffaIndividuale() { return $this->tariffa_individuale; }
     public function getDataRegistrazione() { return $this->data_registrazione; }
     // --- SETTER METODI ---
     public function setId($id) { $this->id = $id; }
@@ -54,7 +57,22 @@ class EUtente {
     public function setScadenzaCertificato($scadenza_certificato) { $this->scadenza_certificato = $scadenza_certificato; }
     public function setDescrizione($descrizione) { $this->descrizione = $descrizione; }
     public function setImmagineProfilo($immagine_profilo) { $this->immagine_profilo = $immagine_profilo; }
+    public function setTariffaIndividuale($tariffa_individuale) {
+        $this->tariffa_individuale = ($tariffa_individuale !== null && $tariffa_individuale !== '') ? round((float)$tariffa_individuale, 2) : null;
+    }
     public function setDataRegistrazione($data_registrazione) { $this->data_registrazione = $data_registrazione; }
+
+    // Restituisce la tariffa formattata (es. "45 €" oppure "45,50 €"), oppure null se non impostata
+    public function getTariffaFormattata() {
+        if ($this->tariffa_individuale === null) {
+            return null;
+        }
+        $val = (float)$this->tariffa_individuale;
+        if (abs($val - round($val)) < 0.005) {
+            return number_format($val, 0, ',', '.') . ' €';
+        }
+        return number_format($val, 2, ',', '.') . ' €';
+    }
 
     // --- METODI DI LOGICA AGGIUNTIVA ---
     

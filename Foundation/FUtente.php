@@ -2,12 +2,33 @@
 
 class FUtente {
     
+    private static function buildEntity(array $row) {
+        $u = new EUtente(
+            $row['nome'],
+            $row['cognome'],
+            $row['email'],
+            $row['password'],
+            $row['telefono'],
+            $row['ruolo'],
+            $row['crediti_residui'],
+            $row['scadenza_certificato'],
+            $row['descrizione'] ?? null,
+            $row['immagine_profilo'] ?? null,
+            $row['tariffa_individuale'] ?? null
+        );
+        $u->setId($row['id']);
+        if (isset($row['data_registrazione'])) {
+            $u->setDataRegistrazione($row['data_registrazione']);
+        }
+        return $u;
+    }
+
     // Salva un oggetto EUtente nel database
     public static function store(EUtente $utente) {
         $db = FDatabase::getInstance()->getDb();
         
-        $query = "INSERT INTO Utente (nome, cognome, email, password, telefono, ruolo, crediti_residui, scadenza_certificato, descrizione, immagine_profilo) 
-                  VALUES (:nome, :cognome, :email, :password, :telefono, :ruolo, :crediti_residui, :scadenza_certificato, :descrizione, :immagine_profilo)";
+        $query = "INSERT INTO Utente (nome, cognome, email, password, telefono, ruolo, crediti_residui, scadenza_certificato, descrizione, immagine_profilo, tariffa_individuale) 
+                  VALUES (:nome, :cognome, :email, :password, :telefono, :ruolo, :crediti_residui, :scadenza_certificato, :descrizione, :immagine_profilo, :tariffa_individuale)";
         
         $stmt = $db->prepare($query);
         
@@ -25,6 +46,8 @@ class FUtente {
         $stmt->bindValue(':descrizione', ($descrizione !== null && trim($descrizione) !== '') ? trim($descrizione) : null);
         $immagine = $utente->getImmagineProfilo();
         $stmt->bindValue(':immagine_profilo', ($immagine !== null && trim($immagine) !== '') ? trim($immagine) : null);
+        $tariffa = $utente->getTariffaIndividuale();
+        $stmt->bindValue(':tariffa_individuale', $tariffa !== null ? number_format((float)$tariffa, 2, '.', '') : null);
         
         $stmt->execute();
         
@@ -43,28 +66,7 @@ class FUtente {
         $stmt->execute();
         
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($row) {
-            // Ricostruisce l'oggetto Entity con i dati prelevati
-            $utente = new EUtente(
-                $row['nome'], 
-                $row['cognome'], 
-                $row['email'], 
-                $row['password'],
-                $row['telefono'], 
-                $row['ruolo'], 
-                $row['crediti_residui'], 
-                $row['scadenza_certificato'],
-                $row['descrizione'] ?? null,
-                $row['immagine_profilo'] ?? null
-            );
-            $utente->setId($row['id']);
-            $utente->setDataRegistrazione($row['data_registrazione']);
-            
-            return $utente;
-        }
-        
-        return null; // Utente non trovato
+        return $row ? self::buildEntity($row) : null;
     }
     
     // Aggiorna tutti i dati anagrafici e operativi di un utente
@@ -80,13 +82,15 @@ class FUtente {
                       crediti_residui = :crediti, 
                       scadenza_certificato = :scadenza,
                       descrizione = :descrizione,
-                      immagine_profilo = :immagine_profilo 
+                      immagine_profilo = :immagine_profilo,
+                      tariffa_individuale = :tariffa_individuale 
                   WHERE id = :id";
         $stmt = $db->prepare($query);
         
         $scadenza = $utente->getScadenzaCertificato();
         $descrizione = $utente->getDescrizione();
         $immagine = $utente->getImmagineProfilo();
+        $tariffa = $utente->getTariffaIndividuale();
         
         $stmt->bindValue(':nome', $utente->getNome());
         $stmt->bindValue(':cognome', $utente->getCognome());
@@ -97,6 +101,7 @@ class FUtente {
         $stmt->bindValue(':scadenza', !empty($scadenza) ? $scadenza : null);
         $stmt->bindValue(':descrizione', ($descrizione !== null && trim($descrizione) !== '') ? trim($descrizione) : null);
         $stmt->bindValue(':immagine_profilo', ($immagine !== null && trim($immagine) !== '') ? trim($immagine) : null);
+        $stmt->bindValue(':tariffa_individuale', $tariffa !== null ? number_format((float)$tariffa, 2, '.', '') : null);
         $stmt->bindValue(':id', $utente->getId(), PDO::PARAM_INT);
         
         return $stmt->execute();
@@ -112,27 +117,7 @@ class FUtente {
         $stmt->execute();
         
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($row) {
-            $utente = new EUtente(
-                $row['nome'], 
-                $row['cognome'], 
-                $row['email'], 
-                $row['password'], 
-                $row['telefono'], 
-                $row['ruolo'], 
-                $row['crediti_residui'], 
-                $row['scadenza_certificato'],
-                $row['descrizione'] ?? null,
-                $row['immagine_profilo'] ?? null
-            );
-            $utente->setId($row['id']);
-            $utente->setDataRegistrazione($row['data_registrazione']);
-            
-            return $utente;
-        }
-        
-        return null; // Nessun utente trovato con quella email
+        return $row ? self::buildEntity($row) : null;
     }
 
     // Recupera tutti gli utenti iscritti ordinati per cognome e nome
@@ -143,23 +128,7 @@ class FUtente {
         
         $utenti = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $u = new EUtente(
-                $row['nome'], 
-                $row['cognome'], 
-                $row['email'], 
-                $row['password'], 
-                $row['telefono'], 
-                $row['ruolo'], 
-                $row['crediti_residui'], 
-                $row['scadenza_certificato'],
-                $row['descrizione'] ?? null,
-                $row['immagine_profilo'] ?? null
-            );
-            $u->setId($row['id']);
-            if (isset($row['data_registrazione'])) {
-                $u->setDataRegistrazione($row['data_registrazione']);
-            }
-            $utenti[] = $u;
+            $utenti[] = self::buildEntity($row);
         }
         return $utenti;
     }
@@ -172,20 +141,7 @@ class FUtente {
         
         $istruttori = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $istruttore = new EUtente(
-                $row['nome'],
-                $row['cognome'],
-                $row['email'],
-                $row['password'],
-                $row['telefono'],
-                $row['ruolo'],
-                $row['crediti_residui'],
-                $row['scadenza_certificato'],
-                $row['descrizione'] ?? null,
-                $row['immagine_profilo'] ?? null
-            );
-            $istruttore->setId($row['id']);
-            $istruttori[] = $istruttore;
+            $istruttori[] = self::buildEntity($row);
         }
         return $istruttori;
     }
@@ -197,20 +153,7 @@ class FUtente {
 
         $istruttori = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $u = new EUtente(
-                $row['nome'],
-                $row['cognome'],
-                $row['email'],
-                $row['password'],
-                $row['telefono'],
-                $row['ruolo'],
-                $row['crediti_residui'],
-                $row['scadenza_certificato'],
-                $row['descrizione'] ?? null,
-                $row['immagine_profilo'] ?? null
-            );
-            $u->setId($row['id']);
-            $istruttori[] = $u;
+            $istruttori[] = self::buildEntity($row);
         }
         return $istruttori;
     }

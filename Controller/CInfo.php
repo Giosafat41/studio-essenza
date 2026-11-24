@@ -10,10 +10,29 @@ class CInfo {
         $view->mostraMetodo();
     }
 
-    // Mostra la pagina "Tariffe"
+    // Mostra la pagina "Tariffe" con i pacchetti e le tariffe individuali di ogni istruttore dal DB
     public function tariffe() {
+        $istruttori_entity = FUtente::loadSoloIstruttori();
+        $istruttori_tariffe = [];
+
+        foreach ($istruttori_entity as $istr) {
+            $iniziali = strtoupper(
+                substr($istr->getNome(), 0, 1) . substr($istr->getCognome(), 0, 1)
+            );
+            $istruttori_tariffe[] = [
+                'id' => $istr->getId(),
+                'nome' => $istr->getNome(),
+                'cognome' => $istr->getCognome(),
+                'iniziali' => $iniziali,
+                'immagine_profilo' => $istr->getImmagineProfilo(),
+                'descrizione' => $istr->getDescrizione(),
+                'tariffa_individuale' => $istr->getTariffaIndividuale(),
+                'tariffa_formattata' => $istr->getTariffaFormattata()
+            ];
+        }
+
         $view = new VInfo();
-        $view->mostraTariffe();
+        $view->mostraTariffe($istruttori_tariffe);
     }
 
     // Mostra la pagina "Contatti" e gestisce l'invio del form

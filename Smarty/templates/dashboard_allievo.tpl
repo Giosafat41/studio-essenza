@@ -167,7 +167,12 @@
                                                 <circle cx="12" cy="12" r="10"></circle>
                                                 <polyline points="12 6 12 12 16 14"></polyline>
                                             </svg>
-                                            <span>{$ind.data|escape} &bull; {$ind.ora_inizio|escape} - {$ind.ora_fine|escape}</span>
+                                            <span>
+                                                {$ind.data|escape} &bull; {$ind.ora_inizio|escape} - {$ind.ora_fine|escape}
+                                                {if !empty($ind.tariffa_formattata)}
+                                                    &bull; <strong style="color: #5f6e54;">{$ind.tariffa_formattata|escape}</strong>
+                                                {/if}
+                                            </span>
                                         </div>
                                         {if $ind.stato == 'annullata_istruttore'}
                                             <div class="dashboard-cancel-reason">

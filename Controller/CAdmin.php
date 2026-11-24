@@ -230,12 +230,23 @@ class CAdmin {
                 $utente->setCreditiResidui(isset($_POST['crediti_residui']) ? max(0, (int)$_POST['crediti_residui']) : 0);
                 $utente->setScadenzaCertificato(!empty($_POST['scadenza_certificato']) ? $_POST['scadenza_certificato'] : null);
                 $utente->setDescrizione(null);
+                $utente->setTariffaIndividuale(null);
                 // L'admin non carica né rimuove l'immagine profilo dell'allievo: conserva quella attuale
             } elseif ($ruolo === 'istruttore') {
                 $utente->setCreditiResidui(0);
                 $utente->setScadenzaCertificato(null);
                 $desc = trim($_POST['descrizione'] ?? '');
                 $utente->setDescrizione($desc !== '' ? $desc : null);
+
+                $tariffa_raw = trim(str_replace(',', '.', $_POST['tariffa_individuale'] ?? ''));
+                if ($tariffa_raw === '') {
+                    $utente->setTariffaIndividuale(null);
+                } elseif (is_numeric($tariffa_raw) && (float)$tariffa_raw > 0 && (float)$tariffa_raw <= 9999.99) {
+                    $utente->setTariffaIndividuale(round((float)$tariffa_raw, 2));
+                } else {
+                    $view->mostraFormUtente($utente, "Inserisci una tariffa individuale valida (oppure lascia il campo vuoto).");
+                    return;
+                }
 
                 if (UImmagine::hasUpload($_FILES['immagine_profilo'] ?? null)) {
                     $esitoImg = UImmagine::salvaImmagineProfilo(
@@ -256,6 +267,7 @@ class CAdmin {
                 $utente->setCreditiResidui(0);
                 $utente->setScadenzaCertificato(null);
                 $utente->setDescrizione(null);
+                $utente->setTariffaIndividuale(null);
                 if ($utente->getImmagineProfilo()) {
                     UImmagine::eliminaImmagineProfilo($utente->getImmagineProfilo());
                     $utente->setImmagineProfilo(null);
@@ -294,6 +306,7 @@ class CAdmin {
             $password = $_POST['password'];
             $telefono = trim($_POST['telefono']);
             $ruolo = $_POST['ruolo'];
+            $tariffa_individuale = null;
             if ($ruolo === 'allievo') {
                 $crediti = isset($_POST['crediti_residui']) ? max(0, (int)$_POST['crediti_residui']) : 0;
                 $scadenza = !empty($_POST['scadenza_certificato']) ? $_POST['scadenza_certificato'] : null;
@@ -303,6 +316,15 @@ class CAdmin {
                 $scadenza = null;
                 $desc = trim($_POST['descrizione'] ?? '');
                 $descrizione = $desc !== '' ? $desc : null;
+
+                $tariffa_raw = trim(str_replace(',', '.', $_POST['tariffa_individuale'] ?? ''));
+                if ($tariffa_raw !== '') {
+                    if (!is_numeric($tariffa_raw) || (float)$tariffa_raw <= 0 || (float)$tariffa_raw > 9999.99) {
+                        $view->mostraFormUtente(null, "Inserisci una tariffa individuale valida (oppure lascia il campo vuoto).");
+                        return;
+                    }
+                    $tariffa_individuale = round((float)$tariffa_raw, 2);
+                }
             } else {
                 $crediti = 0;
                 $scadenza = null;
@@ -324,7 +346,7 @@ class CAdmin {
                 }
             }
 
-            $nuovoUtente = new EUtente($nome, $cognome, $email, $password, $telefono, $ruolo, $crediti, $scadenza, $descrizione);
+            $nuovoUtente = new EUtente($nome, $cognome, $email, $password, $telefono, $ruolo, $crediti, $scadenza, $descrizione, null, $tariffa_individuale);
             $id = FUtente::store($nuovoUtente);
 
             if ($id) {

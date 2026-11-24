@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 5.8.5, created on 2026-11-24 17:20:01
+/* Smarty version 5.8.5, created on 2026-11-24 17:35:45
   from 'file:dashboard_allievo.tpl' */
 
 /* @var \Smarty\Template $_smarty_tpl */
 if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   'version' => '5.8.5',
-  'unifunc' => 'content_6b05b931eba7c6_77163097',
+  'unifunc' => 'content_6b05bce1610cc6_60022757',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '4d0f866858d35b7213b1c9de60c707881f593db5' => 
     array (
       0 => 'dashboard_allievo.tpl',
-      1 => 1795536781,
+      1 => 1795537819,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   array (
   ),
 ))) {
-function content_6b05b931eba7c6_77163097 (\Smarty\Template $_smarty_tpl) {
+function content_6b05bce1610cc6_60022757 (\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
 $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 ?>
@@ -28,13 +28,13 @@ $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 
 
 <?php 
-$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_5778691016b05b931ea3889_05913370', "content");
+$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_7047741016b05bce15fbe86_23480986', "content");
 ?>
 
 <?php $_smarty_tpl->getInheritance()->endChild($_smarty_tpl, "layout.tpl", $_smarty_current_dir);
 }
 /* {block "content"} */
-class Block_5778691016b05b931ea3889_05913370 extends \Smarty\Runtime\Block
+class Block_7047741016b05bce15fbe86_23480986 extends \Smarty\Runtime\Block
 {
 public function callBlock(\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
@@ -192,9 +192,9 @@ $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenz
                     <ul class="dashboard-prenotazioni-list">
                         <?php
 $_from = $_smarty_tpl->getSmarty()->getRuntime('Foreach')->init($_smarty_tpl, $_smarty_tpl->getValue('lezioni_individuali'), 'ind');
-$foreach3DoElse = true;
+$foreach6DoElse = true;
 foreach ($_from ?? [] as $_smarty_tpl->getVariable('ind')->value) {
-$foreach3DoElse = false;
+$foreach6DoElse = false;
 ?>
                             <li class="dashboard-prenotazione-item <?php if ($_smarty_tpl->getValue('ind')['stato'] == 'annullata_istruttore') {?>is-cancelled<?php }?>">
                                 <div class="d-flex align-items-start gap-3">
@@ -219,10 +219,16 @@ $foreach3DoElse = false;
                                                 <circle cx="12" cy="12" r="10"></circle>
                                                 <polyline points="12 6 12 12 16 14"></polyline>
                                             </svg>
-                                            <span><?php echo htmlspecialchars((string)$_smarty_tpl->getValue('ind')['data'], ENT_QUOTES, 'UTF-8', true);?>
+                                            <span>
+                                                <?php echo htmlspecialchars((string)$_smarty_tpl->getValue('ind')['data'], ENT_QUOTES, 'UTF-8', true);?>
  &bull; <?php echo htmlspecialchars((string)$_smarty_tpl->getValue('ind')['ora_inizio'], ENT_QUOTES, 'UTF-8', true);?>
  - <?php echo htmlspecialchars((string)$_smarty_tpl->getValue('ind')['ora_fine'], ENT_QUOTES, 'UTF-8', true);?>
-</span>
+
+                                                <?php if (!( !true || empty($_smarty_tpl->getValue('ind')['tariffa_formattata']))) {?>
+                                                    &bull; <strong style="color: #5f6e54;"><?php echo htmlspecialchars((string)$_smarty_tpl->getValue('ind')['tariffa_formattata'], ENT_QUOTES, 'UTF-8', true);?>
+</strong>
+                                                <?php }?>
+                                            </span>
                                         </div>
                                         <?php if ($_smarty_tpl->getValue('ind')['stato'] == 'annullata_istruttore') {?>
                                             <div class="dashboard-cancel-reason">
@@ -290,9 +296,9 @@ $_smarty_tpl->getSmarty()->getRuntime('Foreach')->restore($_smarty_tpl, 1);?>
                     <ul class="dashboard-prenotazioni-list">
                         <?php
 $_from = $_smarty_tpl->getSmarty()->getRuntime('Foreach')->init($_smarty_tpl, $_smarty_tpl->getValue('mie_prenotazioni'), 'pren');
-$foreach4DoElse = true;
+$foreach7DoElse = true;
 foreach ($_from ?? [] as $_smarty_tpl->getVariable('pren')->value) {
-$foreach4DoElse = false;
+$foreach7DoElse = false;
 ?>
                             <li class="dashboard-prenotazione-item">
                                 <div class="d-flex align-items-center gap-3">

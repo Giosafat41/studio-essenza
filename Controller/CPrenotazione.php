@@ -71,6 +71,8 @@ class CPrenotazione {
                 'cognome' => $istr->getCognome(),
                 'iniziali' => $iniziali,
                 'immagine_profilo' => $istr->getImmagineProfilo(),
+                'tariffa_individuale' => $istr->getTariffaIndividuale(),
+                'tariffa_formattata' => $istr->getTariffaFormattata(),
                 'totale_slot' => count($slot_disponibili)
             ];
 

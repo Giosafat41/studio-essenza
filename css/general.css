@@ -1321,3 +1321,165 @@ a, p, span, li, button, input, select, textarea, label, th, td {
     color: #8a5a1b;
     border: 1px solid #efd6b0;
 }
+
+
+/* =========================================
+   PAGINA TARIFFE & TARIFFARIO ISTRUTTORI
+   ========================================= */
+
+.tariffe-card {
+    background-color: #fcfbfa;
+    border: 1px solid #eceae4;
+    border-radius: 12px;
+    padding: 26px 24px;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.tariffe-card:hover {
+    transform: translateY(-2px);
+    background-color: #ffffff;
+    border-color: rgba(123, 139, 111, 0.4);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.05);
+}
+
+.tariffe-card.is-featured {
+    background: linear-gradient(180deg, #ffffff 0%, #f8faf6 100%);
+    border: 1.5px solid #7b8b6f;
+    box-shadow: 0 10px 26px rgba(123, 139, 111, 0.12);
+}
+
+.tariffe-pill {
+    display: inline-block;
+    align-self: flex-start;
+    background-color: #efeeea;
+    color: #6b675f;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 4px 11px;
+    border-radius: 50rem;
+}
+
+.tariffe-pill.is-accent {
+    background-color: #7b8b6f;
+    color: #ffffff;
+}
+
+.tariffe-card-title {
+    color: #4a4a4a;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.tariffe-price {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.tariffe-price-val {
+    color: #7b8b6f;
+    font-size: 34px;
+    font-weight: 600;
+    line-height: 1.1;
+}
+
+.tariffe-price-unit {
+    color: #777777;
+    font-size: 14px;
+}
+
+.tariffe-card-desc {
+    color: #777777;
+    font-size: 14.5px;
+    line-height: 1.55;
+    margin-bottom: 0;
+}
+
+.tariffe-features {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid #eceae4;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.tariffe-features li {
+    position: relative;
+    padding-left: 20px;
+    font-size: 14px;
+    color: #555555;
+}
+
+.tariffe-features li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #7b8b6f;
+    font-weight: 600;
+}
+
+.tariffe-istruttore-card {
+    background-color: #fcfbfa;
+    border: 1px solid #eceae4;
+    border-radius: 12px;
+    padding: 26px 22px 22px;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.tariffe-istruttore-card:hover {
+    transform: translateY(-2px);
+    background-color: #ffffff;
+    border-color: rgba(123, 139, 111, 0.42);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.05);
+}
+
+.tariffe-istruttore-pricebox {
+    background-color: #f7f8f5;
+    border: 1px solid rgba(123, 139, 111, 0.18);
+    border-radius: 10px;
+    padding: 14px 16px;
+}
+
+.tariffe-istruttore-amount {
+    color: #7b8b6f;
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1.15;
+}
+
+.tariffe-istruttore-amount.is-muted {
+    color: #6b675f;
+    font-size: 20px;
+}
+
+.tariffe-istruttore-sub {
+    display: block;
+    color: #777777;
+    font-size: 13px;
+    margin-top: 3px;
+}
+
+.tariffe-payment-note {
+    background-color: #ffffff;
+    border: 1px solid rgba(123, 139, 111, 0.2);
+    border-left: 4px solid #7b8b6f;
+    border-radius: 10px;
+    padding: 18px 20px;
+    font-size: 14.5px;
+    color: #5a5a5a;
+    line-height: 1.55;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.tariffe-note-icon {
+    color: #7b8b6f;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
