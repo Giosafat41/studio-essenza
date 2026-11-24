@@ -2,75 +2,117 @@
 {extends file="layout.tpl"}
 
 {block name="content"}
-<div class="dashboard-wrapper" style="max-width: 1150px;">
-    
-    <div class="dashboard-welcome">
-        <div>
-            <h1>Anagrafica Utenti Iscritti</h1>
-            <p class="sottotitolo">Visualizza e modifica i dati completi, i crediti e il certificato medico di ogni utente.</p>
-        </div>
-        <div style="display: flex; gap: 10px;">
-            <a href="index.php?controller=admin&action=creaUtente" class="btn-primary">+ Nuovo Utente</a>
-            <a href="index.php?controller=admin&action=dashboard" class="btn-primary" style="background-color: #6c757d;">&larr; Dashboard</a>
-        </div>
+<div class="container admin-wide-page py-2 py-md-3">
+
+    <!-- Link ritorno al Pannello Segreteria -->
+    <div class="mb-3">
+        <a href="index.php?controller=admin&action=dashboard" class="calendar-back-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            <span>Torna al Pannello Segreteria</span>
+        </a>
     </div>
 
+    <!-- Intestazione -->
+    <section class="dashboard-card dashboard-hero mb-4">
+        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+            <div>
+                <span class="auth-badge mb-2">Anagrafica Studio</span>
+                <h1 class="dashboard-title">Gestione Utenti</h1>
+                <p class="dashboard-subtitle">
+                    Visualizza e aggiorna i dati completi, il saldo crediti e il certificato medico degli iscritti.
+                </p>
+            </div>
+            <div class="flex-shrink-0">
+                <a href="index.php?controller=admin&action=creaUtente" class="btn btn-primary dashboard-cta-btn w-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="8.5" cy="7" r="4"></circle>
+                        <line x1="20" y1="8" x2="20" y2="14"></line>
+                        <line x1="23" y1="11" x2="17" y2="11"></line>
+                    </svg>
+                    <span>Nuovo Utente</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
     {if isset($messaggio_successo)}
-        <div style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 6px; margin-bottom: 20px; font-weight: bold;">
-            {$messaggio_successo}
+        <div class="alert auth-alert-success fade show d-flex align-items-center justify-content-between gap-2 mb-4" role="alert">
+            <span>{$messaggio_successo|escape}</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Chiudi"></button>
         </div>
     {/if}
 
-    <div class="dashboard-card" style="overflow-x: auto;">
+    <!-- Tabella Utenti -->
+    <section class="dashboard-card">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4">
+            <h2 class="dashboard-section-title">Elenco Profili Registrati</h2>
+            <span class="dashboard-count-badge">
+                {$utenti|@count} {if $utenti|@count == 1}utente{else}utenti{/if}
+            </span>
+        </div>
+
         {if empty($utenti)}
-            <p>Nessun utente registrato nel sistema.</p>
+            <div class="dashboard-empty">
+                <p class="dashboard-empty-title">Nessun utente registrato</p>
+                <p class="dashboard-empty-text">Non risultano ancora utenti presenti nel sistema.</p>
+            </div>
         {else}
-            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 14px;">
-                <thead>
-                    <tr style="border-bottom: 2px solid #7b8b6f; color: #7b8b6f;">
-                        <th style="padding: 12px 8px;">ID</th>
-                        <th style="padding: 12px 8px;">Nome e Cognome</th>
-                        <th style="padding: 12px 8px;">Email</th>
-                        <th style="padding: 12px 8px;">Telefono</th>
-                        <th style="padding: 12px 8px;">Ruolo</th>
-                        <th style="padding: 12px 8px;">Crediti</th>
-                        <th style="padding: 12px 8px;">Scadenza Certificato</th>
-                        <th style="padding: 12px 8px;">Azioni</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {foreach from=$utenti item=u}
-                        <tr style="border-bottom: 1px solid #eee;">
-                            <td style="padding: 12px 8px;">#{$u->getId()}</td>
-                            <td style="padding: 12px 8px;"><strong>{$u->getCognome()} {$u->getNome()}</strong></td>
-                            <td style="padding: 12px 8px;">{$u->getEmail()}</td>
-                            <td style="padding: 12px 8px;">{$u->getTelefono()|default:'-'}</td>
-                            <td style="padding: 12px 8px;">
-                                <span style="text-transform: uppercase; font-size: 12px; font-weight: bold; padding: 3px 8px; border-radius: 4px; background: #f0f0f0;">
-                                    {$u->getRuolo()}
-                                </span>
-                            </td>
-                            <td style="padding: 12px 8px; font-weight: bold;">{$u->getCreditiResidui()}</td>
-                            <td style="padding: 12px 8px;">
-                                {if $u->getScadenzaCertificato()}
-                                    {if $u->haCertificatoValido()}
-                                        <span style="color: #28a745; font-weight: bold;">{$u->getScadenzaCertificato()|date_format:"%d/%m/%Y"}</span>
-                                    {else}
-                                        <span style="color: #d9534f; font-weight: bold;">Scaduto ({$u->getScadenzaCertificato()|date_format:"%d/%m/%Y"})</span>
-                                    {/if}
-                                {else}
-                                    <span style="color: #999;">Non presente</span>
-                                {/if}
-                            </td>
-                            <td style="padding: 12px 8px;">
-                                <a href="index.php?controller=admin&action=modificaUtente&id={$u->getId()}" class="btn-primary" style="padding: 6px 12px; font-size: 13px;">Modifica</a>
-                            </td>
+            <div class="table-responsive">
+                <table class="table admin-table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Nome e Cognome</th>
+                            <th>Email</th>
+                            <th>Telefono</th>
+                            <th>Ruolo</th>
+                            <th>Crediti</th>
+                            <th>Scadenza Certificato</th>
+                            <th class="text-end">Azioni</th>
                         </tr>
-                    {/foreach}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {foreach from=$utenti item=u}
+                            <tr>
+                                <td><strong>{$u->getCognome()|escape} {$u->getNome()|escape}</strong></td>
+                                <td>{$u->getEmail()|escape}</td>
+                                <td>{$u->getTelefono()|default:'-'|escape}</td>
+                                <td>
+                                    <span class="admin-role-pill is-{$u->getRuolo()|escape}">
+                                        {$u->getRuolo()|escape}
+                                    </span>
+                                </td>
+                                <td><strong>{$u->getCreditiResidui()}</strong></td>
+                                <td>
+                                    {if $u->getScadenzaCertificato()}
+                                        {if $u->haCertificatoValido()}
+                                            <span class="dashboard-status-pill is-confirmed">
+                                                {$u->getScadenzaCertificato()|date_format:"%d/%m/%Y"}
+                                            </span>
+                                        {else}
+                                            <span class="dashboard-status-pill is-cancelled">
+                                                Scaduto ({$u->getScadenzaCertificato()|date_format:"%d/%m/%Y"})
+                                            </span>
+                                        {/if}
+                                    {else}
+                                        <span class="text-muted small">Non presente</span>
+                                    {/if}
+                                </td>
+                                <td class="text-end text-nowrap">
+                                    <a href="index.php?controller=admin&action=modificaUtente&id={$u->getId()}" class="btn btn-sm btn-outline-essenza">
+                                        Modifica
+                                    </a>
+                                </td>
+                            </tr>
+                        {/foreach}
+                    </tbody>
+                </table>
+            </div>
         {/if}
-    </div>
+    </section>
 
 </div>
 {/block}

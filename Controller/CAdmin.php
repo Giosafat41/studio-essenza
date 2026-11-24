@@ -9,34 +9,77 @@ class CAdmin {
             header("Location: index.php?controller=utente&action=login");
             exit;
         }
+
         $admin = FUtente::load($_SESSION['utente_id']);
+        if (!$admin) {
+            header("Location: index.php?controller=utente&action=logout");
+            exit;
+        }
+
+        // Carica tutte le lezioni disponibili (non scadute) per il menù a tendina del Registro Appello
+        $lezioni_entity = FLezione::loadDisponibili();
+        $lezioni_disponibili = [];
+
+        foreach ($lezioni_entity as $lezione) {
+            $corso = FCorso::load($lezione->getIdCorso());
+            $istruttore = FUtente::load($lezione->getIdIstruttore());
+            $prenotazioni = FPrenotazione::loadByLezione($lezione->getId());
+
+            $lezioni_disponibili[] = [
+                'id' => $lezione->getId(),
+                'nome_corso' => $corso ? $corso->getNome() : 'Corso',
+                'istruttore' => $istruttore ? ($istruttore->getNome() . ' ' . $istruttore->getCognome()) : 'Istruttore',
+                'data' => date('d/m/Y', strtotime($lezione->getDataOraInizio())),
+                'ora_inizio' => date('H:i', strtotime($lezione->getDataOraInizio())),
+                'ora_fine' => date('H:i', strtotime($lezione->getDataOraFine())),
+                'num_iscritti' => count($prenotazioni),
+                'capienza_max' => $corso ? (int)$corso->getCapienzaMax() : 0
+            ];
+        }
+
+        $totale_utenti = count(FUtente::loadAll());
+        $messaggio_errore = isset($_GET['err']) ? $_GET['err'] : null;
+
         $view = new VAdmin();
-        $view->mostraDashboard($admin->getNome());
+        $view->mostraDashboard(
+            $admin->getNome(),
+            $lezioni_disponibili,
+            $totale_utenti,
+            $messaggio_errore
+        );
     }
 
 
     // Gestione Creazione Nuova Lezione
     public function aggiungiLezione() {
         if (session_status() == PHP_SESSION_NONE) session_start();
-        if (!isset($_SESSION['utente_id']) || $_SESSION['ruolo'] !== 'admin') exit;
+        if (!isset($_SESSION['utente_id']) || $_SESSION['ruolo'] !== 'admin') {
+            header("Location: index.php?controller=utente&action=login");
+            exit;
+        }
 
         $view = new VAdmin();
+        $corsi = FCorso::loadAll();
+        $istruttori = FUtente::loadIstruttori();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id_corso = $_POST['id_corso'];
-            $id_istruttore = $_POST['id_istruttore'];
+            $id_corso = (int)$_POST['id_corso'];
+            $id_istruttore = (int)$_POST['id_istruttore'];
             // Converte le date dal form HTML nel formato MySQL (YYYY-MM-DD HH:MM:SS)
             $data_inizio = str_replace('T', ' ', $_POST['data_ora_inizio']) . ':00';
             $data_fine = str_replace('T', ' ', $_POST['data_ora_fine']) . ':00';
 
+            if (strtotime($data_fine) <= strtotime($data_inizio)) {
+                $view->mostraFormLezione($corsi, $istruttori, null, "L'orario di fine deve essere successivo a quello di inizio.");
+                return;
+            }
+
             $lezione = new ELezione($id_corso, $id_istruttore, $data_inizio, $data_fine);
             FLezione::store($lezione);
 
-            $view->mostraFormLezione([], [], "Lezione inserita con successo nel palinsesto!");
+            $view->mostraFormLezione($corsi, $istruttori, "Lezione inserita con successo nel palinsesto!");
         } else {
             // Se la richiesta è GET, carichiamo i dati per i menu a tendina
-            $corsi = FCorso::loadAll();
-            $istruttori = FUtente::loadIstruttori();
             $view->mostraFormLezione($corsi, $istruttori);
         }
     }
@@ -44,34 +87,51 @@ class CAdmin {
     // Mostra l'appello per una specifica lezione
     public function appello() {
         if (session_status() == PHP_SESSION_NONE) session_start();
-        if (!isset($_SESSION['utente_id']) || $_SESSION['ruolo'] !== 'admin') exit;
+        if (!isset($_SESSION['utente_id']) || $_SESSION['ruolo'] !== 'admin') {
+            header("Location: index.php?controller=utente&action=login");
+            exit;
+        }
 
-        $view = new VAdmin();
-        
-        if (isset($_GET['id_lezione'])) {
-            $id_lezione = $_GET['id_lezione'];
-            $prenotazioni = FPrenotazione::loadByLezione($id_lezione);
-            
-            $iscritti = [];
-            foreach ($prenotazioni as $p) {
-                $allievo = FUtente::load($p->getIdUtente());
+        $id_lezione = isset($_GET['id_lezione']) ? (int)$_GET['id_lezione'] : 0;
+        if ($id_lezione <= 0) {
+            header("Location: index.php?controller=admin&action=dashboard&err=" . urlencode("Seleziona una lezione valida per visualizzare il registro appello."));
+            exit;
+        }
+
+        $lezione = FLezione::load($id_lezione);
+        if (!$lezione) {
+            header("Location: index.php?controller=admin&action=dashboard&err=" . urlencode("La lezione selezionata non è stata trovata."));
+            exit;
+        }
+
+        $corso = FCorso::load($lezione->getIdCorso());
+        $istruttore = FUtente::load($lezione->getIdIstruttore());
+        $prenotazioni = FPrenotazione::loadByLezione($id_lezione);
+
+        $iscritti = [];
+        foreach ($prenotazioni as $p) {
+            $allievo = FUtente::load($p->getIdUtente());
+            if ($allievo) {
                 $iscritti[] = [
                     'nome' => $allievo->getNome(),
                     'cognome' => $allievo->getCognome(),
-                    'telefono' => $allievo->getTelefono()
+                    'email' => $allievo->getEmail(),
+                    'telefono' => $allievo->getTelefono(),
+                    'certificato_valido' => $allievo->haCertificatoValido($lezione->getDataOraInizio())
                 ];
             }
-            
-            $lezione = FLezione::load($id_lezione);
-            $corso = FCorso::load($lezione->getIdCorso());
-            
-            $dettagli_lezione = $corso->getNome() . " del " . date('d/m/Y H:i', strtotime($lezione->getDataOraInizio()));
-            
-            $view->smarty->assign('dettagli_lezione', $dettagli_lezione);
-            $view->smarty->assign('iscritti', $iscritti);
-            $view->smarty->assign('titolo_pagina', 'Appello Iscritti');
-            $view->smarty->display('admin_appello.tpl');
         }
+
+        $dettagli_lezione = [
+            'nome_corso' => $corso ? $corso->getNome() : 'Corso',
+            'istruttore' => $istruttore ? ($istruttore->getNome() . ' ' . $istruttore->getCognome()) : 'Istruttore',
+            'data' => date('d/m/Y', strtotime($lezione->getDataOraInizio())),
+            'orario' => date('H:i', strtotime($lezione->getDataOraInizio())) . ' - ' . date('H:i', strtotime($lezione->getDataOraFine())),
+            'capienza_max' => $corso ? (int)$corso->getCapienzaMax() : 0
+        ];
+
+        $view = new VAdmin();
+        $view->mostraAppello($dettagli_lezione, $iscritti);
     }
     // 1. Mostra la tabella con tutti gli utenti iscritti
     public function utenti() {

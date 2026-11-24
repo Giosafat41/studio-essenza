@@ -4,18 +4,35 @@ require_once('StartSmarty.php');
 
 class VAdmin extends StartSmarty {
     
-    public function mostraDashboard($nome_admin) {
+    public function mostraDashboard($nome_admin, array $lezioni_disponibili = [], $totale_utenti = 0, $errore = null) {
         $this->smarty->assign('titolo_pagina', 'Segreteria - Studio Essenza');
         $this->smarty->assign('nome_admin', $nome_admin);
+        $this->smarty->assign('lezioni_disponibili', $lezioni_disponibili);
+        $this->smarty->assign('totale_utenti', $totale_utenti);
+        if ($errore) {
+            $this->smarty->assign('messaggio_errore', $errore);
+        }
         $this->smarty->display('admin_dashboard.tpl');
     }
 
-    public function mostraFormLezione($corsi, $istruttori, $successo = null) {
-        $this->smarty->assign('titolo_pagina', 'Nuova Lezione');
+    public function mostraFormLezione($corsi, $istruttori, $successo = null, $errore = null) {
+        $this->smarty->assign('titolo_pagina', 'Nuova Lezione - Studio Essenza');
         $this->smarty->assign('corsi', $corsi);
         $this->smarty->assign('istruttori', $istruttori);
-        if ($successo) $this->smarty->assign('messaggio_successo', $successo);
+        if ($successo) {
+            $this->smarty->assign('messaggio_successo', $successo);
+        }
+        if ($errore) {
+            $this->smarty->assign('messaggio_errore', $errore);
+        }
         $this->smarty->display('admin_lezione.tpl');
+    }
+
+    public function mostraAppello(array $dettagli_lezione, array $iscritti) {
+        $this->smarty->assign('titolo_pagina', 'Registro Appello - Studio Essenza');
+        $this->smarty->assign('lezione', $dettagli_lezione);
+        $this->smarty->assign('iscritti', $iscritti);
+        $this->smarty->display('admin_appello.tpl');
     }
 
     // Mostra l'elenco completo degli utenti iscritti
