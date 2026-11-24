@@ -77,7 +77,18 @@
                     <tbody>
                         {foreach from=$utenti item=u}
                             <tr>
-                                <td><strong>{$u->getCognome()|escape} {$u->getNome()|escape}</strong></td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="admin-avatar-sm">
+                                            {if $u->getImmagineProfilo()}
+                                                <img src="/studio-essenza/{$u->getImmagineProfilo()|escape}" alt="{$u->getNome()|escape} {$u->getCognome()|escape}">
+                                            {else}
+                                                {$u->getNome()|substr:0:1|upper}{$u->getCognome()|substr:0:1|upper}
+                                            {/if}
+                                        </span>
+                                        <strong>{$u->getCognome()|escape} {$u->getNome()|escape}</strong>
+                                    </div>
+                                </td>
                                 <td>{$u->getEmail()|escape}</td>
                                 <td>{$u->getTelefono()|default:'-'|escape}</td>
                                 <td>

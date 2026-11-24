@@ -18,7 +18,9 @@ class CUtente {
                 'nome' => $istr->getNome(),
                 'cognome' => $istr->getCognome(),
                 'email' => $istr->getEmail(),
-                'iniziali' => $iniziali
+                'iniziali' => $iniziali,
+                'descrizione' => $istr->getDescrizione(),
+                'immagine_profilo' => $istr->getImmagineProfilo()
             ];
         }
 
@@ -172,6 +174,64 @@ class CUtente {
 
         $view = new VUtente();
         $view->mostraDashboardAllievo($utente, $lista_prenotazioni, $lezioni_individuali_utente, $msg, $err);
+    }
+
+    // Carica o sostituisce l'immagine profilo dell'allievo dalla propria dashboard
+    public function aggiornaImmagineProfilo() {
+        if (session_status() == PHP_SESSION_NONE) session_start();
+        if (!isset($_SESSION['utente_id']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header("Location: index.php?controller=utente&action=login");
+            exit;
+        }
+
+        $id_utente = (int)$_SESSION['utente_id'];
+        $utente = FUtente::load($id_utente);
+        if (!$utente) {
+            header("Location: index.php?controller=utente&action=logout");
+            exit;
+        }
+
+        $esito = UImmagine::salvaImmagineProfilo(
+            $_FILES['immagine_profilo'] ?? null,
+            $id_utente,
+            $utente->getImmagineProfilo()
+        );
+
+        if (!$esito['ok']) {
+            header("Location: index.php?controller=utente&action=dashboard&err=" . urlencode($esito['errore']));
+            exit;
+        }
+
+        $utente->setImmagineProfilo($esito['percorso']);
+        FUtente::update($utente);
+
+        header("Location: index.php?controller=utente&action=dashboard&msg=" . urlencode("Immagine profilo aggiornata con successo!"));
+        exit;
+    }
+
+    // Rimuove l'immagine profilo dell'allievo dalla propria dashboard
+    public function rimuoviImmagineProfilo() {
+        if (session_status() == PHP_SESSION_NONE) session_start();
+        if (!isset($_SESSION['utente_id']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header("Location: index.php?controller=utente&action=login");
+            exit;
+        }
+
+        $id_utente = (int)$_SESSION['utente_id'];
+        $utente = FUtente::load($id_utente);
+        if (!$utente) {
+            header("Location: index.php?controller=utente&action=logout");
+            exit;
+        }
+
+        if ($utente->getImmagineProfilo()) {
+            UImmagine::eliminaImmagineProfilo($utente->getImmagineProfilo());
+            $utente->setImmagineProfilo(null);
+            FUtente::update($utente);
+        }
+
+        header("Location: index.php?controller=utente&action=dashboard&msg=" . urlencode("Immagine profilo rimossa."));
+        exit;
     }
 
     // Gestione Logout

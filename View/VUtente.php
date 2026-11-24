@@ -43,8 +43,14 @@ class VUtente extends StartSmarty {
         $messaggio_successo = null,
         $messaggio_errore = null
     ) {
+        $iniziali = strtoupper(
+            substr($utente->getNome(), 0, 1) . substr($utente->getCognome(), 0, 1)
+        );
         $this->smarty->assign('titolo_pagina', 'La mia Dashboard - Studio Essenza');
         $this->smarty->assign('nome_utente', $utente->getNome());
+        $this->smarty->assign('cognome_utente', $utente->getCognome());
+        $this->smarty->assign('iniziali_utente', $iniziali);
+        $this->smarty->assign('immagine_profilo', $utente->getImmagineProfilo());
         $this->smarty->assign('crediti', $utente->getCreditiResidui());
         $this->smarty->assign('mie_prenotazioni', $mie_prenotazioni);
         $this->smarty->assign('lezioni_individuali', $lezioni_individuali);

@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 5.8.5, created on 2026-11-24 16:33:32
+/* Smarty version 5.8.5, created on 2026-11-24 17:09:59
   from 'file:admin_lezione.tpl' */
 
 /* @var \Smarty\Template $_smarty_tpl */
 if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   'version' => '5.8.5',
-  'unifunc' => 'content_6b05ae4c5c4c09_63212377',
+  'unifunc' => 'content_6b05b6d791e4b3_31991086',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     'a51a9421c71d9cd85e0af1951c5b99a8e66e6f05' => 
     array (
       0 => 'admin_lezione.tpl',
-      1 => 1795534301,
+      1 => 1795536522,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   array (
   ),
 ))) {
-function content_6b05ae4c5c4c09_63212377 (\Smarty\Template $_smarty_tpl) {
+function content_6b05b6d791e4b3_31991086 (\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
 $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 ?>
@@ -28,13 +28,13 @@ $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 
 
 <?php 
-$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_17955260976b05ae4c5be659_76382759', "content");
+$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_9325118446b05b6d79048e2_42105433', "content");
 ?>
 
 <?php $_smarty_tpl->getInheritance()->endChild($_smarty_tpl, "layout.tpl", $_smarty_current_dir);
 }
 /* {block "content"} */
-class Block_17955260976b05ae4c5be659_76382759 extends \Smarty\Runtime\Block
+class Block_9325118446b05b6d79048e2_42105433 extends \Smarty\Runtime\Block
 {
 public function callBlock(\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
@@ -84,9 +84,9 @@ $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenz
                 <select id="id_corso" name="id_corso" class="form-select admin-select" required>
                     <?php
 $_from = $_smarty_tpl->getSmarty()->getRuntime('Foreach')->init($_smarty_tpl, $_smarty_tpl->getValue('corsi'), 'corso');
-$foreach2DoElse = true;
+$foreach0DoElse = true;
 foreach ($_from ?? [] as $_smarty_tpl->getVariable('corso')->value) {
-$foreach2DoElse = false;
+$foreach0DoElse = false;
 ?>
                         <option value="<?php echo $_smarty_tpl->getValue('corso')->getId();?>
 "><?php echo htmlspecialchars((string)$_smarty_tpl->getValue('corso')->getNome(), ENT_QUOTES, 'UTF-8', true);?>
@@ -103,9 +103,9 @@ $_smarty_tpl->getSmarty()->getRuntime('Foreach')->restore($_smarty_tpl, 1);?>
                 <select id="id_istruttore" name="id_istruttore" class="form-select admin-select" required>
                     <?php
 $_from = $_smarty_tpl->getSmarty()->getRuntime('Foreach')->init($_smarty_tpl, $_smarty_tpl->getValue('istruttori'), 'istr');
-$foreach3DoElse = true;
+$foreach1DoElse = true;
 foreach ($_from ?? [] as $_smarty_tpl->getVariable('istr')->value) {
-$foreach3DoElse = false;
+$foreach1DoElse = false;
 ?>
                         <option value="<?php echo $_smarty_tpl->getValue('istr')->getId();?>
 "><?php echo htmlspecialchars((string)$_smarty_tpl->getValue('istr')->getNome(), ENT_QUOTES, 'UTF-8', true);?>
@@ -117,16 +117,29 @@ $_smarty_tpl->getSmarty()->getRuntime('Foreach')->restore($_smarty_tpl, 1);?>
                 </select>
             </div>
 
-            <div class="row g-3 mb-4">
+            <div class="row g-3 mb-3">
                 <div class="col-12 col-sm-6">
                     <label for="data_ora_inizio" class="form-label auth-label">Data e Ora di Inizio</label>
                     <input type="datetime-local" id="data_ora_inizio" name="data_ora_inizio" class="form-control admin-input" required>
                 </div>
 
                 <div class="col-12 col-sm-6">
-                    <label for="data_ora_fine" class="form-label auth-label">Data e Ora di Fine</label>
-                    <input type="datetime-local" id="data_ora_fine" name="data_ora_fine" class="form-control admin-input" required>
+                    <label for="durata_minuti" class="form-label auth-label">Durata</label>
+                    <select id="durata_minuti" name="durata_minuti" class="form-select admin-select" required>
+                        <option value="30">30 minuti</option>
+                        <option value="60" selected>1 ora (60 min)</option>
+                        <option value="90">1 ora e 30 min (90 min)</option>
+                        <option value="120">2 ore (120 min)</option>
+                        <option value="150">2 ore e 30 min (150 min)</option>
+                        <option value="180">3 ore (180 min)</option>
+                    </select>
                 </div>
+            </div>
+
+            <div id="anteprima-fine-lezione" class="auth-support-note text-start mb-4 d-none"></div>
+
+            <div class="auth-support-note text-start mb-4">
+                Eventuali slot di disponibilità individuale liberi dell'istruttore sovrapposti a questo orario verranno rimossi automaticamente.
             </div>
 
             <div class="d-flex flex-column flex-sm-row gap-2">
@@ -141,6 +154,43 @@ $_smarty_tpl->getSmarty()->getRuntime('Foreach')->restore($_smarty_tpl, 1);?>
     </section>
 
 </div>
+
+
+<?php echo '<script'; ?>
+>
+document.addEventListener('DOMContentLoaded', function () {
+    const inizioInput = document.getElementById('data_ora_inizio');
+    const durataSelect = document.getElementById('durata_minuti');
+    const anteprima = document.getElementById('anteprima-fine-lezione');
+
+    if (!inizioInput || !durataSelect || !anteprima) return;
+
+    function aggiornaAnteprima() {
+        if (!inizioInput.value) {
+            anteprima.classList.add('d-none');
+            return;
+        }
+        const inizio = new Date(inizioInput.value);
+        const minuti = parseInt(durataSelect.value, 10) || 60;
+        if (isNaN(inizio.getTime())) {
+            anteprima.classList.add('d-none');
+            return;
+        }
+        const fine = new Date(inizio.getTime() + minuti * 60000);
+        const pad = function (n) { return String(n).padStart(2, '0'); };
+        const dataFine = pad(fine.getDate()) + '/' + pad(fine.getMonth() + 1) + '/' + fine.getFullYear();
+        const oraFine = pad(fine.getHours()) + ':' + pad(fine.getMinutes());
+        anteprima.innerHTML = 'Termine previsto: <strong>' + dataFine + ' alle ' + oraFine + '</strong>';
+        anteprima.classList.remove('d-none');
+    }
+
+    inizioInput.addEventListener('input', aggiornaAnteprima);
+    inizioInput.addEventListener('change', aggiornaAnteprima);
+    durataSelect.addEventListener('change', aggiornaAnteprima);
+});
+<?php echo '</script'; ?>
+>
+
 <?php
 }
 }

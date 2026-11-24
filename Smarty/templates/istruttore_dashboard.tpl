@@ -6,11 +6,40 @@
 
     <!-- Intestazione -->
     <div class="bg-white rounded-3 shadow-sm p-4 mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
-        <div>
-            <h1 class="h3 mb-1" style="color: #7b8b6f;">Area Istruttore</h1>
-            <p class="text-muted mb-0">Benvenuto/a, <strong>{$nome_istruttore} {$cognome_istruttore}</strong> &bull; {$email_istruttore}</p>
+        <div class="d-flex align-items-center gap-3">
+            <div class="profile-avatar-wrap">
+                <div class="profile-avatar">
+                    {if !empty($immagine_profilo)}
+                        <img src="/studio-essenza/{$immagine_profilo|escape}" alt="{$nome_istruttore|escape} {$cognome_istruttore|escape}">
+                    {else}
+                        {$iniziali_istruttore|default:''|escape}
+                    {/if}
+                </div>
+                <button
+                    type="button"
+                    class="profile-avatar-edit-btn"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalFotoProfiloIstruttore"
+                    title="Modifica immagine profilo"
+                    aria-label="Modifica immagine profilo"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                        <circle cx="12" cy="13" r="4"></circle>
+                    </svg>
+                </button>
+            </div>
+            <div>
+                <h1 class="h3 mb-1" style="color: #7b8b6f;">Area Istruttore</h1>
+                <p class="text-muted mb-0">Benvenuto/a, <strong>{$nome_istruttore|escape} {$cognome_istruttore|escape}</strong> &bull; {$email_istruttore|escape}</p>
+            </div>
         </div>
-        <a href="index.php?controller=utente&action=logout" class="btn btn-outline-danger">Esci</a>
+        <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn btn-outline-essenza" data-bs-toggle="modal" data-bs-target="#modalFotoProfiloIstruttore">
+                Foto Profilo
+            </button>
+            <a href="index.php?controller=utente&action=logout" class="btn btn-outline-danger">Esci</a>
+        </div>
     </div>
 
     <!-- Messaggi di conferma / errore -->
@@ -260,7 +289,7 @@
                         <strong id="modal_dettagli_lezione" class="text-dark"></strong>
                     </p>
                     <p class="small text-muted mb-3">
-                        All'allievo verrà automaticamente rimborsato 1 credito e vedrà la motivazione nella propria dashboard.
+                        L'allievo vedrà la motivazione dell'annullamento direttamente nella propria dashboard.
                     </p>
                     <div class="mb-2">
                         <label for="motivazione" class="form-label fw-semibold">Motivazione dell'annullamento *</label>
@@ -276,6 +305,56 @@
     </div>
 </div>
 
+<!-- MODALE CARICAMENTO IMMAGINE PROFILO ISTRUTTORE -->
+<div class="modal fade" id="modalFotoProfiloIstruttore" tabindex="-1" aria-labelledby="modalFotoProfiloIstruttoreLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title fw-semibold" id="modalFotoProfiloIstruttoreLabel" style="color: #4a4a4a;">Immagine Profilo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-4">
+                    <div class="profile-avatar-preview mx-auto" id="previewFotoIstruttore">
+                        {if !empty($immagine_profilo)}
+                            <img src="/studio-essenza/{$immagine_profilo|escape}" alt="{$nome_istruttore|escape} {$cognome_istruttore|escape}">
+                        {else}
+                            {$iniziali_istruttore|default:''|escape}
+                        {/if}
+                    </div>
+                </div>
+
+                <form action="index.php?controller=istruttore&action=aggiornaImmagineProfilo" method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="inputFotoIstruttore" class="form-label auth-label">Scegli una nuova immagine</label>
+                        <input
+                            type="file"
+                            id="inputFotoIstruttore"
+                            name="immagine_profilo"
+                            class="form-control admin-input"
+                            accept="image/jpeg,image/png,image/webp,image/gif"
+                            required
+                        >
+                        <div class="form-text mt-1">Questa foto comparirà anche nel carosello della homepage e nel calendario prenotazioni (max 5 MB).</div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-outline-essenza" data-bs-dismiss="modal">Annulla</button>
+                        <button type="submit" class="btn btn-primary">Salva Immagine</button>
+                    </div>
+                </form>
+
+                {if !empty($immagine_profilo)}
+                    <hr class="auth-divider my-3">
+                    <form action="index.php?controller=istruttore&action=rimuoviImmagineProfilo" method="POST" class="text-center" onsubmit="return confirm('Vuoi davvero rimuovere la tua immagine profilo?');">
+                        <button type="submit" class="btn btn-sm btn-disdici">Rimuovi immagine attuale</button>
+                    </form>
+                {/if}
+            </div>
+        </div>
+    </div>
+</div>
+
 {literal}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -286,6 +365,20 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('modal_id_slot').value = button.getAttribute('data-id');
             document.getElementById('modal_dettagli_lezione').textContent = button.getAttribute('data-dettagli');
             document.getElementById('motivazione').value = '';
+        });
+    }
+
+    var inputFoto = document.getElementById('inputFotoIstruttore');
+    var previewFoto = document.getElementById('previewFotoIstruttore');
+    if (inputFoto && previewFoto) {
+        inputFoto.addEventListener('change', function () {
+            var file = this.files && this.files[0];
+            if (!file) return;
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                previewFoto.innerHTML = '<img src="' + e.target.result + '" alt="Anteprima immagine profilo">';
+            };
+            reader.readAsDataURL(file);
         });
     }
 });

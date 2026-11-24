@@ -814,6 +814,14 @@ a, p, span, li, button, input, select, textarea, label, th, td {
     font-size: 15px;
     letter-spacing: 0.5px;
     flex-shrink: 0;
+    overflow: hidden;
+}
+
+.calendar-istruttore-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
 #lista-istruttori .istruttore-item.active .calendar-istruttore-avatar {
@@ -996,8 +1004,8 @@ a, p, span, li, button, input, select, textarea, label, th, td {
 }
 
 .avatar-istruttore {
-    width: 68px;
-    height: 68px;
+    width: 76px;
+    height: 76px;
     border-radius: 50%;
     background-color: #7b8b6f;
     color: #ffffff;
@@ -1007,6 +1015,138 @@ a, p, span, li, button, input, select, textarea, label, th, td {
     font-size: 24px;
     font-weight: 600;
     letter-spacing: 1px;
+    overflow: hidden;
+    border: 2px solid rgba(123, 139, 111, 0.2);
+}
+
+.avatar-istruttore img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* AVATAR PROFILO (DASHBOARD ALLIEVO / ISTRUTTORE / ADMIN) */
+
+.profile-avatar-wrap {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.profile-avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background-color: #7b8b6f;
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 23px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    overflow: hidden;
+    border: 2px solid rgba(123, 139, 111, 0.25);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.profile-avatar-edit-btn {
+    position: absolute;
+    right: -2px;
+    bottom: -2px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    color: #5f6e54;
+    border: 1px solid #d5dcd0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.profile-avatar-edit-btn:hover {
+    background-color: #7b8b6f;
+    border-color: #7b8b6f;
+    color: #ffffff;
+}
+
+.profile-avatar-preview {
+    width: 112px;
+    height: 112px;
+    border-radius: 50%;
+    background-color: #7b8b6f;
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 34px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    overflow: hidden;
+    border: 3px solid #eef1ec;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.profile-avatar-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.admin-avatar-preview {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background-color: #eef1ec;
+    color: #5f6e54;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 1px solid rgba(123, 139, 111, 0.22);
+}
+
+.admin-avatar-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.admin-avatar-sm {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background-color: #eef1ec;
+    color: #5f6e54;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12.5px;
+    font-weight: 600;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.admin-avatar-sm img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
 

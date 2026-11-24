@@ -58,8 +58,8 @@
                 <line x1="12" y1="17" x2="12.01" y2="17"></line>
             </svg>
             <div>
-                <strong>Crediti esauriti:</strong> passa in segreteria per rinnovare il tuo pacchetto oppure
-                <a href="index.php?controller=info&action=tariffe" class="auth-link">consulta le tariffe</a>.
+                <strong>Crediti esauriti per i corsi di gruppo:</strong> passa in segreteria per rinnovare il tuo pacchetto oppure
+                <a href="index.php?controller=info&action=tariffe" class="auth-link">consulta le tariffe</a>. Le lezioni individuali restano prenotabili con pagamento separato.
             </div>
         </div>
     {/if}
@@ -88,7 +88,7 @@
                     Seleziona un istruttore a sinistra per visualizzare nel mini-calendario i giorni e gli orari disponibili.
                 </p>
             </div>
-            <span class="dashboard-count-badge">1 Credito a lezione</span>
+            <span class="dashboard-count-badge">Pagamento separato</span>
         </div>
 
         {if empty($istruttori)}
@@ -109,7 +109,11 @@
                                     data-istruttore-nome="{$istr.nome|escape} {$istr.cognome|escape}">
                                 <div class="d-flex align-items-center gap-3">
                                     <div class="calendar-istruttore-avatar">
-                                        {$istr.iniziali|escape}
+                                        {if !empty($istr.immagine_profilo)}
+                                            <img src="/studio-essenza/{$istr.immagine_profilo|escape}" alt="{$istr.nome|escape} {$istr.cognome|escape}">
+                                        {else}
+                                            {$istr.iniziali|escape}
+                                        {/if}
                                     </div>
                                     <div class="text-start">
                                         <div class="fw-semibold">{$istr.nome|escape} {$istr.cognome|escape}</div>

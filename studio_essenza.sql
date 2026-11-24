@@ -45,7 +45,8 @@ CREATE TABLE `lezione` (
   `id_corso` int(11) NOT NULL,
   `id_istruttore` int(11) NOT NULL,
   `data_ora_inizio` datetime NOT NULL,
-  `data_ora_fine` datetime NOT NULL
+  `data_ora_fine` datetime NOT NULL,
+  `durata_minuti` int(11) NOT NULL DEFAULT 60
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -94,6 +95,8 @@ CREATE TABLE `utente` (
   `ruolo` enum('allievo','istruttore','admin') NOT NULL DEFAULT 'allievo',
   `crediti_residui` int(11) DEFAULT 0,
   `scadenza_certificato` date DEFAULT NULL,
+  `descrizione` text DEFAULT NULL,
+  `immagine_profilo` varchar(255) DEFAULT NULL,
   `data_registrazione` timestamp NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -101,10 +104,10 @@ CREATE TABLE `utente` (
 -- Dump dei dati per la tabella `utente`
 --
 
-INSERT INTO `utente` (`id`, `nome`, `cognome`, `email`, `password`, `telefono`, `ruolo`, `crediti_residui`, `scadenza_certificato`, `data_registrazione`) VALUES
-(1, 'Letizia', 'Di Iulio', 'marileti2102@gmail.com', '$2y$10$HIYHmOmRzpz/Sj8cNLxkEOlyVkEYqdNz.nDVZyeuwiboK1rsPgrwO', '388993908', 'allievo', 10, '2027-11-18', '2026-11-11 11:51:16'),
-(2, 'admin', 'admin', 'admin@gmail.com', '$2y$10$..OrjtZy9fDaKZeD5r17OumuqExX3khco2Pt9sBmTWdrOuDMLHGxS', '123456789', 'admin', 0, NULL, '2026-11-17 15:47:02'),
-(3, 'Mario', 'Mariotto', 'mario.mariotto@gmail.com', '$2y$10$3n/P4FTdQeglDJ0/TpdEAuqQNxKBzOVZEig9FFRvhMC7qBq8jPP9m', '321456', 'allievo', 10, '2027-11-17', '2026-11-17 16:54:54');
+INSERT INTO `utente` (`id`, `nome`, `cognome`, `email`, `password`, `telefono`, `ruolo`, `crediti_residui`, `scadenza_certificato`, `descrizione`, `immagine_profilo`, `data_registrazione`) VALUES
+(1, 'Letizia', 'Di Iulio', 'marileti2102@gmail.com', '$2y$10$HIYHmOmRzpz/Sj8cNLxkEOlyVkEYqdNz.nDVZyeuwiboK1rsPgrwO', '388993908', 'allievo', 10, '2027-11-18', NULL, NULL, '2026-11-11 11:51:16'),
+(2, 'admin', 'admin', 'admin@gmail.com', '$2y$10$..OrjtZy9fDaKZeD5r17OumuqExX3khco2Pt9sBmTWdrOuDMLHGxS', '123456789', 'admin', 0, NULL, NULL, NULL, '2026-11-17 15:47:02'),
+(3, 'Mario', 'Mariotto', 'mario.mariotto@gmail.com', '$2y$10$3n/P4FTdQeglDJ0/TpdEAuqQNxKBzOVZEig9FFRvhMC7qBq8jPP9m', '321456', 'allievo', 10, '2027-11-17', NULL, NULL, '2026-11-17 16:54:54');
 
 --
 -- Indici per le tabelle scaricate

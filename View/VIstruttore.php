@@ -14,9 +14,14 @@ class VIstruttore extends StartSmarty {
         $messaggio_successo = null,
         $messaggio_errore = null
     ) {
+        $iniziali = strtoupper(
+            substr($istruttore->getNome(), 0, 1) . substr($istruttore->getCognome(), 0, 1)
+        );
         $this->smarty->assign('titolo_pagina', 'Area Istruttore - Studio Essenza');
         $this->smarty->assign('nome_istruttore', $istruttore->getNome());
         $this->smarty->assign('cognome_istruttore', $istruttore->getCognome());
+        $this->smarty->assign('iniziali_istruttore', $iniziali);
+        $this->smarty->assign('immagine_profilo', $istruttore->getImmagineProfilo());
         $this->smarty->assign('email_istruttore', $istruttore->getEmail());
         $this->smarty->assign('telefono_istruttore', $istruttore->getTelefono());
         $this->smarty->assign('oggi_input', date('Y-m-d'));

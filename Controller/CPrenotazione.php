@@ -70,6 +70,7 @@ class CPrenotazione {
                 'nome' => $istr->getNome(),
                 'cognome' => $istr->getCognome(),
                 'iniziali' => $iniziali,
+                'immagine_profilo' => $istr->getImmagineProfilo(),
                 'totale_slot' => count($slot_disponibili)
             ];
 
@@ -240,7 +241,12 @@ class CPrenotazione {
             exit;
         }
 
-        if (!$slot || $slot->getStato() !== 'disponibile' || strtotime($slot->getDataOraInizio()) <= time()) {
+        if (
+            !$slot
+            || $slot->getStato() !== 'disponibile'
+            || strtotime($slot->getDataOraInizio()) <= time()
+            || FLezione::hasSovrapposizione($slot->getIdIstruttore(), $slot->getDataOraInizio(), $slot->getDataOraFine())
+        ) {
             $view->mostraErrore("Questo orario non è più disponibile. Scegli un altro slot dal calendario.");
             return;
         }
@@ -257,17 +263,8 @@ class CPrenotazione {
             return;
         }
 
-        // 2. Controllo Crediti Residui
-        if ($utente->getCreditiResidui() <= 0) {
-            $view->mostraErrore("Crediti esauriti. Passa in segreteria per ricaricare il tuo pacchetto.");
-            return;
-        }
-
-        // 3. Prenotazione atomica dello slot e decurtazione credito
+        // 2. Prenotazione atomica dello slot (le lezioni individuali sono pagate a parte e non scalano crediti)
         if (FLezioneIndividuale::prenota($id_slot, $id_utente)) {
-            $utente->scalaCredito();
-            FUtente::update($utente);
-
             header("Location: index.php?controller=utente&action=dashboard&msg=" . urlencode("Lezione individuale prenotata con successo!"));
             exit;
         } else {
@@ -275,7 +272,7 @@ class CPrenotazione {
         }
     }
 
-    // Permette all'allievo di disdire una lezione individuale e riavere 1 credito
+    // Permette all'allievo di disdire una lezione individuale (senza variazioni sul saldo crediti)
     public function cancellaIndividuale() {
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
@@ -289,12 +286,7 @@ class CPrenotazione {
         $id_utente = (int)$_SESSION['utente_id'];
 
         if (FLezioneIndividuale::disdiciDaUtente($id_slot, $id_utente)) {
-            $utente = FUtente::load($id_utente);
-            if ($utente) {
-                $utente->ricaricaCrediti(1);
-                FUtente::update($utente);
-            }
-            header("Location: index.php?controller=utente&action=dashboard&msg=" . urlencode("Lezione individuale disdetta. 1 credito è stato rimborsato sul tuo profilo."));
+            header("Location: index.php?controller=utente&action=dashboard&msg=" . urlencode("Lezione individuale disdetta con successo."));
             exit;
         }
 

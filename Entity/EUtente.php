@@ -11,10 +11,12 @@ class EUtente {
     private $ruolo;
     private $crediti_residui;
     private $scadenza_certificato;
+    private $descrizione;
+    private $immagine_profilo;
     private $data_registrazione;
 
     // ID e data di registrazione vengono generati dal DB
-    public function __construct($nome, $cognome, $email, $password, $telefono = null, $ruolo = 'allievo', $crediti_residui = 0, $scadenza_certificato = null) {
+    public function __construct($nome, $cognome, $email, $password, $telefono = null, $ruolo = 'allievo', $crediti_residui = 0, $scadenza_certificato = null, $descrizione = null, $immagine_profilo = null) {
         $this->nome = $nome;
         $this->cognome = $cognome;
         $this->email = $email;
@@ -23,6 +25,8 @@ class EUtente {
         $this->ruolo = $ruolo;
         $this->crediti_residui = $crediti_residui;
         $this->scadenza_certificato = $scadenza_certificato;
+        $this->descrizione = $descrizione;
+        $this->immagine_profilo = $immagine_profilo;
     }
 
     // --- GETTER METODI ---
@@ -35,6 +39,8 @@ class EUtente {
     public function getRuolo() { return $this->ruolo; }
     public function getCreditiResidui() { return $this->crediti_residui; }
     public function getScadenzaCertificato() { return $this->scadenza_certificato; }
+    public function getDescrizione() { return $this->descrizione; }
+    public function getImmagineProfilo() { return $this->immagine_profilo; }
     public function getDataRegistrazione() { return $this->data_registrazione; }
     // --- SETTER METODI ---
     public function setId($id) { $this->id = $id; }
@@ -46,6 +52,8 @@ class EUtente {
     public function setRuolo($ruolo) { $this->ruolo = $ruolo; }
     public function setCreditiResidui($crediti_residui) { $this->crediti_residui = $crediti_residui; }
     public function setScadenzaCertificato($scadenza_certificato) { $this->scadenza_certificato = $scadenza_certificato; }
+    public function setDescrizione($descrizione) { $this->descrizione = $descrizione; }
+    public function setImmagineProfilo($immagine_profilo) { $this->immagine_profilo = $immagine_profilo; }
     public function setDataRegistrazione($data_registrazione) { $this->data_registrazione = $data_registrazione; }
 
     // --- METODI DI LOGICA AGGIUNTIVA ---

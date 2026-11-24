@@ -115,12 +115,18 @@
                                 <div class="carousel-item {if $istr@first}active{/if}">
                                     <div class="card border-0 text-center carousel-card-essenza mx-auto">
                                         <div class="card-body d-flex flex-column justify-content-center align-items-center">
-                                            <div class="avatar-istruttore mb-3">{$istr.iniziali|escape}</div>
+                                            <div class="avatar-istruttore mb-3">
+                                                {if !empty($istr.immagine_profilo)}
+                                                    <img src="/studio-essenza/{$istr.immagine_profilo|escape}" alt="{$istr.nome|escape} {$istr.cognome|escape}">
+                                                {else}
+                                                    {$istr.iniziali|escape}
+                                                {/if}
+                                            </div>
                                             <h3 class="h5 fw-bold mb-1">{$istr.nome|escape} {$istr.cognome|escape}</h3>
                                             <span class="badge rounded-pill mb-3" style="background-color: #eef1ec; color: #5f6e54;">Istruttore Certificato</span>
-                                            <p class="text-muted small mb-0">
-                                                Specialista in Pilates Reformer, Matwork e percorsi posturali individuali.
-                                            </p>
+                                            {if !empty($istr.descrizione)}
+                                                <p class="text-muted small mb-0">{$istr.descrizione|escape|nl2br}</p>
+                                            {/if}
                                         </div>
                                     </div>
                                 </div>

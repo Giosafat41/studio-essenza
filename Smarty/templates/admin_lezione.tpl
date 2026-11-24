@@ -57,16 +57,29 @@
                 </select>
             </div>
 
-            <div class="row g-3 mb-4">
+            <div class="row g-3 mb-3">
                 <div class="col-12 col-sm-6">
                     <label for="data_ora_inizio" class="form-label auth-label">Data e Ora di Inizio</label>
                     <input type="datetime-local" id="data_ora_inizio" name="data_ora_inizio" class="form-control admin-input" required>
                 </div>
 
                 <div class="col-12 col-sm-6">
-                    <label for="data_ora_fine" class="form-label auth-label">Data e Ora di Fine</label>
-                    <input type="datetime-local" id="data_ora_fine" name="data_ora_fine" class="form-control admin-input" required>
+                    <label for="durata_minuti" class="form-label auth-label">Durata</label>
+                    <select id="durata_minuti" name="durata_minuti" class="form-select admin-select" required>
+                        <option value="30">30 minuti</option>
+                        <option value="60" selected>1 ora (60 min)</option>
+                        <option value="90">1 ora e 30 min (90 min)</option>
+                        <option value="120">2 ore (120 min)</option>
+                        <option value="150">2 ore e 30 min (150 min)</option>
+                        <option value="180">3 ore (180 min)</option>
+                    </select>
                 </div>
+            </div>
+
+            <div id="anteprima-fine-lezione" class="auth-support-note text-start mb-4 d-none"></div>
+
+            <div class="auth-support-note text-start mb-4">
+                Eventuali slot di disponibilità individuale liberi dell'istruttore sovrapposti a questo orario verranno rimossi automaticamente.
             </div>
 
             <div class="d-flex flex-column flex-sm-row gap-2">
@@ -81,4 +94,39 @@
     </section>
 
 </div>
+
+{literal}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const inizioInput = document.getElementById('data_ora_inizio');
+    const durataSelect = document.getElementById('durata_minuti');
+    const anteprima = document.getElementById('anteprima-fine-lezione');
+
+    if (!inizioInput || !durataSelect || !anteprima) return;
+
+    function aggiornaAnteprima() {
+        if (!inizioInput.value) {
+            anteprima.classList.add('d-none');
+            return;
+        }
+        const inizio = new Date(inizioInput.value);
+        const minuti = parseInt(durataSelect.value, 10) || 60;
+        if (isNaN(inizio.getTime())) {
+            anteprima.classList.add('d-none');
+            return;
+        }
+        const fine = new Date(inizio.getTime() + minuti * 60000);
+        const pad = function (n) { return String(n).padStart(2, '0'); };
+        const dataFine = pad(fine.getDate()) + '/' + pad(fine.getMonth() + 1) + '/' + fine.getFullYear();
+        const oraFine = pad(fine.getHours()) + ':' + pad(fine.getMinutes());
+        anteprima.innerHTML = 'Termine previsto: <strong>' + dataFine + ' alle ' + oraFine + '</strong>';
+        anteprima.classList.remove('d-none');
+    }
+
+    inizioInput.addEventListener('input', aggiornaAnteprima);
+    inizioInput.addEventListener('change', aggiornaAnteprima);
+    durataSelect.addEventListener('change', aggiornaAnteprima);
+});
+</script>
+{/literal}
 {/block}

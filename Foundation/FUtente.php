@@ -6,8 +6,8 @@ class FUtente {
     public static function store(EUtente $utente) {
         $db = FDatabase::getInstance()->getDb();
         
-        $query = "INSERT INTO Utente (nome, cognome, email, password, telefono, ruolo, crediti_residui, scadenza_certificato) 
-                  VALUES (:nome, :cognome, :email, :password, :telefono, :ruolo, :crediti_residui, :scadenza_certificato)";
+        $query = "INSERT INTO Utente (nome, cognome, email, password, telefono, ruolo, crediti_residui, scadenza_certificato, descrizione, immagine_profilo) 
+                  VALUES (:nome, :cognome, :email, :password, :telefono, :ruolo, :crediti_residui, :scadenza_certificato, :descrizione, :immagine_profilo)";
         
         $stmt = $db->prepare($query);
         
@@ -21,6 +21,10 @@ class FUtente {
         $stmt->bindValue(':ruolo', $utente->getRuolo());
         $stmt->bindValue(':crediti_residui', $utente->getCreditiResidui());
         $stmt->bindValue(':scadenza_certificato', $utente->getScadenzaCertificato());
+        $descrizione = $utente->getDescrizione();
+        $stmt->bindValue(':descrizione', ($descrizione !== null && trim($descrizione) !== '') ? trim($descrizione) : null);
+        $immagine = $utente->getImmagineProfilo();
+        $stmt->bindValue(':immagine_profilo', ($immagine !== null && trim($immagine) !== '') ? trim($immagine) : null);
         
         $stmt->execute();
         
@@ -50,7 +54,9 @@ class FUtente {
                 $row['telefono'], 
                 $row['ruolo'], 
                 $row['crediti_residui'], 
-                $row['scadenza_certificato']
+                $row['scadenza_certificato'],
+                $row['descrizione'] ?? null,
+                $row['immagine_profilo'] ?? null
             );
             $utente->setId($row['id']);
             $utente->setDataRegistrazione($row['data_registrazione']);
@@ -72,11 +78,15 @@ class FUtente {
                       telefono = :telefono,
                       ruolo = :ruolo,
                       crediti_residui = :crediti, 
-                      scadenza_certificato = :scadenza 
+                      scadenza_certificato = :scadenza,
+                      descrizione = :descrizione,
+                      immagine_profilo = :immagine_profilo 
                   WHERE id = :id";
         $stmt = $db->prepare($query);
         
         $scadenza = $utente->getScadenzaCertificato();
+        $descrizione = $utente->getDescrizione();
+        $immagine = $utente->getImmagineProfilo();
         
         $stmt->bindValue(':nome', $utente->getNome());
         $stmt->bindValue(':cognome', $utente->getCognome());
@@ -85,6 +95,8 @@ class FUtente {
         $stmt->bindValue(':ruolo', $utente->getRuolo());
         $stmt->bindValue(':crediti', $utente->getCreditiResidui(), PDO::PARAM_INT);
         $stmt->bindValue(':scadenza', !empty($scadenza) ? $scadenza : null);
+        $stmt->bindValue(':descrizione', ($descrizione !== null && trim($descrizione) !== '') ? trim($descrizione) : null);
+        $stmt->bindValue(':immagine_profilo', ($immagine !== null && trim($immagine) !== '') ? trim($immagine) : null);
         $stmt->bindValue(':id', $utente->getId(), PDO::PARAM_INT);
         
         return $stmt->execute();
@@ -110,7 +122,9 @@ class FUtente {
                 $row['telefono'], 
                 $row['ruolo'], 
                 $row['crediti_residui'], 
-                $row['scadenza_certificato']
+                $row['scadenza_certificato'],
+                $row['descrizione'] ?? null,
+                $row['immagine_profilo'] ?? null
             );
             $utente->setId($row['id']);
             $utente->setDataRegistrazione($row['data_registrazione']);
@@ -137,7 +151,9 @@ class FUtente {
                 $row['telefono'], 
                 $row['ruolo'], 
                 $row['crediti_residui'], 
-                $row['scadenza_certificato']
+                $row['scadenza_certificato'],
+                $row['descrizione'] ?? null,
+                $row['immagine_profilo'] ?? null
             );
             $u->setId($row['id']);
             if (isset($row['data_registrazione'])) {
@@ -156,7 +172,18 @@ class FUtente {
         
         $istruttori = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $istruttore = new EUtente($row['nome'], $row['cognome'], $row['email'], $row['password'], $row['telefono'], $row['ruolo']);
+            $istruttore = new EUtente(
+                $row['nome'],
+                $row['cognome'],
+                $row['email'],
+                $row['password'],
+                $row['telefono'],
+                $row['ruolo'],
+                $row['crediti_residui'],
+                $row['scadenza_certificato'],
+                $row['descrizione'] ?? null,
+                $row['immagine_profilo'] ?? null
+            );
             $istruttore->setId($row['id']);
             $istruttori[] = $istruttore;
         }
@@ -178,7 +205,9 @@ class FUtente {
                 $row['telefono'],
                 $row['ruolo'],
                 $row['crediti_residui'],
-                $row['scadenza_certificato']
+                $row['scadenza_certificato'],
+                $row['descrizione'] ?? null,
+                $row['immagine_profilo'] ?? null
             );
             $u->setId($row['id']);
             $istruttori[] = $u;

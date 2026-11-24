@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 5.8.5, created on 2026-11-24 16:33:32
+/* Smarty version 5.8.5, created on 2026-11-24 17:20:01
   from 'file:admin_utenti.tpl' */
 
 /* @var \Smarty\Template $_smarty_tpl */
 if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   'version' => '5.8.5',
-  'unifunc' => 'content_6b05ae4c75b6c9_84803936',
+  'unifunc' => 'content_6b05b931ca3074_30358954',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     'b473fb0f5cd8d42375dfafe67d193a650202efe4' => 
     array (
       0 => 'admin_utenti.tpl',
-      1 => 1795534302,
+      1 => 1795535476,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   array (
   ),
 ))) {
-function content_6b05ae4c75b6c9_84803936 (\Smarty\Template $_smarty_tpl) {
+function content_6b05b931ca3074_30358954 (\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
 $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 ?>
@@ -28,13 +28,13 @@ $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 
 
 <?php 
-$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_9754908386b05ae4c750058_40233821', "content");
+$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_19690962906b05b931c89b86_18947414', "content");
 ?>
 
 <?php $_smarty_tpl->getInheritance()->endChild($_smarty_tpl, "layout.tpl", $_smarty_current_dir);
 }
 /* {block "content"} */
-class Block_9754908386b05ae4c750058_40233821 extends \Smarty\Runtime\Block
+class Block_19690962906b05b931c89b86_18947414 extends \Smarty\Runtime\Block
 {
 public function callBlock(\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
@@ -117,14 +117,30 @@ $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenz
                     <tbody>
                         <?php
 $_from = $_smarty_tpl->getSmarty()->getRuntime('Foreach')->init($_smarty_tpl, $_smarty_tpl->getValue('utenti'), 'u');
-$foreach4DoElse = true;
+$foreach2DoElse = true;
 foreach ($_from ?? [] as $_smarty_tpl->getVariable('u')->value) {
-$foreach4DoElse = false;
+$foreach2DoElse = false;
 ?>
                             <tr>
-                                <td><strong><?php echo htmlspecialchars((string)$_smarty_tpl->getValue('u')->getCognome(), ENT_QUOTES, 'UTF-8', true);?>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="admin-avatar-sm">
+                                            <?php if ($_smarty_tpl->getValue('u')->getImmagineProfilo()) {?>
+                                                <img src="/studio-essenza/<?php echo htmlspecialchars((string)$_smarty_tpl->getValue('u')->getImmagineProfilo(), ENT_QUOTES, 'UTF-8', true);?>
+" alt="<?php echo htmlspecialchars((string)$_smarty_tpl->getValue('u')->getNome(), ENT_QUOTES, 'UTF-8', true);?>
+ <?php echo htmlspecialchars((string)$_smarty_tpl->getValue('u')->getCognome(), ENT_QUOTES, 'UTF-8', true);?>
+">
+                                            <?php } else { ?>
+                                                <?php echo mb_strtoupper((string) substr((string) $_smarty_tpl->getValue('u')->getNome(), (int) 0, (int) 1) ?? '', 'UTF-8');
+echo mb_strtoupper((string) substr((string) $_smarty_tpl->getValue('u')->getCognome(), (int) 0, (int) 1) ?? '', 'UTF-8');?>
+
+                                            <?php }?>
+                                        </span>
+                                        <strong><?php echo htmlspecialchars((string)$_smarty_tpl->getValue('u')->getCognome(), ENT_QUOTES, 'UTF-8', true);?>
  <?php echo htmlspecialchars((string)$_smarty_tpl->getValue('u')->getNome(), ENT_QUOTES, 'UTF-8', true);?>
-</strong></td>
+</strong>
+                                    </div>
+                                </td>
                                 <td><?php echo htmlspecialchars((string)$_smarty_tpl->getValue('u')->getEmail(), ENT_QUOTES, 'UTF-8', true);?>
 </td>
                                 <td><?php echo htmlspecialchars((string)(($tmp = $_smarty_tpl->getValue('u')->getTelefono() ?? null)===null||$tmp==='' ? '-' ?? null : $tmp), ENT_QUOTES, 'UTF-8', true);?>

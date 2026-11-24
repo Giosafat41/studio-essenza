@@ -59,11 +59,9 @@ class FLezioneIndividuale {
         return $stmt->rowCount() > 0;
     }
 
-    // Verifica se l'istruttore ha già uno slot individuale attivo o un corso di gruppo nella stessa fascia oraria
-    public static function hasSovrapposizione($id_istruttore, $inizio, $fine) {
+    // Verifica se l'istruttore ha già uno slot individuale attivo nella fascia oraria indicata
+    public static function hasSovrapposizioneIndividuale($id_istruttore, $inizio, $fine) {
         $db = FDatabase::getInstance()->getDb();
-
-        // 1. Controllo su altre lezioni individuali attive
         $q1 = "SELECT COUNT(*) FROM LezioneIndividuale
                WHERE id_istruttore = :id_istruttore
                  AND stato != 'annullata_istruttore'
@@ -74,21 +72,53 @@ class FLezioneIndividuale {
         $s1->bindValue(':inizio', $inizio);
         $s1->bindValue(':fine', $fine);
         $s1->execute();
-        if ((int)$s1->fetchColumn() > 0) {
+        return (int)$s1->fetchColumn() > 0;
+    }
+
+    // Verifica se l'istruttore ha già uno slot individuale attivo o un corso di gruppo nella stessa fascia oraria
+    public static function hasSovrapposizione($id_istruttore, $inizio, $fine) {
+        if (self::hasSovrapposizioneIndividuale($id_istruttore, $inizio, $fine)) {
             return true;
         }
+        return FLezione::hasSovrapposizione($id_istruttore, $inizio, $fine);
+    }
 
-        // 2. Controllo sui corsi di gruppo assegnati dall'Admin
-        $q2 = "SELECT COUNT(*) FROM Lezione
-               WHERE id_istruttore = :id_istruttore
-                 AND data_ora_inizio < :fine
-                 AND data_ora_fine > :inizio";
-        $s2 = $db->prepare($q2);
-        $s2->bindValue(':id_istruttore', $id_istruttore, PDO::PARAM_INT);
-        $s2->bindValue(':inizio', $inizio);
-        $s2->bindValue(':fine', $fine);
-        $s2->execute();
-        return (int)$s2->fetchColumn() > 0;
+    // Restituisce eventuali lezioni individuali già PRENOTATE che si sovrappongono a una fascia oraria
+    public static function findPrenotateSovrapposte($id_istruttore, $inizio, $fine) {
+        $db = FDatabase::getInstance()->getDb();
+        $query = "SELECT * FROM LezioneIndividuale
+                  WHERE id_istruttore = :id_istruttore
+                    AND stato = 'prenotata'
+                    AND data_ora_inizio < :fine
+                    AND data_ora_fine > :inizio
+                  ORDER BY data_ora_inizio ASC";
+        $stmt = $db->prepare($query);
+        $stmt->bindValue(':id_istruttore', $id_istruttore, PDO::PARAM_INT);
+        $stmt->bindValue(':inizio', $inizio);
+        $stmt->bindValue(':fine', $fine);
+        $stmt->execute();
+
+        $risultati = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $risultati[] = self::buildEntity($row);
+        }
+        return $risultati;
+    }
+
+    // Rimuove automaticamente gli slot individuali ancora LIBERI (disponibili) che entrano in conflitto con un corso assegnato
+    public static function rimuoviDisponibiliSovrapposte($id_istruttore, $inizio, $fine) {
+        $db = FDatabase::getInstance()->getDb();
+        $query = "DELETE FROM LezioneIndividuale
+                  WHERE id_istruttore = :id_istruttore
+                    AND stato = 'disponibile'
+                    AND data_ora_inizio < :fine
+                    AND data_ora_fine > :inizio";
+        $stmt = $db->prepare($query);
+        $stmt->bindValue(':id_istruttore', $id_istruttore, PDO::PARAM_INT);
+        $stmt->bindValue(':inizio', $inizio);
+        $stmt->bindValue(':fine', $fine);
+        $stmt->execute();
+        return $stmt->rowCount();
     }
 
     // Carica tutti gli slot futuri (e recenti) di un istruttore per la sua gestione
@@ -108,16 +138,24 @@ class FLezioneIndividuale {
         return $risultati;
     }
 
-    // Carica solo gli slot futuri disponibili di un istruttore (per il mini-calendario dell'allievo)
+    // Carica solo gli slot futuri disponibili di un istruttore, escludendo eventuali sovrapposizioni con corsi di gruppo
     public static function loadDisponibiliByIstruttore($id_istruttore) {
         $db = FDatabase::getInstance()->getDb();
-        $query = "SELECT * FROM LezioneIndividuale
-                  WHERE id_istruttore = :id_istruttore
-                    AND stato = 'disponibile'
-                    AND data_ora_inizio >= NOW()
-                  ORDER BY data_ora_inizio ASC";
+        $adesso = date('Y-m-d H:i:s');
+        $query = "SELECT li.* FROM LezioneIndividuale li
+                  WHERE li.id_istruttore = :id_istruttore
+                    AND li.stato = 'disponibile'
+                    AND li.data_ora_inizio >= :adesso
+                    AND NOT EXISTS (
+                        SELECT 1 FROM Lezione l
+                        WHERE l.id_istruttore = li.id_istruttore
+                          AND l.data_ora_inizio < li.data_ora_fine
+                          AND l.data_ora_fine > li.data_ora_inizio
+                    )
+                  ORDER BY li.data_ora_inizio ASC";
         $stmt = $db->prepare($query);
         $stmt->bindValue(':id_istruttore', $id_istruttore, PDO::PARAM_INT);
+        $stmt->bindValue(':adesso', $adesso);
         $stmt->execute();
 
         $risultati = [];

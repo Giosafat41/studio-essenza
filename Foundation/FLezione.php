@@ -2,18 +2,31 @@
 
 class FLezione {
     
+    private static function buildEntity(array $row) {
+        $lezione = new ELezione(
+            $row['id_corso'],
+            $row['id_istruttore'],
+            $row['data_ora_inizio'],
+            $row['data_ora_fine'],
+            isset($row['durata_minuti']) ? (int)$row['durata_minuti'] : null
+        );
+        $lezione->setId($row['id']);
+        return $lezione;
+    }
+
     // Salva una nuova lezione nel calendario
     public static function store(ELezione $lezione) {
         $db = FDatabase::getInstance()->getDb();
         
-        $query = "INSERT INTO Lezione (id_corso, id_istruttore, data_ora_inizio, data_ora_fine) 
-                  VALUES (:id_corso, :id_istruttore, :data_ora_inizio, :data_ora_fine)";
+        $query = "INSERT INTO Lezione (id_corso, id_istruttore, data_ora_inizio, data_ora_fine, durata_minuti) 
+                  VALUES (:id_corso, :id_istruttore, :data_ora_inizio, :data_ora_fine, :durata_minuti)";
         $stmt = $db->prepare($query);
         
-        $stmt->bindValue(':id_corso', $lezione->getIdCorso());
-        $stmt->bindValue(':id_istruttore', $lezione->getIdIstruttore());
+        $stmt->bindValue(':id_corso', $lezione->getIdCorso(), PDO::PARAM_INT);
+        $stmt->bindValue(':id_istruttore', $lezione->getIdIstruttore(), PDO::PARAM_INT);
         $stmt->bindValue(':data_ora_inizio', $lezione->getDataOraInizio());
         $stmt->bindValue(':data_ora_fine', $lezione->getDataOraFine());
+        $stmt->bindValue(':durata_minuti', $lezione->getDurataMinuti(), PDO::PARAM_INT);
         
         $stmt->execute();
         $lezione->setId($db->lastInsertId());
@@ -31,13 +44,24 @@ class FLezione {
         $stmt->execute();
         
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($row) {
-            $lezione = new ELezione($row['id_corso'], $row['id_istruttore'], $row['data_ora_inizio'], $row['data_ora_fine']);
-            $lezione->setId($row['id']);
-            return $lezione;
-        }
-        return null;
+        return $row ? self::buildEntity($row) : null;
     }
+
+    // Verifica se l'istruttore ha già una lezione di gruppo sovrapposta nella fascia oraria indicata
+    public static function hasSovrapposizione($id_istruttore, $inizio, $fine) {
+        $db = FDatabase::getInstance()->getDb();
+        $query = "SELECT COUNT(*) FROM Lezione
+                  WHERE id_istruttore = :id_istruttore
+                    AND data_ora_inizio < :fine
+                    AND data_ora_fine > :inizio";
+        $stmt = $db->prepare($query);
+        $stmt->bindValue(':id_istruttore', $id_istruttore, PDO::PARAM_INT);
+        $stmt->bindValue(':inizio', $inizio);
+        $stmt->bindValue(':fine', $fine);
+        $stmt->execute();
+        return (int)$stmt->fetchColumn() > 0;
+    }
+
     // Recupera le lezioni di un determinato periodo (utile per il calendario frontend)
     public static function loadByDateRange($dataInizio, $dataFine) {
         $db = FDatabase::getInstance()->getDb();
@@ -49,12 +73,11 @@ class FLezione {
         
         $lezioni = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $lezione = new ELezione($row['id_corso'], $row['id_istruttore'], $row['data_ora_inizio'], $row['data_ora_fine']);
-            $lezione->setId($row['id']);
-            $lezioni[] = $lezione;
+            $lezioni[] = self::buildEntity($row);
         }
         return $lezioni;
     }
+
     // Recupera tutte le lezioni non ancora scadute (in corso o future), ordinate cronologicamente
     public static function loadDisponibili() {
         $db = FDatabase::getInstance()->getDb();
@@ -68,14 +91,7 @@ class FLezione {
 
         $lezioni = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $lezione = new ELezione(
-                $row['id_corso'],
-                $row['id_istruttore'],
-                $row['data_ora_inizio'],
-                $row['data_ora_fine']
-            );
-            $lezione->setId($row['id']);
-            $lezioni[] = $lezione;
+            $lezioni[] = self::buildEntity($row);
         }
         return $lezioni;
     }
@@ -92,14 +108,7 @@ class FLezione {
 
         $lezioni = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $lezione = new ELezione(
-                $row['id_corso'],
-                $row['id_istruttore'],
-                $row['data_ora_inizio'],
-                $row['data_ora_fine']
-            );
-            $lezione->setId($row['id']);
-            $lezioni[] = $lezione;
+            $lezioni[] = self::buildEntity($row);
         }
         return $lezioni;
     }

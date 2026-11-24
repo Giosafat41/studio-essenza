@@ -63,21 +63,66 @@ class CAdmin {
         $istruttori = FUtente::loadIstruttori();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id_corso = (int)$_POST['id_corso'];
-            $id_istruttore = (int)$_POST['id_istruttore'];
-            // Converte le date dal form HTML nel formato MySQL (YYYY-MM-DD HH:MM:SS)
-            $data_inizio = str_replace('T', ' ', $_POST['data_ora_inizio']) . ':00';
-            $data_fine = str_replace('T', ' ', $_POST['data_ora_fine']) . ':00';
+            $id_corso = (int)($_POST['id_corso'] ?? 0);
+            $id_istruttore = (int)($_POST['id_istruttore'] ?? 0);
+            $inizio_raw = trim($_POST['data_ora_inizio'] ?? '');
+            $durata_minuti = (int)($_POST['durata_minuti'] ?? 0);
 
-            if (strtotime($data_fine) <= strtotime($data_inizio)) {
-                $view->mostraFormLezione($corsi, $istruttori, null, "L'orario di fine deve essere successivo a quello di inizio.");
+            $ts_inizio = strtotime(str_replace('T', ' ', $inizio_raw));
+            if ($id_corso <= 0 || $id_istruttore <= 0 || $inizio_raw === '' || $ts_inizio === false) {
+                $view->mostraFormLezione($corsi, $istruttori, null, "Compila correttamente corso, istruttore e data/ora di inizio.");
                 return;
             }
 
-            $lezione = new ELezione($id_corso, $id_istruttore, $data_inizio, $data_fine);
+            if ($durata_minuti < 30 || $durata_minuti > 360 || ($durata_minuti % 30) !== 0) {
+                $view->mostraFormLezione($corsi, $istruttori, null, "Seleziona una durata valida a blocchi di 30 minuti.");
+                return;
+            }
+
+            $data_inizio = date('Y-m-d H:i:s', $ts_inizio);
+            $data_fine = date('Y-m-d H:i:s', $ts_inizio + ($durata_minuti * 60));
+
+            // 1. Verifica che l'istruttore non sia già assegnato a un'altra lezione di gruppo nella stessa fascia oraria
+            if (FLezione::hasSovrapposizione($id_istruttore, $data_inizio, $data_fine)) {
+                $view->mostraFormLezione(
+                    $corsi,
+                    $istruttori,
+                    null,
+                    "Impossibile salvare: l'istruttore selezionato è già assegnato a un'altra lezione di gruppo in questa fascia oraria."
+                );
+                return;
+            }
+
+            // 2. Verifica se l'istruttore ha già lezioni individuali PRENOTATE da allievi in questa fascia oraria
+            $prenotate_conflitto = FLezioneIndividuale::findPrenotateSovrapposte($id_istruttore, $data_inizio, $data_fine);
+            if (!empty($prenotate_conflitto)) {
+                $fasce = [];
+                foreach ($prenotate_conflitto as $slot) {
+                    $fasce[] = date('H:i', strtotime($slot->getDataOraInizio())) . '-' . date('H:i', strtotime($slot->getDataOraFine()));
+                }
+                $view->mostraFormLezione(
+                    $corsi,
+                    $istruttori,
+                    null,
+                    "Impossibile salvare: l'istruttore ha già una lezione individuale prenotata da un allievo in questa fascia oraria (" . implode(', ', $fasce) . ")."
+                );
+                return;
+            }
+
+            // 3. Salva la nuova lezione di gruppo
+            $lezione = new ELezione($id_corso, $id_istruttore, $data_inizio, $data_fine, $durata_minuti);
             FLezione::store($lezione);
 
-            $view->mostraFormLezione($corsi, $istruttori, "Lezione inserita con successo nel palinsesto!");
+            // 4. Aggiorna le disponibilità individuali dell'istruttore rimuovendo eventuali slot liberi sovrapposti
+            $slot_rimossi = FLezioneIndividuale::rimuoviDisponibiliSovrapposte($id_istruttore, $data_inizio, $data_fine);
+
+            $messaggio = "Lezione inserita con successo nel palinsesto (" . date('d/m/Y H:i', $ts_inizio) . " - " . date('H:i', $ts_inizio + ($durata_minuti * 60)) . ").";
+            if ($slot_rimossi > 0) {
+                $label_slot = ($slot_rimossi === 1) ? "1 slot di disponibilità individuale sovrapposto" : "{$slot_rimossi} slot di disponibilità individuale sovrapposti";
+                $messaggio .= " Rimosso automaticamente {$label_slot} dall'agenda dell'istruttore.";
+            }
+
+            $view->mostraFormLezione($corsi, $istruttori, $messaggio);
         } else {
             // Se la richiesta è GET, carichiamo i dati per i menu a tendina
             $view->mostraFormLezione($corsi, $istruttori);
@@ -175,13 +220,47 @@ class CAdmin {
                 return;
             }
 
+            $ruolo = $_POST['ruolo'];
             $utente->setNome(trim($_POST['nome']));
             $utente->setCognome(trim($_POST['cognome']));
             $utente->setEmail($nuova_email);
             $utente->setTelefono(trim($_POST['telefono']));
-            $utente->setRuolo($_POST['ruolo']);
-            $utente->setCreditiResidui((int)$_POST['crediti_residui']);
-            $utente->setScadenzaCertificato($_POST['scadenza_certificato']);
+            $utente->setRuolo($ruolo);
+            if ($ruolo === 'allievo') {
+                $utente->setCreditiResidui(isset($_POST['crediti_residui']) ? max(0, (int)$_POST['crediti_residui']) : 0);
+                $utente->setScadenzaCertificato(!empty($_POST['scadenza_certificato']) ? $_POST['scadenza_certificato'] : null);
+                $utente->setDescrizione(null);
+                // L'admin non carica né rimuove l'immagine profilo dell'allievo: conserva quella attuale
+            } elseif ($ruolo === 'istruttore') {
+                $utente->setCreditiResidui(0);
+                $utente->setScadenzaCertificato(null);
+                $desc = trim($_POST['descrizione'] ?? '');
+                $utente->setDescrizione($desc !== '' ? $desc : null);
+
+                if (UImmagine::hasUpload($_FILES['immagine_profilo'] ?? null)) {
+                    $esitoImg = UImmagine::salvaImmagineProfilo(
+                        $_FILES['immagine_profilo'],
+                        $utente->getId(),
+                        $utente->getImmagineProfilo()
+                    );
+                    if (!$esitoImg['ok']) {
+                        $view->mostraFormUtente($utente, $esitoImg['errore']);
+                        return;
+                    }
+                    $utente->setImmagineProfilo($esitoImg['percorso']);
+                } elseif (!empty($_POST['rimuovi_immagine'])) {
+                    UImmagine::eliminaImmagineProfilo($utente->getImmagineProfilo());
+                    $utente->setImmagineProfilo(null);
+                }
+            } else {
+                $utente->setCreditiResidui(0);
+                $utente->setScadenzaCertificato(null);
+                $utente->setDescrizione(null);
+                if ($utente->getImmagineProfilo()) {
+                    UImmagine::eliminaImmagineProfilo($utente->getImmagineProfilo());
+                    $utente->setImmagineProfilo(null);
+                }
+            }
 
             FUtente::update($utente);
 
@@ -215,20 +294,48 @@ class CAdmin {
             $password = $_POST['password'];
             $telefono = trim($_POST['telefono']);
             $ruolo = $_POST['ruolo'];
-            $crediti = (int)$_POST['crediti_residui'];
-            $scadenza = !empty($_POST['scadenza_certificato']) ? $_POST['scadenza_certificato'] : null;
+            if ($ruolo === 'allievo') {
+                $crediti = isset($_POST['crediti_residui']) ? max(0, (int)$_POST['crediti_residui']) : 0;
+                $scadenza = !empty($_POST['scadenza_certificato']) ? $_POST['scadenza_certificato'] : null;
+                $descrizione = null;
+            } elseif ($ruolo === 'istruttore') {
+                $crediti = 0;
+                $scadenza = null;
+                $desc = trim($_POST['descrizione'] ?? '');
+                $descrizione = $desc !== '' ? $desc : null;
+            } else {
+                $crediti = 0;
+                $scadenza = null;
+                $descrizione = null;
+            }
 
             if (FUtente::loadByEmail($email)) {
                 $view->mostraFormUtente(null, "Attenzione: esiste già un utente registrato con questa email.");
                 return;
             }
 
-            $nuovoUtente = new EUtente($nome, $cognome, $email, $password, $telefono, $ruolo, $crediti, $scadenza);
+            // Se l'admin carica un'immagine per il nuovo istruttore, validala prima di salvare l'utente
+            $haUploadIstruttore = ($ruolo === 'istruttore' && UImmagine::hasUpload($_FILES['immagine_profilo'] ?? null));
+            if ($haUploadIstruttore) {
+                $checkImg = UImmagine::validaUpload($_FILES['immagine_profilo']);
+                if (!$checkImg['ok']) {
+                    $view->mostraFormUtente(null, $checkImg['errore']);
+                    return;
+                }
+            }
+
+            $nuovoUtente = new EUtente($nome, $cognome, $email, $password, $telefono, $ruolo, $crediti, $scadenza, $descrizione);
             $id = FUtente::store($nuovoUtente);
 
             if ($id) {
-                // Assicura che ruolo, crediti iniziali e scadenza certificato vengano salvati anche se FUtente::store usa valori di default
                 $nuovoUtente->setId($id);
+                if ($haUploadIstruttore) {
+                    $esitoImg = UImmagine::salvaImmagineProfilo($_FILES['immagine_profilo'], (int)$id);
+                    if ($esitoImg['ok']) {
+                        $nuovoUtente->setImmagineProfilo($esitoImg['percorso']);
+                    }
+                }
+                // Assicura che tutti i campi (inclusa eventuale immagine profilo) siano aggiornati
                 FUtente::update($nuovoUtente);
 
                 header("Location: index.php?controller=admin&action=utenti&msg=" . urlencode("Nuovo utente ({$nome} {$cognome}) creato con successo."));

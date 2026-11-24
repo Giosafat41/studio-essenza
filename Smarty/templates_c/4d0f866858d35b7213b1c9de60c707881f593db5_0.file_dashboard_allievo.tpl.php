@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 5.8.5, created on 2026-11-19 19:04:02
+/* Smarty version 5.8.5, created on 2026-11-24 17:20:01
   from 'file:dashboard_allievo.tpl' */
 
 /* @var \Smarty\Template $_smarty_tpl */
 if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   'version' => '5.8.5',
-  'unifunc' => 'content_6aff3a12186689_94616468',
+  'unifunc' => 'content_6b05b931eba7c6_77163097',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '4d0f866858d35b7213b1c9de60c707881f593db5' => 
     array (
       0 => 'dashboard_allievo.tpl',
-      1 => 1795111394,
+      1 => 1795536781,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   array (
   ),
 ))) {
-function content_6aff3a12186689_94616468 (\Smarty\Template $_smarty_tpl) {
+function content_6b05b931eba7c6_77163097 (\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
 $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 ?>
@@ -28,13 +28,13 @@ $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 
 
 <?php 
-$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_1991503436aff3a1216bcc0_70068439', "content");
+$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_5778691016b05b931ea3889_05913370', "content");
 ?>
 
 <?php $_smarty_tpl->getInheritance()->endChild($_smarty_tpl, "layout.tpl", $_smarty_current_dir);
 }
 /* {block "content"} */
-class Block_1991503436aff3a1216bcc0_70068439 extends \Smarty\Runtime\Block
+class Block_5778691016b05b931ea3889_05913370 extends \Smarty\Runtime\Block
 {
 public function callBlock(\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
@@ -45,13 +45,41 @@ $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenz
     <!-- Intestazione Benvenuto + CTA Principale -->
     <section class="dashboard-card dashboard-hero mb-4">
         <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
-            <div>
-                <span class="auth-badge mb-2">Area Allievo</span>
-                <h1 class="dashboard-title">Bentornato/a, <?php echo htmlspecialchars((string)$_smarty_tpl->getValue('nome_utente'), ENT_QUOTES, 'UTF-8', true);?>
+            <div class="d-flex align-items-center gap-3">
+                <div class="profile-avatar-wrap">
+                    <div class="profile-avatar">
+                        <?php if (!( !$_smarty_tpl->hasVariable('immagine_profilo') || empty($_smarty_tpl->getValue('immagine_profilo')))) {?>
+                            <img src="/studio-essenza/<?php echo htmlspecialchars((string)$_smarty_tpl->getValue('immagine_profilo'), ENT_QUOTES, 'UTF-8', true);?>
+" alt="<?php echo htmlspecialchars((string)$_smarty_tpl->getValue('nome_utente'), ENT_QUOTES, 'UTF-8', true);?>
+">
+                        <?php } else { ?>
+                            <?php echo htmlspecialchars((string)(($tmp = $_smarty_tpl->getValue('iniziali_utente') ?? null)===null||$tmp==='' ? '' ?? null : $tmp), ENT_QUOTES, 'UTF-8', true);?>
+
+                        <?php }?>
+                    </div>
+                    <button
+                        type="button"
+                        class="profile-avatar-edit-btn"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalFotoProfiloAllievo"
+                        title="Modifica immagine profilo"
+                        aria-label="Modifica immagine profilo"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                            <circle cx="12" cy="13" r="4"></circle>
+                        </svg>
+                    </button>
+                </div>
+
+                <div>
+                    <span class="auth-badge mb-2">Area Allievo</span>
+                    <h1 class="dashboard-title">Bentornato/a, <?php echo htmlspecialchars((string)$_smarty_tpl->getValue('nome_utente'), ENT_QUOTES, 'UTF-8', true);?>
 !</h1>
-                <p class="dashboard-subtitle">
-                    Gestisci il tuo saldo crediti, i corsi di gruppo e le lezioni individuali in Studio Essenza.
-                </p>
+                    <p class="dashboard-subtitle">
+                        Gestisci il tuo saldo crediti, i corsi di gruppo e le lezioni individuali in Studio Essenza.
+                    </p>
+                </div>
             </div>
             <div class="flex-shrink-0">
                 <a href="index.php?controller=prenotazione&action=calendario" class="btn btn-primary dashboard-cta-btn w-100">
@@ -118,7 +146,7 @@ $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenz
                     </div>
                 <?php } else { ?>
                     <div class="dashboard-saldo-ok mb-3">
-                        Il tuo pacchetto è attivo. Puoi prenotare corsi di gruppo e lezioni 1-to-1 dal calendario.
+                        Il tuo pacchetto è attivo. Puoi prenotare i corsi di gruppo dal calendario (le lezioni 1-to-1 sono pagate a parte).
                     </div>
                 <?php }?>
 
@@ -164,9 +192,9 @@ $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenz
                     <ul class="dashboard-prenotazioni-list">
                         <?php
 $_from = $_smarty_tpl->getSmarty()->getRuntime('Foreach')->init($_smarty_tpl, $_smarty_tpl->getValue('lezioni_individuali'), 'ind');
-$foreach0DoElse = true;
+$foreach3DoElse = true;
 foreach ($_from ?? [] as $_smarty_tpl->getVariable('ind')->value) {
-$foreach0DoElse = false;
+$foreach3DoElse = false;
 ?>
                             <li class="dashboard-prenotazione-item <?php if ($_smarty_tpl->getValue('ind')['stato'] == 'annullata_istruttore') {?>is-cancelled<?php }?>">
                                 <div class="d-flex align-items-start gap-3">
@@ -199,8 +227,7 @@ $foreach0DoElse = false;
                                         <?php if ($_smarty_tpl->getValue('ind')['stato'] == 'annullata_istruttore') {?>
                                             <div class="dashboard-cancel-reason">
                                                 <strong class="text-danger">Motivazione:</strong> <?php echo htmlspecialchars((string)(($tmp = $_smarty_tpl->getValue('ind')['motivazione'] ?? null)===null||$tmp==='' ? 'Nessuna motivazione specificata.' ?? null : $tmp), ENT_QUOTES, 'UTF-8', true);?>
-<br>
-                                                <span>1 credito è stato rimborsato automaticamente sul tuo profilo.</span>
+
                                             </div>
                                         <?php }?>
                                     </div>
@@ -211,7 +238,7 @@ $foreach0DoElse = false;
                                         action="index.php?controller=prenotazione&action=cancellaIndividuale"
                                         method="POST"
                                         class="m-0 flex-shrink-0"
-                                        onsubmit="return confirm('Vuoi davvero disdire questa lezione individuale? Il credito verrà restituito al tuo saldo.');"
+                                        onsubmit="return confirm('Vuoi davvero disdire questa lezione individuale?');"
                                     >
                                         <input type="hidden" name="id_slot" value="<?php echo $_smarty_tpl->getValue('ind')['id'];?>
 ">
@@ -263,9 +290,9 @@ $_smarty_tpl->getSmarty()->getRuntime('Foreach')->restore($_smarty_tpl, 1);?>
                     <ul class="dashboard-prenotazioni-list">
                         <?php
 $_from = $_smarty_tpl->getSmarty()->getRuntime('Foreach')->init($_smarty_tpl, $_smarty_tpl->getValue('mie_prenotazioni'), 'pren');
-$foreach1DoElse = true;
+$foreach4DoElse = true;
 foreach ($_from ?? [] as $_smarty_tpl->getVariable('pren')->value) {
-$foreach1DoElse = false;
+$foreach4DoElse = false;
 ?>
                             <li class="dashboard-prenotazione-item">
                                 <div class="d-flex align-items-center gap-3">
@@ -316,6 +343,80 @@ $_smarty_tpl->getSmarty()->getRuntime('Foreach')->restore($_smarty_tpl, 1);?>
         </div>
     </div>
 </div>
+
+<!-- MODALE CARICAMENTO IMMAGINE PROFILO ALLIEVO -->
+<div class="modal fade" id="modalFotoProfiloAllievo" tabindex="-1" aria-labelledby="modalFotoProfiloAllievoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title fw-semibold" id="modalFotoProfiloAllievoLabel" style="color: #4a4a4a;">Immagine Profilo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-4">
+                    <div class="profile-avatar-preview mx-auto" id="previewFotoAllievo">
+                        <?php if (!( !$_smarty_tpl->hasVariable('immagine_profilo') || empty($_smarty_tpl->getValue('immagine_profilo')))) {?>
+                            <img src="/studio-essenza/<?php echo htmlspecialchars((string)$_smarty_tpl->getValue('immagine_profilo'), ENT_QUOTES, 'UTF-8', true);?>
+" alt="<?php echo htmlspecialchars((string)$_smarty_tpl->getValue('nome_utente'), ENT_QUOTES, 'UTF-8', true);?>
+">
+                        <?php } else { ?>
+                            <?php echo htmlspecialchars((string)(($tmp = $_smarty_tpl->getValue('iniziali_utente') ?? null)===null||$tmp==='' ? '' ?? null : $tmp), ENT_QUOTES, 'UTF-8', true);?>
+
+                        <?php }?>
+                    </div>
+                </div>
+
+                <form action="index.php?controller=utente&action=aggiornaImmagineProfilo" method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="inputFotoAllievo" class="form-label auth-label">Scegli una nuova immagine</label>
+                        <input
+                            type="file"
+                            id="inputFotoAllievo"
+                            name="immagine_profilo"
+                            class="form-control admin-input"
+                            accept="image/jpeg,image/png,image/webp,image/gif"
+                            required
+                        >
+                        <div class="form-text mt-1">Formati consentiti: JPG, PNG, WEBP, GIF (max 5 MB).</div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-outline-essenza" data-bs-dismiss="modal">Annulla</button>
+                        <button type="submit" class="btn btn-primary">Salva Immagine</button>
+                    </div>
+                </form>
+
+                <?php if (!( !$_smarty_tpl->hasVariable('immagine_profilo') || empty($_smarty_tpl->getValue('immagine_profilo')))) {?>
+                    <hr class="auth-divider my-3">
+                    <form action="index.php?controller=utente&action=rimuoviImmagineProfilo" method="POST" class="text-center" onsubmit="return confirm('Vuoi davvero rimuovere la tua immagine profilo?');">
+                        <button type="submit" class="btn btn-sm btn-disdici">Rimuovi immagine attuale</button>
+                    </form>
+                <?php }?>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<?php echo '<script'; ?>
+>
+document.addEventListener('DOMContentLoaded', function () {
+    const input = document.getElementById('inputFotoAllievo');
+    const preview = document.getElementById('previewFotoAllievo');
+    if (!input || !preview) return;
+    input.addEventListener('change', function () {
+        const file = this.files && this.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            preview.innerHTML = '<img src="' + e.target.result + '" alt="Anteprima immagine profilo">';
+        };
+        reader.readAsDataURL(file);
+    });
+});
+<?php echo '</script'; ?>
+>
+
 <?php
 }
 }

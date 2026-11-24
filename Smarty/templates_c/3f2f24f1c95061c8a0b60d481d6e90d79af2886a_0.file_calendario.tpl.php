@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 5.8.5, created on 2026-11-19 19:03:01
+/* Smarty version 5.8.5, created on 2026-11-24 17:20:02
   from 'file:calendario.tpl' */
 
 /* @var \Smarty\Template $_smarty_tpl */
 if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   'version' => '5.8.5',
-  'unifunc' => 'content_6aff39d5142957_95525076',
+  'unifunc' => 'content_6b05b9327ced60_50132614',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '3f2f24f1c95061c8a0b60d481d6e90d79af2886a' => 
     array (
       0 => 'calendario.tpl',
-      1 => 1795111372,
+      1 => 1795536778,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   array (
   ),
 ))) {
-function content_6aff39d5142957_95525076 (\Smarty\Template $_smarty_tpl) {
+function content_6b05b9327ced60_50132614 (\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
 $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 ?>
@@ -28,13 +28,13 @@ $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 
 
 <?php 
-$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_15141872736aff39d511c300_16895711', "content");
+$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_1091562096b05b9327b7221_43111380', "content");
 ?>
 
 <?php $_smarty_tpl->getInheritance()->endChild($_smarty_tpl, "layout.tpl", $_smarty_current_dir);
 }
 /* {block "content"} */
-class Block_15141872736aff39d511c300_16895711 extends \Smarty\Runtime\Block
+class Block_1091562096b05b9327b7221_43111380 extends \Smarty\Runtime\Block
 {
 public function callBlock(\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
@@ -97,8 +97,8 @@ $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenz
                 <line x1="12" y1="17" x2="12.01" y2="17"></line>
             </svg>
             <div>
-                <strong>Crediti esauriti:</strong> passa in segreteria per rinnovare il tuo pacchetto oppure
-                <a href="index.php?controller=info&action=tariffe" class="auth-link">consulta le tariffe</a>.
+                <strong>Crediti esauriti per i corsi di gruppo:</strong> passa in segreteria per rinnovare il tuo pacchetto oppure
+                <a href="index.php?controller=info&action=tariffe" class="auth-link">consulta le tariffe</a>. Le lezioni individuali restano prenotabili con pagamento separato.
             </div>
         </div>
     <?php }?>
@@ -127,7 +127,7 @@ $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenz
                     Seleziona un istruttore a sinistra per visualizzare nel mini-calendario i giorni e gli orari disponibili.
                 </p>
             </div>
-            <span class="dashboard-count-badge">1 Credito a lezione</span>
+            <span class="dashboard-count-badge">Pagamento separato</span>
         </div>
 
         <?php if (( !$_smarty_tpl->hasVariable('istruttori') || empty($_smarty_tpl->getValue('istruttori')))) {?>
@@ -144,12 +144,12 @@ $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenz
                         <?php
 $_from = $_smarty_tpl->getSmarty()->getRuntime('Foreach')->init($_smarty_tpl, $_smarty_tpl->getValue('istruttori'), 'istr');
 $_smarty_tpl->getVariable('istr')->index = -1;
-$foreach0DoElse = true;
+$foreach8DoElse = true;
 foreach ($_from ?? [] as $_smarty_tpl->getVariable('istr')->value) {
-$foreach0DoElse = false;
+$foreach8DoElse = false;
 $_smarty_tpl->getVariable('istr')->index++;
 $_smarty_tpl->getVariable('istr')->first = !$_smarty_tpl->getVariable('istr')->index;
-$foreach0Backup = clone $_smarty_tpl->getVariable('istr');
+$foreach8Backup = clone $_smarty_tpl->getVariable('istr');
 ?>
                             <button type="button"
                                     class="list-group-item list-group-item-action d-flex align-items-center justify-content-between p-3 istruttore-item <?php if ($_smarty_tpl->getVariable('istr')->first) {?>active<?php }?>"
@@ -160,8 +160,15 @@ $foreach0Backup = clone $_smarty_tpl->getVariable('istr');
 ">
                                 <div class="d-flex align-items-center gap-3">
                                     <div class="calendar-istruttore-avatar">
-                                        <?php echo htmlspecialchars((string)$_smarty_tpl->getValue('istr')['iniziali'], ENT_QUOTES, 'UTF-8', true);?>
+                                        <?php if (!( !true || empty($_smarty_tpl->getValue('istr')['immagine_profilo']))) {?>
+                                            <img src="/studio-essenza/<?php echo htmlspecialchars((string)$_smarty_tpl->getValue('istr')['immagine_profilo'], ENT_QUOTES, 'UTF-8', true);?>
+" alt="<?php echo htmlspecialchars((string)$_smarty_tpl->getValue('istr')['nome'], ENT_QUOTES, 'UTF-8', true);?>
+ <?php echo htmlspecialchars((string)$_smarty_tpl->getValue('istr')['cognome'], ENT_QUOTES, 'UTF-8', true);?>
+">
+                                        <?php } else { ?>
+                                            <?php echo htmlspecialchars((string)$_smarty_tpl->getValue('istr')['iniziali'], ENT_QUOTES, 'UTF-8', true);?>
 
+                                        <?php }?>
                                     </div>
                                     <div class="text-start">
                                         <div class="fw-semibold"><?php echo htmlspecialchars((string)$_smarty_tpl->getValue('istr')['nome'], ENT_QUOTES, 'UTF-8', true);?>
@@ -176,7 +183,7 @@ $foreach0Backup = clone $_smarty_tpl->getVariable('istr');
                                 </span>
                             </button>
                         <?php
-$_smarty_tpl->setVariable('istr', $foreach0Backup);
+$_smarty_tpl->setVariable('istr', $foreach8Backup);
 }
 $_smarty_tpl->getSmarty()->getRuntime('Foreach')->restore($_smarty_tpl, 1);?>
                     </div>
@@ -255,9 +262,9 @@ $_smarty_tpl->getSmarty()->getRuntime('Foreach')->restore($_smarty_tpl, 1);?>
             <div class="row g-4" id="calendarGrid">
                 <?php
 $_from = $_smarty_tpl->getSmarty()->getRuntime('Foreach')->init($_smarty_tpl, $_smarty_tpl->getValue('lezioni'), 'lez');
-$foreach1DoElse = true;
+$foreach9DoElse = true;
 foreach ($_from ?? [] as $_smarty_tpl->getVariable('lez')->value) {
-$foreach1DoElse = false;
+$foreach9DoElse = false;
 ?>
                     <div class="col-12 col-md-6 col-lg-4 calendar-lesson-col" data-corso="<?php echo htmlspecialchars((string)$_smarty_tpl->getValue('lez')['nome_corso'], ENT_QUOTES, 'UTF-8', true);?>
 ">

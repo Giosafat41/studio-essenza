@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 5.8.5, created on 2026-11-19 18:56:44
+/* Smarty version 5.8.5, created on 2026-11-24 17:20:02
   from 'file:istruttore_dashboard.tpl' */
 
 /* @var \Smarty\Template $_smarty_tpl */
 if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   'version' => '5.8.5',
-  'unifunc' => 'content_6aff385c9d2304_72136932',
+  'unifunc' => 'content_6b05b9322a9ae8_87554161',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '4c6721a054fb4f0c0a1fd302f4427c2e5bd1ae8c' => 
     array (
       0 => 'istruttore_dashboard.tpl',
-      1 => 1795110561,
+      1 => 1795537177,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   array (
   ),
 ))) {
-function content_6aff385c9d2304_72136932 (\Smarty\Template $_smarty_tpl) {
+function content_6b05b9322a9ae8_87554161 (\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
 $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 ?>
@@ -28,11 +28,11 @@ $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 
 
 <?php 
-$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_8592781716aff385c9ab1f6_80305893', "content");
+$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_6092985076b05b932273f07_57481898', "content");
 $_smarty_tpl->getInheritance()->endChild($_smarty_tpl, "layout.tpl", $_smarty_current_dir);
 }
 /* {block "content"} */
-class Block_8592781716aff385c9ab1f6_80305893 extends \Smarty\Runtime\Block
+class Block_6092985076b05b932273f07_57481898 extends \Smarty\Runtime\Block
 {
 public function callBlock(\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
@@ -42,14 +42,47 @@ $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenz
 
     <!-- Intestazione -->
     <div class="bg-white rounded-3 shadow-sm p-4 mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
-        <div>
-            <h1 class="h3 mb-1" style="color: #7b8b6f;">Area Istruttore</h1>
-            <p class="text-muted mb-0">Benvenuto/a, <strong><?php echo $_smarty_tpl->getValue('nome_istruttore');?>
- <?php echo $_smarty_tpl->getValue('cognome_istruttore');?>
-</strong> &bull; <?php echo $_smarty_tpl->getValue('email_istruttore');?>
+        <div class="d-flex align-items-center gap-3">
+            <div class="profile-avatar-wrap">
+                <div class="profile-avatar">
+                    <?php if (!( !$_smarty_tpl->hasVariable('immagine_profilo') || empty($_smarty_tpl->getValue('immagine_profilo')))) {?>
+                        <img src="/studio-essenza/<?php echo htmlspecialchars((string)$_smarty_tpl->getValue('immagine_profilo'), ENT_QUOTES, 'UTF-8', true);?>
+" alt="<?php echo htmlspecialchars((string)$_smarty_tpl->getValue('nome_istruttore'), ENT_QUOTES, 'UTF-8', true);?>
+ <?php echo htmlspecialchars((string)$_smarty_tpl->getValue('cognome_istruttore'), ENT_QUOTES, 'UTF-8', true);?>
+">
+                    <?php } else { ?>
+                        <?php echo htmlspecialchars((string)(($tmp = $_smarty_tpl->getValue('iniziali_istruttore') ?? null)===null||$tmp==='' ? '' ?? null : $tmp), ENT_QUOTES, 'UTF-8', true);?>
+
+                    <?php }?>
+                </div>
+                <button
+                    type="button"
+                    class="profile-avatar-edit-btn"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalFotoProfiloIstruttore"
+                    title="Modifica immagine profilo"
+                    aria-label="Modifica immagine profilo"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                        <circle cx="12" cy="13" r="4"></circle>
+                    </svg>
+                </button>
+            </div>
+            <div>
+                <h1 class="h3 mb-1" style="color: #7b8b6f;">Area Istruttore</h1>
+                <p class="text-muted mb-0">Benvenuto/a, <strong><?php echo htmlspecialchars((string)$_smarty_tpl->getValue('nome_istruttore'), ENT_QUOTES, 'UTF-8', true);?>
+ <?php echo htmlspecialchars((string)$_smarty_tpl->getValue('cognome_istruttore'), ENT_QUOTES, 'UTF-8', true);?>
+</strong> &bull; <?php echo htmlspecialchars((string)$_smarty_tpl->getValue('email_istruttore'), ENT_QUOTES, 'UTF-8', true);?>
 </p>
+            </div>
         </div>
-        <a href="index.php?controller=utente&action=logout" class="btn btn-outline-danger">Esci</a>
+        <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn btn-outline-essenza" data-bs-toggle="modal" data-bs-target="#modalFotoProfiloIstruttore">
+                Foto Profilo
+            </button>
+            <a href="index.php?controller=utente&action=logout" class="btn btn-outline-danger">Esci</a>
+        </div>
     </div>
 
     <!-- Messaggi di conferma / errore -->
@@ -180,9 +213,9 @@ echo ($_smarty_tpl->getValue('__smarty_section_h')['index'] ?? null);?>
                             <tbody>
                                 <?php
 $_from = $_smarty_tpl->getSmarty()->getRuntime('Foreach')->init($_smarty_tpl, $_smarty_tpl->getValue('lezioni_individuali'), 'slot');
-$foreach0DoElse = true;
+$foreach5DoElse = true;
 foreach ($_from ?? [] as $_smarty_tpl->getVariable('slot')->value) {
-$foreach0DoElse = false;
+$foreach5DoElse = false;
 ?>
                                     <tr>
                                         <td class="text-nowrap">
@@ -275,9 +308,9 @@ $_smarty_tpl->getSmarty()->getRuntime('Foreach')->restore($_smarty_tpl, 1);?>
                     <tbody>
                         <?php
 $_from = $_smarty_tpl->getSmarty()->getRuntime('Foreach')->init($_smarty_tpl, $_smarty_tpl->getValue('corsi_futuri'), 'corso');
-$foreach1DoElse = true;
+$foreach6DoElse = true;
 foreach ($_from ?? [] as $_smarty_tpl->getVariable('corso')->value) {
-$foreach1DoElse = false;
+$foreach6DoElse = false;
 ?>
                             <tr>
                                 <td><strong><?php echo $_smarty_tpl->getValue('corso')['nome_corso'];?>
@@ -326,9 +359,9 @@ $_smarty_tpl->getSmarty()->getRuntime('Foreach')->restore($_smarty_tpl, 1);?>
                     <tbody>
                         <?php
 $_from = $_smarty_tpl->getSmarty()->getRuntime('Foreach')->init($_smarty_tpl, $_smarty_tpl->getValue('corsi_passati'), 'corso');
-$foreach2DoElse = true;
+$foreach7DoElse = true;
 foreach ($_from ?? [] as $_smarty_tpl->getVariable('corso')->value) {
-$foreach2DoElse = false;
+$foreach7DoElse = false;
 ?>
                             <tr>
                                 <td><?php echo $_smarty_tpl->getValue('corso')['nome_corso'];?>
@@ -373,7 +406,7 @@ $_smarty_tpl->getSmarty()->getRuntime('Foreach')->restore($_smarty_tpl, 1);?>
                         <strong id="modal_dettagli_lezione" class="text-dark"></strong>
                     </p>
                     <p class="small text-muted mb-3">
-                        All'allievo verrà automaticamente rimborsato 1 credito e vedrà la motivazione nella propria dashboard.
+                        L'allievo vedrà la motivazione dell'annullamento direttamente nella propria dashboard.
                     </p>
                     <div class="mb-2">
                         <label for="motivazione" class="form-label fw-semibold">Motivazione dell'annullamento *</label>
@@ -389,6 +422,60 @@ $_smarty_tpl->getSmarty()->getRuntime('Foreach')->restore($_smarty_tpl, 1);?>
     </div>
 </div>
 
+<!-- MODALE CARICAMENTO IMMAGINE PROFILO ISTRUTTORE -->
+<div class="modal fade" id="modalFotoProfiloIstruttore" tabindex="-1" aria-labelledby="modalFotoProfiloIstruttoreLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title fw-semibold" id="modalFotoProfiloIstruttoreLabel" style="color: #4a4a4a;">Immagine Profilo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-4">
+                    <div class="profile-avatar-preview mx-auto" id="previewFotoIstruttore">
+                        <?php if (!( !$_smarty_tpl->hasVariable('immagine_profilo') || empty($_smarty_tpl->getValue('immagine_profilo')))) {?>
+                            <img src="/studio-essenza/<?php echo htmlspecialchars((string)$_smarty_tpl->getValue('immagine_profilo'), ENT_QUOTES, 'UTF-8', true);?>
+" alt="<?php echo htmlspecialchars((string)$_smarty_tpl->getValue('nome_istruttore'), ENT_QUOTES, 'UTF-8', true);?>
+ <?php echo htmlspecialchars((string)$_smarty_tpl->getValue('cognome_istruttore'), ENT_QUOTES, 'UTF-8', true);?>
+">
+                        <?php } else { ?>
+                            <?php echo htmlspecialchars((string)(($tmp = $_smarty_tpl->getValue('iniziali_istruttore') ?? null)===null||$tmp==='' ? '' ?? null : $tmp), ENT_QUOTES, 'UTF-8', true);?>
+
+                        <?php }?>
+                    </div>
+                </div>
+
+                <form action="index.php?controller=istruttore&action=aggiornaImmagineProfilo" method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="inputFotoIstruttore" class="form-label auth-label">Scegli una nuova immagine</label>
+                        <input
+                            type="file"
+                            id="inputFotoIstruttore"
+                            name="immagine_profilo"
+                            class="form-control admin-input"
+                            accept="image/jpeg,image/png,image/webp,image/gif"
+                            required
+                        >
+                        <div class="form-text mt-1">Questa foto comparirà anche nel carosello della homepage e nel calendario prenotazioni (max 5 MB).</div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-outline-essenza" data-bs-dismiss="modal">Annulla</button>
+                        <button type="submit" class="btn btn-primary">Salva Immagine</button>
+                    </div>
+                </form>
+
+                <?php if (!( !$_smarty_tpl->hasVariable('immagine_profilo') || empty($_smarty_tpl->getValue('immagine_profilo')))) {?>
+                    <hr class="auth-divider my-3">
+                    <form action="index.php?controller=istruttore&action=rimuoviImmagineProfilo" method="POST" class="text-center" onsubmit="return confirm('Vuoi davvero rimuovere la tua immagine profilo?');">
+                        <button type="submit" class="btn btn-sm btn-disdici">Rimuovi immagine attuale</button>
+                    </form>
+                <?php }?>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <?php echo '<script'; ?>
 >
@@ -400,6 +487,20 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('modal_id_slot').value = button.getAttribute('data-id');
             document.getElementById('modal_dettagli_lezione').textContent = button.getAttribute('data-dettagli');
             document.getElementById('motivazione').value = '';
+        });
+    }
+
+    var inputFoto = document.getElementById('inputFotoIstruttore');
+    var previewFoto = document.getElementById('previewFotoIstruttore');
+    if (inputFoto && previewFoto) {
+        inputFoto.addEventListener('change', function () {
+            var file = this.files && this.files[0];
+            if (!file) return;
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                previewFoto.innerHTML = '<img src="' + e.target.result + '" alt="Anteprima immagine profilo">';
+            };
+            reader.readAsDataURL(file);
         });
     }
 });

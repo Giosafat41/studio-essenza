@@ -7,12 +7,37 @@
     <!-- Intestazione Benvenuto + CTA Principale -->
     <section class="dashboard-card dashboard-hero mb-4">
         <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
-            <div>
-                <span class="auth-badge mb-2">Area Allievo</span>
-                <h1 class="dashboard-title">Bentornato/a, {$nome_utente|escape}!</h1>
-                <p class="dashboard-subtitle">
-                    Gestisci il tuo saldo crediti, i corsi di gruppo e le lezioni individuali in Studio Essenza.
-                </p>
+            <div class="d-flex align-items-center gap-3">
+                <div class="profile-avatar-wrap">
+                    <div class="profile-avatar">
+                        {if !empty($immagine_profilo)}
+                            <img src="/studio-essenza/{$immagine_profilo|escape}" alt="{$nome_utente|escape}">
+                        {else}
+                            {$iniziali_utente|default:''|escape}
+                        {/if}
+                    </div>
+                    <button
+                        type="button"
+                        class="profile-avatar-edit-btn"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalFotoProfiloAllievo"
+                        title="Modifica immagine profilo"
+                        aria-label="Modifica immagine profilo"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                            <circle cx="12" cy="13" r="4"></circle>
+                        </svg>
+                    </button>
+                </div>
+
+                <div>
+                    <span class="auth-badge mb-2">Area Allievo</span>
+                    <h1 class="dashboard-title">Bentornato/a, {$nome_utente|escape}!</h1>
+                    <p class="dashboard-subtitle">
+                        Gestisci il tuo saldo crediti, i corsi di gruppo e le lezioni individuali in Studio Essenza.
+                    </p>
+                </div>
             </div>
             <div class="flex-shrink-0">
                 <a href="index.php?controller=prenotazione&action=calendario" class="btn btn-primary dashboard-cta-btn w-100">
@@ -76,7 +101,7 @@
                     </div>
                 {else}
                     <div class="dashboard-saldo-ok mb-3">
-                        Il tuo pacchetto è attivo. Puoi prenotare corsi di gruppo e lezioni 1-to-1 dal calendario.
+                        Il tuo pacchetto è attivo. Puoi prenotare i corsi di gruppo dal calendario (le lezioni 1-to-1 sono pagate a parte).
                     </div>
                 {/if}
 
@@ -146,8 +171,7 @@
                                         </div>
                                         {if $ind.stato == 'annullata_istruttore'}
                                             <div class="dashboard-cancel-reason">
-                                                <strong class="text-danger">Motivazione:</strong> {$ind.motivazione|default:'Nessuna motivazione specificata.'|escape}<br>
-                                                <span>1 credito è stato rimborsato automaticamente sul tuo profilo.</span>
+                                                <strong class="text-danger">Motivazione:</strong> {$ind.motivazione|default:'Nessuna motivazione specificata.'|escape}
                                             </div>
                                         {/if}
                                     </div>
@@ -158,7 +182,7 @@
                                         action="index.php?controller=prenotazione&action=cancellaIndividuale"
                                         method="POST"
                                         class="m-0 flex-shrink-0"
-                                        onsubmit="return confirm('Vuoi davvero disdire questa lezione individuale? Il credito verrà restituito al tuo saldo.');"
+                                        onsubmit="return confirm('Vuoi davvero disdire questa lezione individuale?');"
                                     >
                                         <input type="hidden" name="id_slot" value="{$ind.id}">
                                         <button type="submit" class="btn-disdici">Disdici</button>
@@ -249,4 +273,73 @@
         </div>
     </div>
 </div>
+
+<!-- MODALE CARICAMENTO IMMAGINE PROFILO ALLIEVO -->
+<div class="modal fade" id="modalFotoProfiloAllievo" tabindex="-1" aria-labelledby="modalFotoProfiloAllievoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title fw-semibold" id="modalFotoProfiloAllievoLabel" style="color: #4a4a4a;">Immagine Profilo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-4">
+                    <div class="profile-avatar-preview mx-auto" id="previewFotoAllievo">
+                        {if !empty($immagine_profilo)}
+                            <img src="/studio-essenza/{$immagine_profilo|escape}" alt="{$nome_utente|escape}">
+                        {else}
+                            {$iniziali_utente|default:''|escape}
+                        {/if}
+                    </div>
+                </div>
+
+                <form action="index.php?controller=utente&action=aggiornaImmagineProfilo" method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="inputFotoAllievo" class="form-label auth-label">Scegli una nuova immagine</label>
+                        <input
+                            type="file"
+                            id="inputFotoAllievo"
+                            name="immagine_profilo"
+                            class="form-control admin-input"
+                            accept="image/jpeg,image/png,image/webp,image/gif"
+                            required
+                        >
+                        <div class="form-text mt-1">Formati consentiti: JPG, PNG, WEBP, GIF (max 5 MB).</div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-outline-essenza" data-bs-dismiss="modal">Annulla</button>
+                        <button type="submit" class="btn btn-primary">Salva Immagine</button>
+                    </div>
+                </form>
+
+                {if !empty($immagine_profilo)}
+                    <hr class="auth-divider my-3">
+                    <form action="index.php?controller=utente&action=rimuoviImmagineProfilo" method="POST" class="text-center" onsubmit="return confirm('Vuoi davvero rimuovere la tua immagine profilo?');">
+                        <button type="submit" class="btn btn-sm btn-disdici">Rimuovi immagine attuale</button>
+                    </form>
+                {/if}
+            </div>
+        </div>
+    </div>
+</div>
+
+{literal}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const input = document.getElementById('inputFotoAllievo');
+    const preview = document.getElementById('previewFotoAllievo');
+    if (!input || !preview) return;
+    input.addEventListener('change', function () {
+        const file = this.files && this.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            preview.innerHTML = '<img src="' + e.target.result + '" alt="Anteprima immagine profilo">';
+        };
+        reader.readAsDataURL(file);
+    });
+});
+</script>
+{/literal}
 {/block}

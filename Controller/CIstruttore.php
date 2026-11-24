@@ -33,15 +33,17 @@ class CIstruttore {
         foreach ($lezioni_gruppo as $lezione) {
             $corso = FCorso::load($lezione->getIdCorso());
             $prenotazioni = FPrenotazione::loadByLezione($lezione->getId());
+            $ts_inizio = strtotime($lezione->getDataOraInizio());
+            $ts_fine = strtotime($lezione->getDataOraFine());
 
             $dati_corso = [
                 'id_lezione' => $lezione->getId(),
                 'nome_corso' => $corso ? $corso->getNome() : 'Corso',
                 'capienza_max' => $corso ? $corso->getCapienzaMax() : 0,
                 'num_iscritti' => count($prenotazioni),
-                'data_formattata' => date('d/m/Y', strtotime($lezione->getDataOraInizio())),
-                'ora_inizio' => date('H:i', strtotime($lezione->getDataOraInizio())),
-                'ora_fine' => date('H:i', strtotime($lezione->getDataOraFine()))
+                'data_formattata' => date('d/m/Y', $ts_inizio),
+                'ora_inizio' => date('H:i', $ts_inizio),
+                'ora_fine' => date('H:i', $ts_fine)
             ];
 
             if ($lezione->getDataOraInizio() >= $oggi) {
@@ -60,6 +62,12 @@ class CIstruttore {
 
         foreach ($slot_entity as $slot) {
             if ($slot->getDataOraInizio() < $oggi) {
+                continue;
+            }
+
+            // Rimuove eventuali vecchi slot liberi che entrano in conflitto con un corso di gruppo assegnato
+            if ($slot->getStato() === 'disponibile' && FLezione::hasSovrapposizione($id_istruttore, $slot->getDataOraInizio(), $slot->getDataOraFine())) {
+                FLezioneIndividuale::deleteDisponibilita($slot->getId(), $id_istruttore);
                 continue;
             }
 
@@ -130,7 +138,8 @@ class CIstruttore {
         }
 
         $inseriti = 0;
-        $saltati_sovrapposizione = 0;
+        $saltati_corso_gruppo = 0;
+        $saltati_individuale = 0;
         $saltati_passati = 0;
 
         for ($ora = $ora_inizio; $ora < $ora_fine; $ora++) {
@@ -142,8 +151,13 @@ class CIstruttore {
                 continue;
             }
 
-            if (FLezioneIndividuale::hasSovrapposizione($id_istruttore, $inizio_slot, $fine_slot)) {
-                $saltati_sovrapposizione++;
+            if (FLezione::hasSovrapposizione($id_istruttore, $inizio_slot, $fine_slot)) {
+                $saltati_corso_gruppo++;
+                continue;
+            }
+
+            if (FLezioneIndividuale::hasSovrapposizioneIndividuale($id_istruttore, $inizio_slot, $fine_slot)) {
+                $saltati_individuale++;
                 continue;
             }
 
@@ -155,14 +169,23 @@ class CIstruttore {
 
         if ($inseriti > 0) {
             $messaggio = "Inseriti {$inseriti} slot di disponibilità da 1 ora.";
-            if ($saltati_sovrapposizione > 0) {
-                $messaggio .= " ({$saltati_sovrapposizione} saltati perché già occupati da altri impegni o corsi).";
+            $dettagli = [];
+            if ($saltati_corso_gruppo > 0) {
+                $dettagli[] = "{$saltati_corso_gruppo} saltati perché sovrapposti a corsi di gruppo assegnati";
+            }
+            if ($saltati_individuale > 0) {
+                $dettagli[] = "{$saltati_individuale} saltati perché già presenti in agenda";
+            }
+            if (!empty($dettagli)) {
+                $messaggio .= " (" . implode('; ', $dettagli) . ").";
             }
             header("Location: index.php?controller=istruttore&action=dashboard&msg=" . urlencode($messaggio));
         } else {
             $errore = "Nessuno slot inserito.";
-            if ($saltati_sovrapposizione > 0) {
-                $errore = "Tutti gli orari selezionati si sovrappongono a corsi o disponibilità già esistenti.";
+            if ($saltati_corso_gruppo > 0 && $saltati_individuale === 0) {
+                $errore = "Non puoi inserire disponibilità in questa fascia oraria perché sei già assegnato/a a una lezione di gruppo.";
+            } elseif ($saltati_corso_gruppo > 0 || $saltati_individuale > 0) {
+                $errore = "Tutti gli orari selezionati si sovrappongono a corsi di gruppo assegnati o disponibilità già esistenti.";
             } elseif ($saltati_passati > 0) {
                 $errore = "Non è possibile inserire disponibilità in date o orari già trascorsi.";
             }
@@ -187,7 +210,7 @@ class CIstruttore {
         exit;
     }
 
-    // Annulla una lezione individuale già prenotata con motivazione e rimborso credito
+    // Annulla una lezione individuale già prenotata con motivazione (nessuna variazione sui crediti)
     public function annullaIndividuale() {
         $id_istruttore = $this->verificaIstruttore();
 
@@ -209,15 +232,8 @@ class CIstruttore {
         if ($slot && $slot->getIdIstruttore() === $id_istruttore && $slot->getStato() === 'prenotata') {
             $annullata = FLezioneIndividuale::annullaDaIstruttore($id_slot, $id_istruttore, $motivazione);
 
-            if ($annullata && $slot->getIdUtente()) {
-                // Rimborso automatico di 1 credito all'allievo
-                $allievo = FUtente::load($slot->getIdUtente());
-                if ($allievo) {
-                    $allievo->ricaricaCrediti(1);
-                    FUtente::update($allievo);
-                }
-
-                header("Location: index.php?controller=istruttore&action=dashboard&msg=" . urlencode("Lezione individuale annullata. La motivazione è visibile all'allievo e il credito è stato rimborsato."));
+            if ($annullata) {
+                header("Location: index.php?controller=istruttore&action=dashboard&msg=" . urlencode("Lezione individuale annullata. La motivazione è visibile all'allievo nella propria dashboard."));
                 exit;
             }
         }
@@ -263,6 +279,64 @@ class CIstruttore {
 
         $view = new VIstruttore();
         $view->mostraAppello($dettagli_lezione, $iscritti);
+    }
+
+    // Carica o sostituisce l'immagine profilo dell'istruttore dalla propria dashboard
+    public function aggiornaImmagineProfilo() {
+        $id_istruttore = $this->verificaIstruttore();
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header("Location: index.php?controller=istruttore&action=dashboard");
+            exit;
+        }
+
+        $istruttore = FUtente::load($id_istruttore);
+        if (!$istruttore) {
+            header("Location: index.php?controller=utente&action=logout");
+            exit;
+        }
+
+        $esito = UImmagine::salvaImmagineProfilo(
+            $_FILES['immagine_profilo'] ?? null,
+            $id_istruttore,
+            $istruttore->getImmagineProfilo()
+        );
+
+        if (!$esito['ok']) {
+            header("Location: index.php?controller=istruttore&action=dashboard&err=" . urlencode($esito['errore']));
+            exit;
+        }
+
+        $istruttore->setImmagineProfilo($esito['percorso']);
+        FUtente::update($istruttore);
+
+        header("Location: index.php?controller=istruttore&action=dashboard&msg=" . urlencode("Immagine profilo aggiornata con successo!"));
+        exit;
+    }
+
+    // Rimuove l'immagine profilo dell'istruttore dalla propria dashboard
+    public function rimuoviImmagineProfilo() {
+        $id_istruttore = $this->verificaIstruttore();
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header("Location: index.php?controller=istruttore&action=dashboard");
+            exit;
+        }
+
+        $istruttore = FUtente::load($id_istruttore);
+        if (!$istruttore) {
+            header("Location: index.php?controller=utente&action=logout");
+            exit;
+        }
+
+        if ($istruttore->getImmagineProfilo()) {
+            UImmagine::eliminaImmagineProfilo($istruttore->getImmagineProfilo());
+            $istruttore->setImmagineProfilo(null);
+            FUtente::update($istruttore);
+        }
+
+        header("Location: index.php?controller=istruttore&action=dashboard&msg=" . urlencode("Immagine profilo rimossa."));
+        exit;
     }
 }
 ?>

@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 5.8.5, created on 2026-11-19 19:10:17
+/* Smarty version 5.8.5, created on 2026-11-24 17:20:01
   from 'file:home.tpl' */
 
 /* @var \Smarty\Template $_smarty_tpl */
 if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   'version' => '5.8.5',
-  'unifunc' => 'content_6aff3b89a30148_15496275',
+  'unifunc' => 'content_6b05b9317606e6_88031332',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     'cc042b03b4fc0b844e3145005cbfee532cb25cc7' => 
     array (
       0 => 'home.tpl',
-      1 => 1795111793,
+      1 => 1795535473,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   array (
   ),
 ))) {
-function content_6aff3b89a30148_15496275 (\Smarty\Template $_smarty_tpl) {
+function content_6b05b9317606e6_88031332 (\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
 $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 ?>
@@ -28,13 +28,13 @@ $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 
 
 <?php 
-$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_7766681856aff3b89a205a8_93387507', "content");
+$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_13129074476b05b93173a384_02415560', "content");
 ?>
 
 <?php $_smarty_tpl->getInheritance()->endChild($_smarty_tpl, "layout.tpl", $_smarty_current_dir);
 }
 /* {block "content"} */
-class Block_7766681856aff3b89a205a8_93387507 extends \Smarty\Runtime\Block
+class Block_13129074476b05b93173a384_02415560 extends \Smarty\Runtime\Block
 {
 public function callBlock(\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
@@ -181,15 +181,25 @@ $foreach1Backup = clone $_smarty_tpl->getVariable('istr');
                                 <div class="carousel-item <?php if ($_smarty_tpl->getVariable('istr')->first) {?>active<?php }?>">
                                     <div class="card border-0 text-center carousel-card-essenza mx-auto">
                                         <div class="card-body d-flex flex-column justify-content-center align-items-center">
-                                            <div class="avatar-istruttore mb-3"><?php echo htmlspecialchars((string)$_smarty_tpl->getValue('istr')['iniziali'], ENT_QUOTES, 'UTF-8', true);?>
-</div>
+                                            <div class="avatar-istruttore mb-3">
+                                                <?php if (!( !true || empty($_smarty_tpl->getValue('istr')['immagine_profilo']))) {?>
+                                                    <img src="/studio-essenza/<?php echo htmlspecialchars((string)$_smarty_tpl->getValue('istr')['immagine_profilo'], ENT_QUOTES, 'UTF-8', true);?>
+" alt="<?php echo htmlspecialchars((string)$_smarty_tpl->getValue('istr')['nome'], ENT_QUOTES, 'UTF-8', true);?>
+ <?php echo htmlspecialchars((string)$_smarty_tpl->getValue('istr')['cognome'], ENT_QUOTES, 'UTF-8', true);?>
+">
+                                                <?php } else { ?>
+                                                    <?php echo htmlspecialchars((string)$_smarty_tpl->getValue('istr')['iniziali'], ENT_QUOTES, 'UTF-8', true);?>
+
+                                                <?php }?>
+                                            </div>
                                             <h3 class="h5 fw-bold mb-1"><?php echo htmlspecialchars((string)$_smarty_tpl->getValue('istr')['nome'], ENT_QUOTES, 'UTF-8', true);?>
  <?php echo htmlspecialchars((string)$_smarty_tpl->getValue('istr')['cognome'], ENT_QUOTES, 'UTF-8', true);?>
 </h3>
                                             <span class="badge rounded-pill mb-3" style="background-color: #eef1ec; color: #5f6e54;">Istruttore Certificato</span>
-                                            <p class="text-muted small mb-0">
-                                                Specialista in Pilates Reformer, Matwork e percorsi posturali individuali.
-                                            </p>
+                                            <?php if (!( !true || empty($_smarty_tpl->getValue('istr')['descrizione']))) {?>
+                                                <p class="text-muted small mb-0"><?php echo nl2br((string) htmlspecialchars((string)$_smarty_tpl->getValue('istr')['descrizione'], ENT_QUOTES, 'UTF-8', true), (bool) 1);?>
+</p>
+                                            <?php }?>
                                         </div>
                                     </div>
                                 </div>
