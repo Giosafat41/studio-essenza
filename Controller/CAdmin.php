@@ -2,21 +2,56 @@
 // File: Controller/CAdmin.php
 
 class CAdmin {
-    
-    public function dashboard() {
+
+    // Ruoli gestiti dall'unico Admin: segretari e istruttori (mai altri admin né allievi)
+    private const RUOLI_GESTITI = ['segretaria', 'istruttore'];
+
+    private function verificaAdmin() {
         if (session_status() == PHP_SESSION_NONE) session_start();
-        if (!isset($_SESSION['utente_id']) || $_SESSION['ruolo'] !== 'admin') {
+        if (!isset($_SESSION['utente_id']) || ($_SESSION['ruolo'] ?? '') !== 'admin') {
             header("Location: index.php?controller=utente&action=login");
             exit;
         }
-
-        $admin = FUtente::load($_SESSION['utente_id']);
-        if (!$admin) {
+        $admin = FUtente::load((int)$_SESSION['utente_id']);
+        if (!$admin || $admin->getRuolo() !== 'admin') {
             header("Location: index.php?controller=utente&action=logout");
             exit;
         }
+        return $admin;
+    }
 
-        // Carica tutte le lezioni disponibili (non scadute) per il menù a tendina del Registro Appello
+    // Normalizza nome e cognome nel formato "nome.cognome" per la password iniziale
+    public static function generaPasswordIniziale(string $nome, string $cognome): string {
+        $pulisci = function (string $testo): string {
+            $testo = trim($testo);
+            if ($testo === '') {
+                return '';
+            }
+            $mappa = [
+                'à' => 'a', 'á' => 'a', 'â' => 'a', 'ã' => 'a', 'ä' => 'a', 'À' => 'a', 'Á' => 'a', 'Â' => 'a', 'Ä' => 'a',
+                'è' => 'e', 'é' => 'e', 'ê' => 'e', 'ë' => 'e', 'È' => 'e', 'É' => 'e', 'Ê' => 'e', 'Ë' => 'e',
+                'ì' => 'i', 'í' => 'i', 'î' => 'i', 'ï' => 'i', 'Ì' => 'i', 'Í' => 'i', 'Î' => 'i', 'Ï' => 'i',
+                'ò' => 'o', 'ó' => 'o', 'ô' => 'o', 'õ' => 'o', 'ö' => 'o', 'Ò' => 'o', 'Ó' => 'o', 'Ô' => 'o', 'Ö' => 'o',
+                'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ü' => 'u', 'Ù' => 'u', 'Ú' => 'u', 'Û' => 'u', 'Ü' => 'u',
+                'ç' => 'c', 'Ç' => 'c', 'ñ' => 'n', 'Ñ' => 'n'
+            ];
+            $testo = strtr($testo, $mappa);
+            $testo = strtolower($testo);
+            return preg_replace('/[^a-z0-9]/', '', $testo) ?? '';
+        };
+
+        $parteNome = $pulisci($nome);
+        $parteCognome = $pulisci($cognome);
+
+        if ($parteNome !== '' && $parteCognome !== '') {
+            return $parteNome . '.' . $parteCognome;
+        }
+        return $parteNome . $parteCognome;
+    }
+
+    public function dashboard() {
+        $admin = $this->verificaAdmin();
+
         $lezioni_entity = FLezione::loadDisponibili();
         $lezioni_disponibili = [];
 
@@ -37,32 +72,131 @@ class CAdmin {
             ];
         }
 
-        $totale_utenti = count(FUtente::loadAll());
-        $messaggio_errore = isset($_GET['err']) ? $_GET['err'] : null;
-        $messaggio_successo = isset($_GET['msg']) ? $_GET['msg'] : null;
+        $totale_staff = count(FUtente::loadByRuoli(self::RUOLI_GESTITI));
+        $totale_corsi = count(FCorso::loadAll());
+        $messaggio_errore = $_GET['err'] ?? null;
+        $messaggio_successo = $_GET['msg'] ?? null;
 
         $view = new VAdmin();
         $view->mostraDashboard(
             $admin->getNome(),
             $lezioni_disponibili,
-            $totale_utenti,
+            $totale_staff,
+            $totale_corsi,
             $messaggio_errore,
             $messaggio_successo
         );
     }
 
+    // =========================================================================
+    // GESTIONE CORSI (solo Admin)
+    // =========================================================================
 
-    // Gestione Creazione Nuova Lezione
-    public function aggiungiLezione() {
-        if (session_status() == PHP_SESSION_NONE) session_start();
-        if (!isset($_SESSION['utente_id']) || $_SESSION['ruolo'] !== 'admin') {
-            header("Location: index.php?controller=utente&action=login");
-            exit;
+    public function corsi() {
+        $this->verificaAdmin();
+
+        $corsi_entity = FCorso::loadAll();
+        $corsi_lista = [];
+        foreach ($corsi_entity as $c) {
+            $corsi_lista[] = [
+                'id' => $c->getId(),
+                'nome' => $c->getNome(),
+                'descrizione' => $c->getDescrizione(),
+                'capienza_max' => (int)$c->getCapienzaMax(),
+                'num_lezioni' => FCorso::countLezioni((int)$c->getId())
+            ];
+        }
+
+        $corso_in_modifica = null;
+        if (isset($_GET['edit'])) {
+            $id_edit = (int)$_GET['edit'];
+            if ($id_edit > 0) {
+                $corso_in_modifica = FCorso::load($id_edit);
+            }
         }
 
         $view = new VAdmin();
+        $view->mostraCorsi(
+            $corsi_lista,
+            $corso_in_modifica,
+            $_GET['msg'] ?? null,
+            $_GET['err'] ?? null
+        );
+    }
+
+    public function salvaCorso() {
+        $this->verificaAdmin();
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header("Location: index.php?controller=admin&action=corsi");
+            exit;
+        }
+
+        $id = (int)($_POST['id'] ?? 0);
+        $nome = trim($_POST['nome'] ?? '');
+        $descrizione = trim($_POST['descrizione'] ?? '');
+        $capienza_max = (int)($_POST['capienza_max'] ?? 0);
+
+        if ($nome === '' || $capienza_max < 1 || $capienza_max > 100) {
+            header("Location: index.php?controller=admin&action=corsi&err=" . urlencode("Inserisci un nome valido e una capienza compresa tra 1 e 100 posti."));
+            exit;
+        }
+
+        if ($id > 0) {
+            $corso = FCorso::load($id);
+            if (!$corso) {
+                header("Location: index.php?controller=admin&action=corsi&err=" . urlencode("Corso non trovato."));
+                exit;
+            }
+            $corso->setNome($nome);
+            $corso->setDescrizione($descrizione !== '' ? $descrizione : null);
+            $corso->setCapienzaMax($capienza_max);
+            FCorso::update($corso);
+            header("Location: index.php?controller=admin&action=corsi&msg=" . urlencode("Corso \"{$nome}\" aggiornato con successo."));
+        } else {
+            $nuovoCorso = new ECorso($nome, $descrizione !== '' ? $descrizione : null, $capienza_max);
+            FCorso::store($nuovoCorso);
+            header("Location: index.php?controller=admin&action=corsi&msg=" . urlencode("Nuovo corso \"{$nome}\" inserito con successo."));
+        }
+        exit;
+    }
+
+    public function eliminaCorso() {
+        $this->verificaAdmin();
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header("Location: index.php?controller=admin&action=corsi");
+            exit;
+        }
+
+        $id = (int)($_POST['id_corso'] ?? 0);
+        $corso = FCorso::load($id);
+        if (!$corso) {
+            header("Location: index.php?controller=admin&action=corsi&err=" . urlencode("Corso non trovato."));
+            exit;
+        }
+
+        $num_lezioni = FCorso::countLezioni($id);
+        if ($num_lezioni > 0) {
+            header("Location: index.php?controller=admin&action=corsi&err=" . urlencode("Impossibile eliminare il corso \"{$corso->getNome()}\": risultano {$num_lezioni} lezioni associate."));
+            exit;
+        }
+
+        FCorso::delete($id);
+        header("Location: index.php?controller=admin&action=corsi&msg=" . urlencode("Corso \"{$corso->getNome()}\" eliminato."));
+        exit;
+    }
+
+    // =========================================================================
+    // GESTIONE PALINSESTO E LEZIONI (solo Admin crea/elimina; Admin gestisce)
+    // =========================================================================
+
+    public function aggiungiLezione() {
+        $this->verificaAdmin();
+
+        $view = new VAdmin();
         $corsi = FCorso::loadAll();
-        $istruttori = FUtente::loadIstruttori();
+        $istruttori = FUtente::loadSoloIstruttori();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id_corso = (int)($_POST['id_corso'] ?? 0);
@@ -81,10 +215,15 @@ class CAdmin {
                 return;
             }
 
+            $istruttoreObj = FUtente::load($id_istruttore);
+            if (!$istruttoreObj || $istruttoreObj->getRuolo() !== 'istruttore') {
+                $view->mostraFormLezione($corsi, $istruttori, null, "Seleziona un istruttore valido.");
+                return;
+            }
+
             $data_inizio = date('Y-m-d H:i:s', $ts_inizio);
             $data_fine = date('Y-m-d H:i:s', $ts_inizio + ($durata_minuti * 60));
 
-            // 1. Verifica che l'istruttore non sia già assegnato a un'altra lezione di gruppo nella stessa fascia oraria
             if (FLezione::hasSovrapposizione($id_istruttore, $data_inizio, $data_fine)) {
                 $view->mostraFormLezione(
                     $corsi,
@@ -95,7 +234,6 @@ class CAdmin {
                 return;
             }
 
-            // 2. Verifica se l'istruttore ha già lezioni individuali PRENOTATE da allievi in questa fascia oraria
             $prenotate_conflitto = FLezioneIndividuale::findPrenotateSovrapposte($id_istruttore, $data_inizio, $data_fine);
             if (!empty($prenotate_conflitto)) {
                 $fasce = [];
@@ -111,11 +249,9 @@ class CAdmin {
                 return;
             }
 
-            // 3. Salva la nuova lezione di gruppo
             $lezione = new ELezione($id_corso, $id_istruttore, $data_inizio, $data_fine, $durata_minuti);
             FLezione::store($lezione);
 
-            // 4. Aggiorna le disponibilità individuali dell'istruttore rimuovendo eventuali slot liberi sovrapposti
             $slot_rimossi = FLezioneIndividuale::rimuoviDisponibiliSovrapposte($id_istruttore, $data_inizio, $data_fine);
 
             $messaggio = "Lezione inserita con successo nel palinsesto (" . date('d/m/Y H:i', $ts_inizio) . " - " . date('H:i', $ts_inizio + ($durata_minuti * 60)) . ").";
@@ -126,22 +262,17 @@ class CAdmin {
 
             $view->mostraFormLezione($corsi, $istruttori, $messaggio);
         } else {
-            // Se la richiesta è GET, carichiamo i dati per i menu a tendina
             $view->mostraFormLezione($corsi, $istruttori);
         }
     }
-    
-    // Mostra l'appello per una specifica lezione
+
+    // Gestione singola lezione: iscritti, disiscrizione, cambio istruttore, eliminazione
     public function appello() {
-        if (session_status() == PHP_SESSION_NONE) session_start();
-        if (!isset($_SESSION['utente_id']) || $_SESSION['ruolo'] !== 'admin') {
-            header("Location: index.php?controller=utente&action=login");
-            exit;
-        }
+        $this->verificaAdmin();
 
         $id_lezione = isset($_GET['id_lezione']) ? (int)$_GET['id_lezione'] : 0;
         if ($id_lezione <= 0) {
-            header("Location: index.php?controller=admin&action=dashboard&err=" . urlencode("Seleziona una lezione valida per visualizzare il registro appello."));
+            header("Location: index.php?controller=admin&action=dashboard&err=" . urlencode("Seleziona una lezione valida da gestire."));
             exit;
         }
 
@@ -160,6 +291,7 @@ class CAdmin {
             $allievo = FUtente::load($p->getIdUtente());
             if ($allievo) {
                 $iscritti[] = [
+                    'id_prenotazione' => $p->getId(),
                     'nome' => $allievo->getNome(),
                     'cognome' => $allievo->getCognome(),
                     'email' => $allievo->getEmail(),
@@ -170,6 +302,8 @@ class CAdmin {
         }
 
         $dettagli_lezione = [
+            'id' => $lezione->getId(),
+            'id_istruttore' => (int)$lezione->getIdIstruttore(),
             'nome_corso' => $corso ? $corso->getNome() : 'Corso',
             'istruttore' => $istruttore ? ($istruttore->getNome() . ' ' . $istruttore->getCognome()) : 'Istruttore',
             'data' => date('d/m/Y', strtotime($lezione->getDataOraInizio())),
@@ -177,66 +311,179 @@ class CAdmin {
             'capienza_max' => $corso ? (int)$corso->getCapienzaMax() : 0
         ];
 
+        $istruttori = FUtente::loadSoloIstruttori();
+
         $view = new VAdmin();
-        $view->mostraAppello($dettagli_lezione, $iscritti);
+        $view->mostraAppello(
+            $dettagli_lezione,
+            $iscritti,
+            $istruttori,
+            $_GET['msg'] ?? null,
+            $_GET['err'] ?? null
+        );
     }
-    // 1. Mostra la tabella con tutti gli utenti iscritti
+
+    public function disiscriviAllievo() {
+        $this->verificaAdmin();
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header("Location: index.php?controller=admin&action=dashboard");
+            exit;
+        }
+
+        $id_lezione = (int)($_POST['id_lezione'] ?? 0);
+        $id_prenotazione = (int)($_POST['id_prenotazione'] ?? 0);
+        $prenotazione = FPrenotazione::load($id_prenotazione);
+
+        if (!$prenotazione || (int)$prenotazione->getIdLezione() !== $id_lezione) {
+            header("Location: index.php?controller=admin&action=appello&id_lezione={$id_lezione}&err=" . urlencode("Prenotazione non trovata."));
+            exit;
+        }
+
+        $allievo = FUtente::load($prenotazione->getIdUtente());
+        FPrenotazione::delete($id_prenotazione);
+        if ($allievo) {
+            $allievo->ricaricaCrediti(1);
+            FUtente::update($allievo);
+            $nome_allievo = $allievo->getNome() . ' ' . $allievo->getCognome();
+        } else {
+            $nome_allievo = 'Allievo';
+        }
+
+        header("Location: index.php?controller=admin&action=appello&id_lezione={$id_lezione}&msg=" . urlencode("{$nome_allievo} è stato disiscritto dalla lezione (1 credito riaccreditato)."));
+        exit;
+    }
+
+    public function cambiaIstruttoreLezione() {
+        $this->verificaAdmin();
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header("Location: index.php?controller=admin&action=dashboard");
+            exit;
+        }
+
+        $id_lezione = (int)($_POST['id_lezione'] ?? 0);
+        $nuovo_id_istruttore = (int)($_POST['id_istruttore'] ?? 0);
+        $lezione = FLezione::load($id_lezione);
+
+        if (!$lezione) {
+            header("Location: index.php?controller=admin&action=dashboard&err=" . urlencode("Lezione non trovata."));
+            exit;
+        }
+
+        $nuovoIstruttore = FUtente::load($nuovo_id_istruttore);
+        if (!$nuovoIstruttore || $nuovoIstruttore->getRuolo() !== 'istruttore') {
+            header("Location: index.php?controller=admin&action=appello&id_lezione={$id_lezione}&err=" . urlencode("Seleziona un istruttore valido."));
+            exit;
+        }
+
+        if ((int)$lezione->getIdIstruttore() === $nuovo_id_istruttore) {
+            header("Location: index.php?controller=admin&action=appello&id_lezione={$id_lezione}&msg=" . urlencode("L'istruttore selezionato è già assegnato a questa lezione."));
+            exit;
+        }
+
+        if (FLezione::hasSovrapposizione($nuovo_id_istruttore, $lezione->getDataOraInizio(), $lezione->getDataOraFine(), $id_lezione)) {
+            header("Location: index.php?controller=admin&action=appello&id_lezione={$id_lezione}&err=" . urlencode("Impossibile cambiare istruttore: {$nuovoIstruttore->getNome()} {$nuovoIstruttore->getCognome()} è già assegnato a un'altra lezione di gruppo in questa fascia oraria."));
+            exit;
+        }
+
+        $prenotate_conflitto = FLezioneIndividuale::findPrenotateSovrapposte($nuovo_id_istruttore, $lezione->getDataOraInizio(), $lezione->getDataOraFine());
+        if (!empty($prenotate_conflitto)) {
+            header("Location: index.php?controller=admin&action=appello&id_lezione={$id_lezione}&err=" . urlencode("Impossibile cambiare istruttore: {$nuovoIstruttore->getNome()} {$nuovoIstruttore->getCognome()} ha già una lezione individuale prenotata in questa fascia oraria."));
+            exit;
+        }
+
+        FLezione::updateIstruttore($id_lezione, $nuovo_id_istruttore);
+        FLezioneIndividuale::rimuoviDisponibiliSovrapposte($nuovo_id_istruttore, $lezione->getDataOraInizio(), $lezione->getDataOraFine());
+
+        header("Location: index.php?controller=admin&action=appello&id_lezione={$id_lezione}&msg=" . urlencode("Istruttore aggiornato a {$nuovoIstruttore->getNome()} {$nuovoIstruttore->getCognome()}."));
+        exit;
+    }
+
+    public function eliminaLezione() {
+        $this->verificaAdmin();
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header("Location: index.php?controller=admin&action=dashboard");
+            exit;
+        }
+
+        $id_lezione = (int)($_POST['id_lezione'] ?? 0);
+        $lezione = FLezione::load($id_lezione);
+        if (!$lezione) {
+            header("Location: index.php?controller=admin&action=dashboard&err=" . urlencode("Lezione non trovata."));
+            exit;
+        }
+
+        // Rimborsa 1 credito agli allievi eventualmente prenotati prima di eliminare la lezione
+        $prenotazioni = FPrenotazione::loadByLezione($id_lezione);
+        foreach ($prenotazioni as $p) {
+            $allievo = FUtente::load($p->getIdUtente());
+            if ($allievo) {
+                $allievo->ricaricaCrediti(1);
+                FUtente::update($allievo);
+            }
+        }
+
+        FLezione::delete($id_lezione);
+        $msg = "Lezione eliminata dal calendario.";
+        if (count($prenotazioni) > 0) {
+            $msg .= " Riaccreditato 1 ingresso ai " . count($prenotazioni) . " allievi prenotati.";
+        }
+        header("Location: index.php?controller=admin&action=dashboard&msg=" . urlencode($msg));
+        exit;
+    }
+
+    // =========================================================================
+    // GESTIONE STAFF (solo Segretari e Istruttori)
+    // =========================================================================
+
     public function utenti() {
-        if (session_status() == PHP_SESSION_NONE) session_start();
-        if (!isset($_SESSION['utente_id']) || $_SESSION['ruolo'] !== 'admin') {
-            header("Location: index.php?controller=utente&action=login");
-            exit;
-        }
+        $this->verificaAdmin();
 
-        $utenti = FUtente::loadAll();
-        $messaggio = isset($_GET['msg']) ? $_GET['msg'] : null;
+        $utenti = FUtente::loadByRuoli(self::RUOLI_GESTITI);
+        $messaggio = $_GET['msg'] ?? null;
+        $errore = $_GET['err'] ?? null;
 
         $view = new VAdmin();
-        $view->mostraUtenti($utenti, $messaggio);
+        $view->mostraUtenti($utenti, $messaggio, $errore);
     }
 
-    // 2. Modifica tutti i dati di un utente esistente (incluso certificato medico)
     public function modificaUtente() {
-        if (session_status() == PHP_SESSION_NONE) session_start();
-        if (!isset($_SESSION['utente_id']) || $_SESSION['ruolo'] !== 'admin') {
-            header("Location: index.php?controller=utente&action=login");
-            exit;
-        }
-
+        $this->verificaAdmin();
         $view = new VAdmin();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id = (int)$_POST['id'];
+            $id = (int)($_POST['id'] ?? 0);
             $utente = FUtente::load($id);
 
-            if (!$utente) {
-                header("Location: index.php?controller=admin&action=utenti");
+            if (!$utente || !in_array($utente->getRuolo(), self::RUOLI_GESTITI, true)) {
+                header("Location: index.php?controller=admin&action=utenti&err=" . urlencode("Non puoi modificare questo profilo da questa sezione."));
                 exit;
             }
 
-            $nuova_email = trim($_POST['email']);
-            // Verifica che la nuova email non appartenga già a un altro utente
+            $nuova_email = trim($_POST['email'] ?? '');
             $esistente = FUtente::loadByEmail($nuova_email);
             if ($esistente && $esistente->getId() != $id) {
                 $view->mostraFormUtente($utente, "Errore: l'email inserita è già utilizzata da un altro utente.");
                 return;
             }
 
-            $ruolo = $_POST['ruolo'];
-            $utente->setNome(trim($_POST['nome']));
-            $utente->setCognome(trim($_POST['cognome']));
+            $ruolo = $_POST['ruolo'] ?? '';
+            if (!in_array($ruolo, self::RUOLI_GESTITI, true)) {
+                $view->mostraFormUtente($utente, "Ruolo non consentito. Puoi assegnare solo i ruoli Segretaria o Istruttore.");
+                return;
+            }
+
+            $utente->setNome(trim($_POST['nome'] ?? ''));
+            $utente->setCognome(trim($_POST['cognome'] ?? ''));
             $utente->setEmail($nuova_email);
-            $utente->setTelefono(trim($_POST['telefono']));
+            $utente->setTelefono(trim($_POST['telefono'] ?? ''));
             $utente->setRuolo($ruolo);
-            if ($ruolo === 'allievo') {
-                $utente->setCreditiResidui(isset($_POST['crediti_residui']) ? max(0, (int)$_POST['crediti_residui']) : 0);
-                $utente->setScadenzaCertificato(!empty($_POST['scadenza_certificato']) ? $_POST['scadenza_certificato'] : null);
-                $utente->setDescrizione(null);
-                $utente->setTariffaIndividuale(null);
-                // L'admin non carica né rimuove l'immagine profilo dell'allievo: conserva quella attuale
-            } elseif ($ruolo === 'istruttore') {
-                $utente->setCreditiResidui(0);
-                $utente->setScadenzaCertificato(null);
+            $utente->setCreditiResidui(0);
+            $utente->setScadenzaCertificato(null);
+
+            if ($ruolo === 'istruttore') {
                 $desc = trim($_POST['descrizione'] ?? '');
                 $utente->setDescrizione($desc !== '' ? $desc : null);
 
@@ -266,11 +513,9 @@ class CAdmin {
                     $utente->setImmagineProfilo(null);
                 }
             } else {
-                $utente->setCreditiResidui(0);
-                $utente->setScadenzaCertificato(null);
+                // segretaria
                 $utente->setDescrizione(null);
                 $utente->setTariffaIndividuale(null);
-                $utente->setDeveCambiarePassword(false);
                 if ($utente->getImmagineProfilo()) {
                     UImmagine::eliminaImmagineProfilo($utente->getImmagineProfilo());
                     $utente->setImmagineProfilo(null);
@@ -279,80 +524,47 @@ class CAdmin {
 
             FUtente::update($utente);
 
-            header("Location: index.php?controller=admin&action=utenti&msg=" . urlencode("Dati di {$utente->getNome()} {$utente->getCognome()} aggiornati con successo."));
+            header("Location: index.php?controller=admin&action=utenti&msg=" . urlencode("Profilo di {$utente->getNome()} {$utente->getCognome()} aggiornato con successo."));
             exit;
         } else {
             $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
             $utente = FUtente::load($id);
-            if (!$utente) {
-                header("Location: index.php?controller=admin&action=utenti");
+            if (!$utente || !in_array($utente->getRuolo(), self::RUOLI_GESTITI, true)) {
+                header("Location: index.php?controller=admin&action=utenti&err=" . urlencode("Profilo non trovato o non modificabile."));
                 exit;
             }
             $view->mostraFormUtente($utente);
         }
     }
 
-    // Normalizza nome e cognome nel formato "nome.cognome" per la password iniziale
-    private static function generaPasswordIniziale(string $nome, string $cognome): string {
-        $pulisci = function (string $testo): string {
-            $testo = trim($testo);
-            if ($testo === '') {
-                return '';
-            }
-            $mappa = [
-                'à' => 'a', 'á' => 'a', 'â' => 'a', 'ã' => 'a', 'ä' => 'a', 'À' => 'a', 'Á' => 'a', 'Â' => 'a', 'Ä' => 'a',
-                'è' => 'e', 'é' => 'e', 'ê' => 'e', 'ë' => 'e', 'È' => 'e', 'É' => 'e', 'Ê' => 'e', 'Ë' => 'e',
-                'ì' => 'i', 'í' => 'i', 'î' => 'i', 'ï' => 'i', 'Ì' => 'i', 'Í' => 'i', 'Î' => 'i', 'Ï' => 'i',
-                'ò' => 'o', 'ó' => 'o', 'ô' => 'o', 'õ' => 'o', 'ö' => 'o', 'Ò' => 'o', 'Ó' => 'o', 'Ô' => 'o', 'Ö' => 'o',
-                'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ü' => 'u', 'Ù' => 'u', 'Ú' => 'u', 'Û' => 'u', 'Ü' => 'u',
-                'ç' => 'c', 'Ç' => 'c', 'ñ' => 'n', 'Ñ' => 'n'
-            ];
-            $testo = strtr($testo, $mappa);
-            $testo = strtolower($testo);
-            return preg_replace('/[^a-z0-9]/', '', $testo) ?? '';
-        };
-
-        $parteNome = $pulisci($nome);
-        $parteCognome = $pulisci($cognome);
-
-        if ($parteNome !== '' && $parteCognome !== '') {
-            return $parteNome . '.' . $parteCognome;
-        }
-        return $parteNome . $parteCognome;
-    }
-
-    // 3. Crea un nuovo utente direttamente dal pannello Admin
     public function creaUtente() {
-        if (session_status() == PHP_SESSION_NONE) session_start();
-        if (!isset($_SESSION['utente_id']) || $_SESSION['ruolo'] !== 'admin') {
-            header("Location: index.php?controller=utente&action=login");
-            exit;
-        }
-
+        $this->verificaAdmin();
         $view = new VAdmin();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $nome = trim($_POST['nome']);
-            $cognome = trim($_POST['cognome']);
-            $email = trim($_POST['email']);
+            $nome = trim($_POST['nome'] ?? '');
+            $cognome = trim($_POST['cognome'] ?? '');
+            $email = trim($_POST['email'] ?? '');
             $password = trim($_POST['password'] ?? '');
             if ($password === '') {
                 $password = self::generaPasswordIniziale($nome, $cognome);
             }
             if ($password === '') {
-                $view->mostraFormUtente(null, "Imposta una password iniziale valida per il nuovo utente.");
+                $view->mostraFormUtente(null, "Imposta una password iniziale valida per il nuovo profilo.");
                 return;
             }
-            $telefono = trim($_POST['telefono']);
-            $ruolo = $_POST['ruolo'];
+            $telefono = trim($_POST['telefono'] ?? '');
+            $ruolo = $_POST['ruolo'] ?? '';
+
+            if (!in_array($ruolo, self::RUOLI_GESTITI, true)) {
+                $view->mostraFormUtente(null, "Ruolo non consentito. Da questo pannello puoi creare solo Segretari o Istruttori.");
+                return;
+            }
+
             $tariffa_individuale = null;
-            if ($ruolo === 'allievo') {
-                $crediti = isset($_POST['crediti_residui']) ? max(0, (int)$_POST['crediti_residui']) : 0;
-                $scadenza = !empty($_POST['scadenza_certificato']) ? $_POST['scadenza_certificato'] : null;
-                $descrizione = null;
-            } elseif ($ruolo === 'istruttore') {
-                $crediti = 0;
-                $scadenza = null;
+            $descrizione = null;
+
+            if ($ruolo === 'istruttore') {
                 $desc = trim($_POST['descrizione'] ?? '');
                 $descrizione = $desc !== '' ? $desc : null;
 
@@ -364,10 +576,6 @@ class CAdmin {
                     }
                     $tariffa_individuale = round((float)$tariffa_raw, 2);
                 }
-            } else {
-                $crediti = 0;
-                $scadenza = null;
-                $descrizione = null;
             }
 
             if (FUtente::loadByEmail($email)) {
@@ -375,7 +583,6 @@ class CAdmin {
                 return;
             }
 
-            // Se l'admin carica un'immagine per il nuovo istruttore, validala prima di salvare l'utente
             $haUploadIstruttore = ($ruolo === 'istruttore' && UImmagine::hasUpload($_FILES['immagine_profilo'] ?? null));
             if ($haUploadIstruttore) {
                 $checkImg = UImmagine::validaUpload($_FILES['immagine_profilo']);
@@ -385,9 +592,7 @@ class CAdmin {
                 }
             }
 
-            // Avviso cambio password attivo solo per profili allievo e istruttore creati dall'admin
-            $deve_cambiare_password = ($ruolo !== 'admin');
-            $nuovoUtente = new EUtente($nome, $cognome, $email, $password, $telefono, $ruolo, $crediti, $scadenza, $descrizione, null, $tariffa_individuale, $deve_cambiare_password);
+            $nuovoUtente = new EUtente($nome, $cognome, $email, $password, $telefono, $ruolo, 0, null, $descrizione, null, $tariffa_individuale, true);
             $id = FUtente::store($nuovoUtente);
 
             if ($id) {
@@ -396,19 +601,18 @@ class CAdmin {
                     $esitoImg = UImmagine::salvaImmagineProfilo($_FILES['immagine_profilo'], (int)$id);
                     if ($esitoImg['ok']) {
                         $nuovoUtente->setImmagineProfilo($esitoImg['percorso']);
+                        FUtente::update($nuovoUtente);
                     }
                 }
-                // Assicura che tutti i campi (inclusa eventuale immagine profilo) siano aggiornati
-                FUtente::update($nuovoUtente);
 
-                header("Location: index.php?controller=admin&action=utenti&msg=" . urlencode("Nuovo utente ({$nome} {$cognome}) creato con successo. Password iniziale: {$password}"));
+                header("Location: index.php?controller=admin&action=utenti&msg=" . urlencode("Nuovo profilo ({$nome} {$cognome} - {$ruolo}) creato con successo. Password iniziale: {$password}"));
                 exit;
             } else {
-                $view->mostraFormUtente(null, "Errore durante la creazione dell'utente.");
+                $view->mostraFormUtente(null, "Errore durante la creazione del profilo.");
             }
         } else {
             $view->mostraFormUtente(null);
         }
     }
-} //
+}
 ?>

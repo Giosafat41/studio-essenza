@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{$titolo_pagina|default:'Studio Essenza - Pilates Boutique'}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/studio-essenza/css/general.css?v=9">
+    <link rel="stylesheet" href="/studio-essenza/css/general.css?v=10">
 </head>
 <body>
 
@@ -25,7 +25,9 @@
                 
                 {if isset($utente_loggato)}
                     {if $ruolo_loggato == 'admin'}
-                        <li><a href="index.php?controller=admin&action=dashboard" class="btn-login">Pannello Segreteria</a></li>
+                        <li><a href="index.php?controller=admin&action=dashboard" class="btn-login">Pannello Admin</a></li>
+                    {elseif $ruolo_loggato == 'segretaria'}
+                        <li><a href="index.php?controller=segretaria&action=dashboard" class="btn-login">Pannello Segreteria</a></li>
                     {elseif $ruolo_loggato == 'istruttore'}
                         <li><a href="index.php?controller=istruttore&action=dashboard" class="btn-login">Area Istruttore</a></li>
                     {else}

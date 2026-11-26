@@ -4,29 +4,33 @@
 {block name="content"}
 <div class="container admin-form-page py-2 py-md-3">
 
-    <!-- Link ritorno alla Lista Utenti -->
+    <!-- Link ritorno alla Lista -->
     <div class="mb-3">
-        <a href="index.php?controller=admin&action=utenti" class="calendar-back-link">
+        <a href="index.php?controller={$controller_base|default:'admin'|escape}&action=utenti" class="calendar-back-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <line x1="19" y1="12" x2="5" y2="12"></line>
                 <polyline points="12 19 5 12 12 5"></polyline>
             </svg>
-            <span>Torna alla Lista Utenti</span>
+            <span>Torna alla {$label_lista|default:'Lista Utenti'|escape}</span>
         </a>
     </div>
 
     <section class="dashboard-card">
         <div class="mb-4">
-            <span class="auth-badge mb-2">Anagrafica Studio</span>
+            <span class="auth-badge mb-2">{$badge_sezione|default:'Anagrafica Studio'|escape}</span>
             {if isset($utente)}
-                <h1 class="dashboard-title">Modifica Utente</h1>
+                <h1 class="dashboard-title">Modifica Profilo</h1>
                 <p class="dashboard-subtitle">
-                    Aggiorna i dati anagrafici, i crediti residui o la scadenza del certificato medico di <strong>{$utente->getNome()|escape} {$utente->getCognome()|escape}</strong>.
+                    Aggiorna i dati del profilo di <strong>{$utente->getNome()|escape} {$utente->getCognome()|escape}</strong>.
                 </p>
             {else}
-                <h1 class="dashboard-title">Crea Nuovo Utente</h1>
+                <h1 class="dashboard-title">Crea Nuovo Profilo</h1>
                 <p class="dashboard-subtitle">
-                    Registra un nuovo allievo, istruttore o amministratore nel sistema di Studio Essenza.
+                    {if ($controller_base|default:'admin') == 'admin'}
+                        Registra un nuovo segretario o istruttore nel sistema di Studio Essenza.
+                    {else}
+                        Registra un nuovo allievo o istruttore nel sistema di Studio Essenza.
+                    {/if}
                 </p>
             {/if}
         </div>
@@ -38,7 +42,7 @@
             </div>
         {/if}
 
-        <form action="index.php?controller=admin&action={if isset($utente)}modificaUtente{else}creaUtente{/if}" method="POST" enctype="multipart/form-data">
+        <form action="index.php?controller={$controller_base|default:'admin'|escape}&action={if isset($utente)}modificaUtente{else}creaUtente{/if}" method="POST" enctype="multipart/form-data">
 
             {if isset($utente)}
                 <input type="hidden" name="id" value="{$utente->getId()}">
@@ -119,15 +123,19 @@
 
             <div class="mb-3">
                 <label for="ruolo" class="form-label auth-label">Ruolo nel Sistema</label>
+                {assign var="ruolo_corrente" value=$ruolo_default|default:'allievo'}
+                {if isset($utente)}
+                    {assign var="ruolo_corrente" value=$utente->getRuolo()}
+                {/if}
                 <select id="ruolo" name="ruolo" class="form-select admin-select" required>
-                    <option value="allievo" {if !isset($utente) || $utente->getRuolo() == 'allievo'}selected{/if}>Allievo</option>
-                    <option value="istruttore" {if isset($utente) && $utente->getRuolo() == 'istruttore'}selected{/if}>Istruttore</option>
-                    <option value="admin" {if isset($utente) && $utente->getRuolo() == 'admin'}selected{/if}>Admin (Segreteria)</option>
+                    {foreach from=$ruoli_consentiti key=val item=label}
+                        <option value="{$val|escape}" {if $ruolo_corrente == $val}selected{/if}>{$label|escape}</option>
+                    {/foreach}
                 </select>
             </div>
 
-            {assign var="mostra_campi_allievo" value=(!isset($utente) || $utente->getRuolo() == 'allievo')}
-            {assign var="mostra_campo_istruttore" value=(isset($utente) && $utente->getRuolo() == 'istruttore')}
+            {assign var="mostra_campi_allievo" value=($ruolo_corrente == 'allievo')}
+            {assign var="mostra_campo_istruttore" value=($ruolo_corrente == 'istruttore')}
             <div id="campi-allievo" class="row g-3 mb-4{if !$mostra_campi_allievo} d-none{/if}">
                 <div class="col-12 col-sm-6">
                     <label for="crediti_residui" class="form-label auth-label">Crediti Residui</label>
@@ -233,9 +241,9 @@
 
             <div class="d-flex flex-column flex-sm-row gap-2">
                 <button type="submit" class="btn btn-primary admin-action-btn px-4">
-                    {if isset($utente)}Salva Modifiche{else}Crea Utente{/if}
+                    {if isset($utente)}Salva Modifiche{else}Crea Profilo{/if}
                 </button>
-                <a href="index.php?controller=admin&action=utenti" class="btn btn-outline-essenza admin-action-btn px-4">
+                <a href="index.php?controller={$controller_base|default:'admin'|escape}&action=utenti" class="btn btn-outline-essenza admin-action-btn px-4">
                     Annulla
                 </a>
             </div>

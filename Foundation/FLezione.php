@@ -48,18 +48,43 @@ class FLezione {
     }
 
     // Verifica se l'istruttore ha già una lezione di gruppo sovrapposta nella fascia oraria indicata
-    public static function hasSovrapposizione($id_istruttore, $inizio, $fine) {
+    public static function hasSovrapposizione($id_istruttore, $inizio, $fine, $exclude_lezione_id = null) {
         $db = FDatabase::getInstance()->getDb();
         $query = "SELECT COUNT(*) FROM Lezione
                   WHERE id_istruttore = :id_istruttore
                     AND data_ora_inizio < :fine
                     AND data_ora_fine > :inizio";
+        if ($exclude_lezione_id !== null) {
+            $query .= " AND id != :exclude_id";
+        }
         $stmt = $db->prepare($query);
         $stmt->bindValue(':id_istruttore', $id_istruttore, PDO::PARAM_INT);
         $stmt->bindValue(':inizio', $inizio);
         $stmt->bindValue(':fine', $fine);
+        if ($exclude_lezione_id !== null) {
+            $stmt->bindValue(':exclude_id', (int)$exclude_lezione_id, PDO::PARAM_INT);
+        }
         $stmt->execute();
         return (int)$stmt->fetchColumn() > 0;
+    }
+
+    // Cambia l'istruttore assegnato a una lezione di gruppo
+    public static function updateIstruttore(int $id_lezione, int $id_istruttore) {
+        $db = FDatabase::getInstance()->getDb();
+        $query = "UPDATE Lezione SET id_istruttore = :id_istruttore WHERE id = :id";
+        $stmt = $db->prepare($query);
+        $stmt->bindValue(':id_istruttore', $id_istruttore, PDO::PARAM_INT);
+        $stmt->bindValue(':id', $id_lezione, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    // Elimina una lezione dal calendario (le prenotazioni collegate vengono rimosse via CASCADE)
+    public static function delete(int $id_lezione) {
+        $db = FDatabase::getInstance()->getDb();
+        $query = "DELETE FROM Lezione WHERE id = :id";
+        $stmt = $db->prepare($query);
+        $stmt->bindValue(':id', $id_lezione, PDO::PARAM_INT);
+        return $stmt->execute();
     }
 
     // Recupera le lezioni di un determinato periodo (utile per il calendario frontend)

@@ -98,13 +98,15 @@ class CUtente {
                 // Ad ogni nuovo accesso l'eventuale avviso di cambio password torna visibile finché non viene cambiata
                 unset($_SESSION['avviso_password_chiuso']);
                 
-                // 5. Smistamento in base al ruolo: Admin o Allievo?
+                // 5. Smistamento in base al ruolo
                 if ($utente->getRuolo() === 'admin') {
-                header("Location: index.php?controller=admin&action=dashboard");
+                    header("Location: index.php?controller=admin&action=dashboard");
+                } elseif ($utente->getRuolo() === 'segretaria') {
+                    header("Location: index.php?controller=segretaria&action=dashboard");
                 } elseif ($utente->getRuolo() === 'istruttore') {
-                header("Location: index.php?controller=istruttore&action=dashboard");
+                    header("Location: index.php?controller=istruttore&action=dashboard");
                 } else {
-                header("Location: index.php?controller=utente&action=dashboard");
+                    header("Location: index.php?controller=utente&action=dashboard");
                 }
                 exit;
             } else {
@@ -195,6 +197,9 @@ class CUtente {
     private function getDashboardUrlByRuolo(string $ruolo): string {
         if ($ruolo === 'admin') {
             return 'index.php?controller=admin&action=dashboard';
+        }
+        if ($ruolo === 'segretaria') {
+            return 'index.php?controller=segretaria&action=dashboard';
         }
         if ($ruolo === 'istruttore') {
             return 'index.php?controller=istruttore&action=dashboard';

@@ -18,6 +18,9 @@ class CFrontController {
             case 'admin':
                 $controllerClass = 'CAdmin';
                 break;
+            case 'segretaria':
+                $controllerClass = 'CSegretaria';
+                break;
             case 'istruttore':
                 $controllerClass = 'CIstruttore';
                 break;

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Nov 26, 2026 alle 16:16
+-- Creato il: Nov 26, 2026 alle 17:08
 -- Versione del server: 10.4.32-MariaDB
 -- Versione PHP: 8.2.12
 
@@ -34,6 +34,14 @@ CREATE TABLE `corso` (
   `capienza_max` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dump dei dati per la tabella `corso`
+--
+
+INSERT INTO `corso` (`id`, `nome`, `descrizione`, `capienza_max`) VALUES
+(1, 'Reformer Base', 'Corso di Pilates Reformer per principianti', 10),
+(2, 'Reformer Intermedio', 'Corso di Pilates Reformer di livello intermedio', 10);
+
 -- --------------------------------------------------------
 
 --
@@ -48,6 +56,14 @@ CREATE TABLE `lezione` (
   `data_ora_fine` datetime NOT NULL,
   `durata_minuti` int(11) NOT NULL DEFAULT 60
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `lezione`
+--
+
+INSERT INTO `lezione` (`id`, `id_corso`, `id_istruttore`, `data_ora_inizio`, `data_ora_fine`, `durata_minuti`) VALUES
+(1, 1, 6, '2026-11-27 10:00:00', '2026-11-27 11:00:00', 60),
+(2, 2, 7, '2026-11-27 10:00:00', '2026-11-27 11:00:00', 60);
 
 -- --------------------------------------------------------
 
@@ -92,7 +108,7 @@ CREATE TABLE `utente` (
   `email` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
   `telefono` varchar(20) DEFAULT NULL,
-  `ruolo` enum('allievo','istruttore','admin') NOT NULL DEFAULT 'allievo',
+  `ruolo` enum('allievo','istruttore','segretaria','admin') NOT NULL DEFAULT 'allievo',
   `crediti_residui` int(11) DEFAULT 0,
   `scadenza_certificato` date DEFAULT NULL,
   `descrizione` text DEFAULT NULL,
@@ -111,7 +127,10 @@ INSERT INTO `utente` (`id`, `nome`, `cognome`, `email`, `password`, `telefono`, 
 (4, 'utente', '1', 'utente1@gmail.com', '$2y$10$1MKLEJFREUT76PXH7HMqQOyK6bXQ4XlVoG4q/9KUUWvtvIWH6TrVG', '', 'allievo', 0, NULL, NULL, NULL, NULL, 0, '2026-11-26 15:05:46'),
 (5, 'utente', '2', 'utente2@gmail.com', '$2y$10$SDayxFzKB43HpOu82/8sF.xfY97AIgA0X7ZAc7GPrjngifYVytAlm', '', 'allievo', 0, NULL, NULL, NULL, NULL, 1, '2026-11-26 15:11:58'),
 (6, 'istruttore', '1', 'istruttore1@gmail.com', '$2y$10$v5np/VIJh/voHqjp1BEPV.QhyBlMhDp6nfLwOzdgzZMyqf5miy2DS', '', 'istruttore', 0, NULL, 'molto bravo', NULL, NULL, 1, '2026-11-26 15:12:34'),
-(7, 'istruttore', '2', 'istruttore2@gmail.com', '$2y$10$Xvd/Y/vzPypIfH1BZsIAiuIBGoqZkzwyfSehZOw2yJQ8dMi0kiII.', '', 'istruttore', 0, NULL, 'ancora più bravo', NULL, NULL, 0, '2026-11-26 15:12:57');
+(7, 'istruttore', '2', 'istruttore2@gmail.com', '$2y$10$Xvd/Y/vzPypIfH1BZsIAiuIBGoqZkzwyfSehZOw2yJQ8dMi0kiII.', '', 'istruttore', 0, NULL, 'ancora più bravo', NULL, NULL, 0, '2026-11-26 15:12:57'),
+(8, 'segretaria', '1', 'segretaria1@gmail.com', '$2y$10$bx7/RZWv6wEAoGSkkbNsauG72XKgYsPYx8X.Q5vhDopX.Bft72Cia', '', 'segretaria', 0, NULL, NULL, NULL, NULL, 0, '2026-11-26 16:00:22'),
+(9, 'segretaria', '2', 'segretaria2@gmail.com', '$2y$10$DFxZehfqXN0JPOppVQp2muHwNXR.yedAtYbGetJr.tJF6AFhca50q', '', 'segretaria', 0, NULL, NULL, NULL, NULL, 1, '2026-11-26 16:00:51'),
+(10, 'segretaria', '3', 'segretaria3@gmail.com', '$2y$10$8Xfmqv1R4uCjP78i3c.TUemLFrX/YpaqVP/eW5vk0iTSctKqsWL7u', '', 'segretaria', 0, NULL, NULL, NULL, NULL, 1, '2026-11-26 16:02:00');
 
 --
 -- Indici per le tabelle scaricate
@@ -162,13 +181,13 @@ ALTER TABLE `utente`
 -- AUTO_INCREMENT per la tabella `corso`
 --
 ALTER TABLE `corso`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT per la tabella `lezione`
 --
 ALTER TABLE `lezione`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT per la tabella `lezioneindividuale`
@@ -186,7 +205,7 @@ ALTER TABLE `prenotazione`
 -- AUTO_INCREMENT per la tabella `utente`
 --
 ALTER TABLE `utente`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Limiti per le tabelle scaricate

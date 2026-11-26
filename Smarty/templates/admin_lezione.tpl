@@ -4,14 +4,14 @@
 {block name="content"}
 <div class="container admin-form-page py-2 py-md-3">
 
-    <!-- Link ritorno al Pannello Segreteria -->
+    <!-- Link ritorno al Pannello Admin -->
     <div class="mb-3">
         <a href="index.php?controller=admin&action=dashboard" class="calendar-back-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <line x1="19" y1="12" x2="5" y2="12"></line>
                 <polyline points="12 19 5 12 12 5"></polyline>
             </svg>
-            <span>Torna al Pannello Segreteria</span>
+            <span>Torna al Pannello Admin</span>
         </a>
     </div>
 

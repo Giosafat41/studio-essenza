@@ -43,6 +43,9 @@ class EUtente {
     public function getRuolo() { return $this->ruolo; }
     public function getCreditiResidui() { return $this->crediti_residui; }
     public function getScadenzaCertificato() { return $this->scadenza_certificato; }
+    public function getScadenzaCertificatoFormattata() {
+        return !empty($this->scadenza_certificato) ? date('d/m/Y', strtotime($this->scadenza_certificato)) : null;
+    }
     public function getDescrizione() { return $this->descrizione; }
     public function getImmagineProfilo() { return $this->immagine_profilo; }
     public function getTariffaIndividuale() { return $this->tariffa_individuale; }

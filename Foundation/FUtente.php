@@ -4,19 +4,37 @@ class FUtente {
 
     private static $schemaChecked = false;
 
-    // Garantisce che la colonna deve_cambiare_password esista anche su database già popolati
-    private static function ensurePasswordFlagColumn(PDO $db) {
+    // Garantisce che lo schema supporti ruolo 'segretaria', il flag password e l'unico admin integrato
+    private static function ensureSchema(PDO $db) {
         if (self::$schemaChecked) {
             return;
         }
         self::$schemaChecked = true;
         try {
-            $check = $db->query("SHOW COLUMNS FROM Utente LIKE 'deve_cambiare_password'");
-            if ($check && !$check->fetch(PDO::FETCH_ASSOC)) {
+            // 1. Aggiunge 'segretaria' all'ENUM ruolo se non ancora presente
+            $colRuolo = $db->query("SHOW COLUMNS FROM Utente LIKE 'ruolo'")->fetch(PDO::FETCH_ASSOC);
+            if ($colRuolo && strpos($colRuolo['Type'] ?? '', "'segretaria'") === false) {
+                $db->exec("ALTER TABLE Utente MODIFY COLUMN ruolo ENUM('allievo','istruttore','segretaria','admin') NOT NULL DEFAULT 'allievo'");
+            }
+
+            // 2. Aggiunge la colonna deve_cambiare_password se mancante
+            $checkPwd = $db->query("SHOW COLUMNS FROM Utente LIKE 'deve_cambiare_password'");
+            if ($checkPwd && !$checkPwd->fetch(PDO::FETCH_ASSOC)) {
                 $db->exec("ALTER TABLE Utente ADD COLUMN deve_cambiare_password TINYINT(1) NOT NULL DEFAULT 0 AFTER tariffa_individuale");
             }
+
+            // 3. Garantisce che esista sempre l'unico profilo admin integrato nel database
+            $countAdmin = (int)$db->query("SELECT COUNT(*) FROM Utente WHERE ruolo = 'admin'")->fetchColumn();
+            if ($countAdmin === 0) {
+                $stmtAdmin = $db->prepare(
+                    "INSERT INTO Utente (nome, cognome, email, password, telefono, ruolo, crediti_residui, deve_cambiare_password)
+                     VALUES ('Admin', 'Studio Essenza', 'admin@gmail.com', :pwd, '123456789', 'admin', 0, 0)"
+                );
+                $stmtAdmin->bindValue(':pwd', password_hash('admin', PASSWORD_DEFAULT));
+                $stmtAdmin->execute();
+            }
         } catch (PDOException $e) {
-            // Ignora eventuali race condition se la colonna è già stata aggiunta
+            // Ignora eventuali race condition di migrazione parallela
         }
     }
 
@@ -45,7 +63,7 @@ class FUtente {
     // Salva un oggetto EUtente nel database
     public static function store(EUtente $utente) {
         $db = FDatabase::getInstance()->getDb();
-        self::ensurePasswordFlagColumn($db);
+        self::ensureSchema($db);
 
         $query = "INSERT INTO Utente (nome, cognome, email, password, telefono, ruolo, crediti_residui, scadenza_certificato, descrizione, immagine_profilo, tariffa_individuale, deve_cambiare_password) 
                   VALUES (:nome, :cognome, :email, :password, :telefono, :ruolo, :crediti_residui, :scadenza_certificato, :descrizione, :immagine_profilo, :tariffa_individuale, :deve_cambiare_password)";
@@ -80,7 +98,7 @@ class FUtente {
     // Recupera un utente dal database tramite il suo ID e restituisce un oggetto EUtente
     public static function load($id) {
         $db = FDatabase::getInstance()->getDb();
-        self::ensurePasswordFlagColumn($db);
+        self::ensureSchema($db);
         
         $query = "SELECT * FROM Utente WHERE id = :id";
         $stmt = $db->prepare($query);
@@ -94,7 +112,7 @@ class FUtente {
     // Aggiorna tutti i dati anagrafici e operativi di un utente
     public static function update(EUtente $utente) {
         $db = FDatabase::getInstance()->getDb();
-        self::ensurePasswordFlagColumn($db);
+        self::ensureSchema($db);
         
         $query = "UPDATE Utente 
                   SET nome = :nome,
@@ -135,7 +153,7 @@ class FUtente {
     // Aggiorna la password cifrata di un utente e azzera (di default) l'avviso di cambio password
     public static function updatePassword(int $id, string $nuova_password, bool $deve_cambiare_password = false) {
         $db = FDatabase::getInstance()->getDb();
-        self::ensurePasswordFlagColumn($db);
+        self::ensureSchema($db);
 
         $query = "UPDATE Utente
                   SET password = :password,
@@ -152,7 +170,7 @@ class FUtente {
     // Recupera un utente dal database tramite la sua email (necessario per il login)
     public static function loadByEmail($email) {
         $db = FDatabase::getInstance()->getDb();
-        self::ensurePasswordFlagColumn($db);
+        self::ensureSchema($db);
         
         $query = "SELECT * FROM Utente WHERE email = :email";
         $stmt = $db->prepare($query);
@@ -166,6 +184,7 @@ class FUtente {
     // Recupera tutti gli utenti iscritti ordinati per cognome e nome
     public static function loadAll() {
         $db = FDatabase::getInstance()->getDb();
+        self::ensureSchema($db);
         $query = "SELECT * FROM Utente ORDER BY cognome ASC, nome ASC";
         $stmt = $db->query($query);
         
@@ -176,21 +195,36 @@ class FUtente {
         return $utenti;
     }
 
-    // Recupera tutti gli istruttori (o admin) per i menu a tendina del calendario
-    public static function loadIstruttori() {
-        $db = FDatabase::getInstance()->getDb();
-        $query = "SELECT * FROM Utente WHERE ruolo IN ('istruttore', 'admin')";
-        $stmt = $db->query($query);
-        
-        $istruttori = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $istruttori[] = self::buildEntity($row);
+    // Recupera gli utenti filtrati per uno specifico elenco di ruoli (es. ['allievo', 'istruttore'] o ['segretaria', 'istruttore'])
+    public static function loadByRuoli(array $ruoli) {
+        if (empty($ruoli)) {
+            return [];
         }
-        return $istruttori;
+        $db = FDatabase::getInstance()->getDb();
+        self::ensureSchema($db);
+        $placeholders = implode(', ', array_fill(0, count($ruoli), '?'));
+        $query = "SELECT * FROM Utente WHERE ruolo IN ({$placeholders}) ORDER BY cognome ASC, nome ASC";
+        $stmt = $db->prepare($query);
+        foreach (array_values($ruoli) as $index => $ruolo) {
+            $stmt->bindValue($index + 1, $ruolo);
+        }
+        $stmt->execute();
+
+        $utenti = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $utenti[] = self::buildEntity($row);
+        }
+        return $utenti;
     }
-    // Recupera solo gli utenti con ruolo 'istruttore' (per le lezioni individuali)
+
+    // Recupera gli istruttori per i menu a tendina del calendario
+    public static function loadIstruttori() {
+        return self::loadSoloIstruttori();
+    }
+    // Recupera solo gli utenti con ruolo 'istruttore'
     public static function loadSoloIstruttori() {
         $db = FDatabase::getInstance()->getDb();
+        self::ensureSchema($db);
         $query = "SELECT * FROM Utente WHERE ruolo = 'istruttore' ORDER BY cognome ASC, nome ASC";
         $stmt = $db->query($query);
 

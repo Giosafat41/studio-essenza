@@ -1348,6 +1348,12 @@ a, p, span, li, button, input, select, textarea, label, th, td {
     color: #5f6e54;
 }
 
+.admin-role-pill.is-segretaria {
+    background-color: #eef3f7;
+    color: #3a5d7c;
+    border: 1px solid #d1e0ec;
+}
+
 .admin-role-pill.is-admin {
     background-color: #fdf6ec;
     color: #8a5a1b;
