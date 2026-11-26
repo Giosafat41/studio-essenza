@@ -51,25 +51,38 @@
             <div class="row g-3 mb-3">
                 <div class="col-12 col-sm-6">
                     <label for="nome" class="form-label auth-label">Nome</label>
-                    <input type="text" id="nome" name="nome" class="form-control admin-input" required value="{if isset($utente)}{$utente->getNome()|escape}{/if}">
+                    <input type="text" id="nome" name="nome" class="form-control admin-input" required data-msg-required="Inserisci il nome." value="{if isset($utente)}{$utente->getNome()|escape}{/if}">
                 </div>
 
                 <div class="col-12 col-sm-6">
                     <label for="cognome" class="form-label auth-label">Cognome</label>
-                    <input type="text" id="cognome" name="cognome" class="form-control admin-input" required value="{if isset($utente)}{$utente->getCognome()|escape}{/if}">
+                    <input type="text" id="cognome" name="cognome" class="form-control admin-input" required data-msg-required="Inserisci il cognome." value="{if isset($utente)}{$utente->getCognome()|escape}{/if}">
                 </div>
             </div>
 
             <div class="row g-3 mb-3">
                 <div class="col-12 col-sm-6">
                     <label for="email" class="form-label auth-label">Email</label>
-                    <input type="email" id="email" name="email" class="form-control admin-input" required value="{if isset($utente)}{$utente->getEmail()|escape}{/if}">
+                    <input type="email" id="email" name="email" class="form-control admin-input" required data-msg-required="Inserisci l'indirizzo email." data-msg-type="Inserisci un indirizzo email valido (es. nome@esempio.it)." value="{if isset($utente)}{$utente->getEmail()|escape}{/if}">
                 </div>
 
                 <div class="col-12 col-sm-6">
                     <label for="telefono" class="form-label auth-label">Telefono <span class="auth-optional">(opzionale)</span></label>
                     <input type="tel" id="telefono" name="telefono" class="form-control admin-input" value="{if isset($utente)}{$utente->getTelefono()|escape}{/if}">
                 </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="data_nascita" class="form-label auth-label">Data di nascita <span class="auth-optional">(opzionale)</span></label>
+                <input
+                    type="date"
+                    id="data_nascita"
+                    name="data_nascita"
+                    class="form-control admin-input"
+                    max="{$oggi_input|default:''}"
+                    data-msg-max="La data di nascita non può essere nel futuro."
+                    value="{if isset($utente)}{$utente->getDataNascita()|escape}{/if}"
+                >
             </div>
 
             {if !isset($utente)}
@@ -83,6 +96,7 @@
                                 name="password"
                                 class="form-control admin-input auth-input-password admin-input-readonly"
                                 required
+                                data-msg-required="Inserisci una password iniziale per il profilo."
                                 readonly
                                 autocomplete="new-password"
                                 placeholder="nome.cognome"
@@ -127,7 +141,7 @@
                 {if isset($utente)}
                     {assign var="ruolo_corrente" value=$utente->getRuolo()}
                 {/if}
-                <select id="ruolo" name="ruolo" class="form-select admin-select" required>
+                <select id="ruolo" name="ruolo" class="form-select admin-select" required data-msg-required="Seleziona un ruolo dal menù a tendina.">
                     {foreach from=$ruoli_consentiti key=val item=label}
                         <option value="{$val|escape}" {if $ruolo_corrente == $val}selected{/if}>{$label|escape}</option>
                     {/foreach}
@@ -145,6 +159,8 @@
                         name="crediti_residui"
                         class="form-control admin-input"
                         min="0"
+                        data-msg-required="Inserisci il numero di crediti residui."
+                        data-msg-min="I crediti residui non possono essere negativi."
                         value="{if isset($utente)}{$utente->getCreditiResidui()}{else}0{/if}"
                         {if $mostra_campi_allievo}required{else}disabled{/if}
                     >
@@ -217,6 +233,8 @@
                         min="1"
                         max="9999.99"
                         step="0.50"
+                        data-msg-min="La tariffa individuale deve essere almeno 1 €."
+                        data-msg-max="La tariffa individuale non può superare 9999,99 €."
                         placeholder="Es. 45"
                         value="{if isset($utente) && $utente->getTariffaIndividuale() !== null}{$utente->getTariffaIndividuale()}{/if}"
                         {if !$mostra_campo_istruttore}disabled{/if}

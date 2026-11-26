@@ -76,7 +76,7 @@
                 <input type="hidden" name="id_lezione" value="{$lezione.id}">
                 <div class="col-12 col-md-8">
                     <label for="id_istruttore" class="form-label auth-label">Istruttore per questa lezione</label>
-                    <select id="id_istruttore" name="id_istruttore" class="form-select admin-select" required>
+                    <select id="id_istruttore" name="id_istruttore" class="form-select admin-select" required data-msg-required="Seleziona un istruttore dal menù a tendina.">
                         {foreach from=$istruttori item=istr}
                             <option value="{$istr->getId()}" {if $istr->getId() == $lezione.id_istruttore}selected{/if}>
                                 {$istr->getNome()|escape} {$istr->getCognome()|escape}

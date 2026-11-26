@@ -91,7 +91,27 @@ class CSegretaria {
                 exit;
             }
 
+            $nome = trim($_POST['nome'] ?? '');
+            $cognome = trim($_POST['cognome'] ?? '');
             $nuova_email = trim($_POST['email'] ?? '');
+
+            if ($nome === '') {
+                $view->mostraFormUtente($utente, "Inserisci il nome dell'utente.");
+                return;
+            }
+            if ($cognome === '') {
+                $view->mostraFormUtente($utente, "Inserisci il cognome dell'utente.");
+                return;
+            }
+            if ($nuova_email === '') {
+                $view->mostraFormUtente($utente, "Inserisci l'indirizzo email dell'utente.");
+                return;
+            }
+            if (!filter_var($nuova_email, FILTER_VALIDATE_EMAIL)) {
+                $view->mostraFormUtente($utente, "Inserisci un indirizzo email valido.");
+                return;
+            }
+
             $esistente = FUtente::loadByEmail($nuova_email);
             if ($esistente && $esistente->getId() != $id) {
                 $view->mostraFormUtente($utente, "Errore: l'email inserita è già utilizzata da un altro utente.");
@@ -104,10 +124,22 @@ class CSegretaria {
                 return;
             }
 
-            $utente->setNome(trim($_POST['nome'] ?? ''));
-            $utente->setCognome(trim($_POST['cognome'] ?? ''));
+            $data_nascita_raw = trim($_POST['data_nascita'] ?? '');
+            $data_nascita = null;
+            if ($data_nascita_raw !== '') {
+                $dt = DateTime::createFromFormat('Y-m-d', $data_nascita_raw);
+                if (!$dt || $dt->format('Y-m-d') !== $data_nascita_raw || $data_nascita_raw > date('Y-m-d')) {
+                    $view->mostraFormUtente($utente, "Inserisci una data di nascita valida (non nel futuro).");
+                    return;
+                }
+                $data_nascita = $data_nascita_raw;
+            }
+
+            $utente->setNome($nome);
+            $utente->setCognome($cognome);
             $utente->setEmail($nuova_email);
             $utente->setTelefono(trim($_POST['telefono'] ?? ''));
+            $utente->setDataNascita($data_nascita);
             $utente->setRuolo($ruolo);
 
             if ($ruolo === 'allievo') {
@@ -172,6 +204,24 @@ class CSegretaria {
             $nome = trim($_POST['nome'] ?? '');
             $cognome = trim($_POST['cognome'] ?? '');
             $email = trim($_POST['email'] ?? '');
+
+            if ($nome === '') {
+                $view->mostraFormUtente(null, "Inserisci il nome del nuovo utente.");
+                return;
+            }
+            if ($cognome === '') {
+                $view->mostraFormUtente(null, "Inserisci il cognome del nuovo utente.");
+                return;
+            }
+            if ($email === '') {
+                $view->mostraFormUtente(null, "Inserisci l'indirizzo email del nuovo utente.");
+                return;
+            }
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $view->mostraFormUtente(null, "Inserisci un indirizzo email valido.");
+                return;
+            }
+
             $password = trim($_POST['password'] ?? '');
             if ($password === '') {
                 $password = CAdmin::generaPasswordIniziale($nome, $cognome);
@@ -181,6 +231,16 @@ class CSegretaria {
                 return;
             }
             $telefono = trim($_POST['telefono'] ?? '');
+            $data_nascita_raw = trim($_POST['data_nascita'] ?? '');
+            $data_nascita = null;
+            if ($data_nascita_raw !== '') {
+                $dt = DateTime::createFromFormat('Y-m-d', $data_nascita_raw);
+                if (!$dt || $dt->format('Y-m-d') !== $data_nascita_raw || $data_nascita_raw > date('Y-m-d')) {
+                    $view->mostraFormUtente(null, "Inserisci una data di nascita valida (non nel futuro).");
+                    return;
+                }
+                $data_nascita = $data_nascita_raw;
+            }
             $ruolo = $_POST['ruolo'] ?? '';
 
             if (!in_array($ruolo, self::RUOLI_GESTITI, true)) {
@@ -223,7 +283,7 @@ class CSegretaria {
                 }
             }
 
-            $nuovoUtente = new EUtente($nome, $cognome, $email, $password, $telefono, $ruolo, $crediti, $scadenza, $descrizione, null, $tariffa_individuale, true);
+            $nuovoUtente = new EUtente($nome, $cognome, $email, $password, $telefono, $ruolo, $crediti, $scadenza, $descrizione, null, $tariffa_individuale, true, $data_nascita);
             $id = FUtente::store($nuovoUtente);
 
             if ($id) {

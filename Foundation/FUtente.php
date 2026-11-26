@@ -23,6 +23,12 @@ class FUtente {
                 $db->exec("ALTER TABLE Utente ADD COLUMN deve_cambiare_password TINYINT(1) NOT NULL DEFAULT 0 AFTER tariffa_individuale");
             }
 
+            // 2b. Aggiunge la colonna data_nascita se mancante
+            $checkNascita = $db->query("SHOW COLUMNS FROM Utente LIKE 'data_nascita'");
+            if ($checkNascita && !$checkNascita->fetch(PDO::FETCH_ASSOC)) {
+                $db->exec("ALTER TABLE Utente ADD COLUMN data_nascita DATE DEFAULT NULL AFTER telefono");
+            }
+
             // 3. Garantisce che esista sempre l'unico profilo admin integrato nel database
             $countAdmin = (int)$db->query("SELECT COUNT(*) FROM Utente WHERE ruolo = 'admin'")->fetchColumn();
             if ($countAdmin === 0) {
@@ -51,7 +57,8 @@ class FUtente {
             $row['descrizione'] ?? null,
             $row['immagine_profilo'] ?? null,
             $row['tariffa_individuale'] ?? null,
-            !empty($row['deve_cambiare_password'])
+            !empty($row['deve_cambiare_password']),
+            $row['data_nascita'] ?? null
         );
         $u->setId($row['id']);
         if (isset($row['data_registrazione'])) {
@@ -65,8 +72,8 @@ class FUtente {
         $db = FDatabase::getInstance()->getDb();
         self::ensureSchema($db);
 
-        $query = "INSERT INTO Utente (nome, cognome, email, password, telefono, ruolo, crediti_residui, scadenza_certificato, descrizione, immagine_profilo, tariffa_individuale, deve_cambiare_password) 
-                  VALUES (:nome, :cognome, :email, :password, :telefono, :ruolo, :crediti_residui, :scadenza_certificato, :descrizione, :immagine_profilo, :tariffa_individuale, :deve_cambiare_password)";
+        $query = "INSERT INTO Utente (nome, cognome, email, password, telefono, data_nascita, ruolo, crediti_residui, scadenza_certificato, descrizione, immagine_profilo, tariffa_individuale, deve_cambiare_password) 
+                  VALUES (:nome, :cognome, :email, :password, :telefono, :data_nascita, :ruolo, :crediti_residui, :scadenza_certificato, :descrizione, :immagine_profilo, :tariffa_individuale, :deve_cambiare_password)";
         
         $stmt = $db->prepare($query);
         
@@ -77,6 +84,8 @@ class FUtente {
         // Cifra la password prima di salvarla nel DB per sicurezza
         $stmt->bindValue(':password', password_hash($utente->getPassword(), PASSWORD_DEFAULT)); 
         $stmt->bindValue(':telefono', $utente->getTelefono());
+        $data_nascita = $utente->getDataNascita();
+        $stmt->bindValue(':data_nascita', !empty($data_nascita) ? $data_nascita : null);
         $stmt->bindValue(':ruolo', $utente->getRuolo());
         $stmt->bindValue(':crediti_residui', $utente->getCreditiResidui());
         $stmt->bindValue(':scadenza_certificato', $utente->getScadenzaCertificato());
@@ -119,6 +128,7 @@ class FUtente {
                       cognome = :cognome,
                       email = :email,
                       telefono = :telefono,
+                      data_nascita = :data_nascita,
                       ruolo = :ruolo,
                       crediti_residui = :crediti, 
                       scadenza_certificato = :scadenza,
@@ -129,6 +139,7 @@ class FUtente {
                   WHERE id = :id";
         $stmt = $db->prepare($query);
         
+        $data_nascita = $utente->getDataNascita();
         $scadenza = $utente->getScadenzaCertificato();
         $descrizione = $utente->getDescrizione();
         $immagine = $utente->getImmagineProfilo();
@@ -138,6 +149,7 @@ class FUtente {
         $stmt->bindValue(':cognome', $utente->getCognome());
         $stmt->bindValue(':email', $utente->getEmail());
         $stmt->bindValue(':telefono', $utente->getTelefono());
+        $stmt->bindValue(':data_nascita', !empty($data_nascita) ? $data_nascita : null);
         $stmt->bindValue(':ruolo', $utente->getRuolo());
         $stmt->bindValue(':crediti', $utente->getCreditiResidui(), PDO::PARAM_INT);
         $stmt->bindValue(':scadenza', !empty($scadenza) ? $scadenza : null);

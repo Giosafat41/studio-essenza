@@ -25,6 +25,14 @@
                 </div>
 
                 <div class="calendar-crediti-pill">
+                    <span class="calendar-crediti-label">Allievi</span>
+                    <div class="calendar-crediti-valore">
+                        {$totale_allievi|default:0}
+                        <small>{if ($totale_allievi|default:0) == 1}iscritto{else}iscritti{/if}</small>
+                    </div>
+                </div>
+
+                <div class="calendar-crediti-pill">
                     <span class="calendar-crediti-label">Corsi attivi</span>
                     <div class="calendar-crediti-valore">
                         {$totale_corsi}
@@ -57,19 +65,24 @@
         </div>
     {/if}
 
-    <!-- Griglia Strumenti Admin -->
+    <!-- Griglia Strumenti Admin (2x2) -->
     <div class="row g-4 align-items-stretch">
 
         <!-- Card 1: Gestione Staff (Segretari e Istruttori) -->
-        <div class="col-12 col-lg-4">
+        <div class="col-12 col-lg-6">
             <section class="dashboard-card admin-action-card h-100 d-flex flex-column">
-                <div class="admin-card-icon mb-3" aria-hidden="true">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                    </svg>
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class="admin-card-icon" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                    </div>
+                    <span class="dashboard-count-badge">
+                        {$totale_staff} {if $totale_staff == 1}profilo{else}profili{/if}
+                    </span>
                 </div>
 
                 <h2 class="admin-card-title">Segretari e Istruttori</h2>
@@ -88,8 +101,36 @@
             </section>
         </div>
 
-        <!-- Card 2: Gestione Corsi -->
-        <div class="col-12 col-lg-4">
+        <!-- Card 2: Elenco Allievi -->
+        <div class="col-12 col-lg-6">
+            <section class="dashboard-card admin-action-card h-100 d-flex flex-column">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class="admin-card-icon" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </div>
+                    <span class="dashboard-count-badge">
+                        {$totale_allievi|default:0} {if ($totale_allievi|default:0) == 1}allievo{else}allievi{/if}
+                    </span>
+                </div>
+
+                <h2 class="admin-card-title">Elenco Allievi</h2>
+                <p class="admin-card-desc">
+                    Consulta l'elenco completo di tutti gli allievi iscritti e visualizza anagrafica, data di nascita, crediti, certificato e prenotazioni.
+                </p>
+
+                <div class="mt-auto pt-3">
+                    <a href="index.php?controller=admin&action=allievi" class="btn btn-primary admin-action-btn w-100">
+                        Visualizza Allievi
+                    </a>
+                </div>
+            </section>
+        </div>
+
+        <!-- Card 3: Gestione Corsi -->
+        <div class="col-12 col-lg-6">
             <section class="dashboard-card admin-action-card h-100 d-flex flex-column">
                 <div class="d-flex align-items-center justify-content-between mb-3">
                     <div class="admin-card-icon" aria-hidden="true">
@@ -119,8 +160,8 @@
             </section>
         </div>
 
-        <!-- Card 3: Gestione Lezioni Esistenti -->
-        <div class="col-12 col-lg-4">
+        <!-- Card 4: Gestione Lezioni Esistenti -->
+        <div class="col-12 col-lg-6">
             <section class="dashboard-card admin-action-card h-100 d-flex flex-column">
                 <div class="d-flex align-items-center justify-content-between mb-3">
                     <div class="admin-card-icon" aria-hidden="true">
@@ -157,7 +198,7 @@
 
                             <div class="mb-3">
                                 <label for="id_lezione" class="form-label auth-label">Lezione in programma</label>
-                                <select id="id_lezione" name="id_lezione" class="form-select admin-select" required>
+                                <select id="id_lezione" name="id_lezione" class="form-select admin-select" required data-msg-required="Seleziona una lezione dal menù a tendina prima di procedere.">
                                     <option value="" selected disabled>Seleziona una lezione...</option>
                                     {foreach from=$lezioni_disponibili item=lez}
                                         <option value="{$lez.id}">

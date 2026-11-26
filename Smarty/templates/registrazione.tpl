@@ -46,6 +46,7 @@
                             name="nome"
                             class="form-control auth-input"
                             required
+                            data-msg-required="Inserisci il tuo nome."
                             autocomplete="given-name"
                             autofocus
                             placeholder="Mario"
@@ -68,6 +69,7 @@
                             name="cognome"
                             class="form-control auth-input"
                             required
+                            data-msg-required="Inserisci il tuo cognome."
                             autocomplete="family-name"
                             placeholder="Rossi"
                         >
@@ -75,25 +77,52 @@
                 </div>
             </div>
 
-            <!-- Campo Telefono -->
-            <div class="mb-3">
-                <label for="telefono" class="form-label auth-label">
-                    Telefono <span class="auth-optional">(opzionale)</span>
-                </label>
-                <div class="auth-input-group">
-                    <span class="auth-input-icon" aria-hidden="true">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                        </svg>
-                    </span>
-                    <input
-                        type="tel"
-                        id="telefono"
-                        name="telefono"
-                        class="form-control auth-input"
-                        autocomplete="tel"
-                        placeholder="+39 333 1234567"
-                    >
+            <!-- Telefono e Data di nascita affiancati -->
+            <div class="row g-3 mb-3">
+                <div class="col-12 col-sm-6">
+                    <label for="telefono" class="form-label auth-label">
+                        Telefono <span class="auth-optional">(opzionale)</span>
+                    </label>
+                    <div class="auth-input-group">
+                        <span class="auth-input-icon" aria-hidden="true">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                            </svg>
+                        </span>
+                        <input
+                            type="tel"
+                            id="telefono"
+                            name="telefono"
+                            class="form-control auth-input"
+                            autocomplete="tel"
+                            placeholder="+39 333 1234567"
+                        >
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6">
+                    <label for="data_nascita" class="form-label auth-label">Data di nascita</label>
+                    <div class="auth-input-group">
+                        <span class="auth-input-icon" aria-hidden="true">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                        </span>
+                        <input
+                            type="date"
+                            id="data_nascita"
+                            name="data_nascita"
+                            class="form-control auth-input"
+                            required
+                            max="{$oggi_input|default:''}"
+                            data-msg-required="Inserisci la tua data di nascita."
+                            data-msg-max="La data di nascita non può essere nel futuro."
+                            autocomplete="bday"
+                        >
+                    </div>
                 </div>
             </div>
 
@@ -113,6 +142,8 @@
                         name="email"
                         class="form-control auth-input"
                         required
+                        data-msg-required="Inserisci il tuo indirizzo email."
+                        data-msg-type="Inserisci un indirizzo email valido (es. nome@esempio.it)."
                         autocomplete="email"
                         placeholder="nome@esempio.it"
                     >
@@ -135,8 +166,11 @@
                         name="password"
                         class="form-control auth-input auth-input-password"
                         required
+                        minlength="6"
+                        data-msg-required="Scegli una password per creare il tuo account."
+                        data-msg-minlength="La password deve contenere almeno 6 caratteri."
                         autocomplete="new-password"
-                        placeholder="Scegli una password"
+                        placeholder="Scegli una password (almeno 6 caratteri)"
                     >
                     <button
                         type="button"

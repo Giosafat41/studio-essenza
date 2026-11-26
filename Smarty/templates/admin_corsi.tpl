@@ -68,6 +68,7 @@
                             name="nome"
                             class="form-control admin-input"
                             required
+                            data-msg-required="Inserisci il nome del corso."
                             maxlength="100"
                             placeholder="Es. Pilates Reformer"
                             value="{if isset($corso_in_modifica)}{$corso_in_modifica->getNome()|escape}{/if}"
@@ -82,6 +83,9 @@
                             name="capienza_max"
                             class="form-control admin-input"
                             required
+                            data-msg-required="Inserisci la capienza massima del corso."
+                            data-msg-min="La capienza minima consentita è 1 posto."
+                            data-msg-max="La capienza massima consentita è 100 posti."
                             min="1"
                             max="100"
                             value="{if isset($corso_in_modifica)}{$corso_in_modifica->getCapienzaMax()}{else}8{/if}"

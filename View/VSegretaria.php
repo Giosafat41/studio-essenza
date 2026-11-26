@@ -54,6 +54,7 @@ class VSegretaria extends StartSmarty {
             'istruttore' => 'Istruttore'
         ]);
         $this->smarty->assign('ruolo_default', 'allievo');
+        $this->smarty->assign('oggi_input', date('Y-m-d'));
 
         if ($utente) {
             $this->smarty->assign('titolo_pagina', 'Modifica Utente - Studio Essenza');

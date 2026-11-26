@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 5.8.5, created on 2026-11-24 17:31:15
+/* Smarty version 5.8.5, created on 2026-11-26 17:23:25
   from 'file:layout.tpl' */
 
 /* @var \Smarty\Template $_smarty_tpl */
 if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   'version' => '5.8.5',
-  'unifunc' => 'content_6b05bbd31aa3c4_64767925',
+  'unifunc' => 'content_6b085cfde8e3c7_23446191',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '05e2566920914a1d025ccd8269adbf91cfed9be6' => 
     array (
       0 => 'layout.tpl',
-      1 => 1795537821,
+      1 => 1795710013,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   array (
   ),
 ))) {
-function content_6b05bbd31aa3c4_64767925 (\Smarty\Template $_smarty_tpl) {
+function content_6b085cfde8e3c7_23446191 (\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
 $_smarty_tpl->getInheritance()->init($_smarty_tpl, false);
 ?>
@@ -32,7 +32,7 @@ $_smarty_tpl->getInheritance()->init($_smarty_tpl, false);
     <title><?php echo (($tmp = $_smarty_tpl->getValue('titolo_pagina') ?? null)===null||$tmp==='' ? 'Studio Essenza - Pilates Boutique' ?? null : $tmp);?>
 </title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/studio-essenza/css/general.css?v=7">
+    <link rel="stylesheet" href="/studio-essenza/css/general.css?v=11">
 </head>
 <body>
 
@@ -52,7 +52,9 @@ $_smarty_tpl->getInheritance()->init($_smarty_tpl, false);
                 
                 <?php if ((true && ($_smarty_tpl->hasVariable('utente_loggato') && null !== ($_smarty_tpl->getValue('utente_loggato') ?? null)))) {?>
                     <?php if ($_smarty_tpl->getValue('ruolo_loggato') == 'admin') {?>
-                        <li><a href="index.php?controller=admin&action=dashboard" class="btn-login">Pannello Segreteria</a></li>
+                        <li><a href="index.php?controller=admin&action=dashboard" class="btn-login">Pannello Admin</a></li>
+                    <?php } elseif ($_smarty_tpl->getValue('ruolo_loggato') == 'segretaria') {?>
+                        <li><a href="index.php?controller=segretaria&action=dashboard" class="btn-login">Pannello Segreteria</a></li>
                     <?php } elseif ($_smarty_tpl->getValue('ruolo_loggato') == 'istruttore') {?>
                         <li><a href="index.php?controller=istruttore&action=dashboard" class="btn-login">Area Istruttore</a></li>
                     <?php } else { ?>
@@ -69,7 +71,7 @@ $_smarty_tpl->getInheritance()->init($_smarty_tpl, false);
     <!-- CONTENUTO DINAMICO: Qui verranno inserite le pagine specifiche -->
     <main class="main-content">
         <?php 
-$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_8295653516b05bbd31a91d8_12732039', "content");
+$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_4197033006b085cfde8d6c4_68017656', "content");
 ?>
 
     </main>
@@ -82,11 +84,14 @@ $_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_8295653516b05
     <?php echo '<script'; ?>
  src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"><?php echo '</script'; ?>
 >
+    <?php echo '<script'; ?>
+ src="/studio-essenza/js/form-validation.js?v=1"><?php echo '</script'; ?>
+>
 </body>
 </html>
 <?php }
 /* {block "content"} */
-class Block_8295653516b05bbd31a91d8_12732039 extends \Smarty\Runtime\Block
+class Block_4197033006b085cfde8d6c4_68017656 extends \Smarty\Runtime\Block
 {
 public function callBlock(\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';

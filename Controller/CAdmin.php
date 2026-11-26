@@ -73,6 +73,7 @@ class CAdmin {
         }
 
         $totale_staff = count(FUtente::loadByRuoli(self::RUOLI_GESTITI));
+        $totale_allievi = count(FUtente::loadByRuoli(['allievo']));
         $totale_corsi = count(FCorso::loadAll());
         $messaggio_errore = $_GET['err'] ?? null;
         $messaggio_successo = $_GET['msg'] ?? null;
@@ -84,8 +85,102 @@ class CAdmin {
             $totale_staff,
             $totale_corsi,
             $messaggio_errore,
-            $messaggio_successo
+            $messaggio_successo,
+            $totale_allievi
         );
+    }
+
+    // =========================================================================
+    // ELENCO ALLIEVI IN SOLA LETTURA CON SCHEDA COMPLETA (solo Admin)
+    // =========================================================================
+
+    public function allievi() {
+        $this->verificaAdmin();
+
+        $allievi_entity = FUtente::loadByRuoli(['allievo']);
+        $oggi_ts = time();
+        $oggi_sql = date('Y-m-d H:i:s');
+        $allievi_dati = [];
+        $allievi_dettagli = [];
+
+        foreach ($allievi_entity as $u) {
+            $id_u = (int)$u->getId();
+            $iniziali = strtoupper(
+                substr($u->getNome(), 0, 1) . substr($u->getCognome(), 0, 1)
+            );
+
+            $eta = null;
+            if ($u->getDataNascita()) {
+                try {
+                    $dtNascita = new DateTime($u->getDataNascita());
+                    $dtOggi = new DateTime('today');
+                    if ($dtNascita <= $dtOggi) {
+                        $eta = $dtNascita->diff($dtOggi)->y;
+                    }
+                } catch (Exception $e) {
+                    $eta = null;
+                }
+            }
+
+            // Prenotazioni corsi di gruppo dell'allievo
+            $prenotazioni = FPrenotazione::loadByUtente($id_u);
+            $gruppo_attive = [];
+            foreach ($prenotazioni as $p) {
+                $lez = FLezione::load($p->getIdLezione());
+                if (!$lez || $lez->getDataOraFine() < $oggi_sql) {
+                    continue;
+                }
+                $corso = FCorso::load($lez->getIdCorso());
+                $gruppo_attive[] = [
+                    'corso' => $corso ? $corso->getNome() : 'Corso',
+                    'data_ora' => date('d/m/Y H:i', strtotime($lez->getDataOraInizio()))
+                ];
+            }
+
+            // Lezioni individuali prenotate dell'allievo
+            $ind_slots = FLezioneIndividuale::loadByUtente($id_u);
+            $individuali_attive = [];
+            foreach ($ind_slots as $slot) {
+                if ($slot->getStato() !== 'prenotata' || $slot->getDataOraFine() < $oggi_sql) {
+                    continue;
+                }
+                $istr = FUtente::load($slot->getIdIstruttore());
+                $individuali_attive[] = [
+                    'istruttore' => $istr ? ($istr->getNome() . ' ' . $istr->getCognome()) : 'Istruttore',
+                    'data_ora' => date('d/m/Y', strtotime($slot->getDataOraInizio())) . ' ' . date('H:i', strtotime($slot->getDataOraInizio())) . '-' . date('H:i', strtotime($slot->getDataOraFine()))
+                ];
+            }
+
+            $record = [
+                'id' => $id_u,
+                'nome' => $u->getNome(),
+                'cognome' => $u->getCognome(),
+                'iniziali' => $iniziali,
+                'email' => $u->getEmail(),
+                'telefono' => $u->getTelefono(),
+                'data_nascita' => $u->getDataNascitaFormattata(),
+                'eta' => $eta,
+                'data_registrazione' => $u->getDataRegistrazioneFormattata(),
+                'immagine_profilo' => $u->getImmagineProfilo(),
+                'crediti_residui' => (int)$u->getCreditiResidui(),
+                'scadenza_certificato' => $u->getScadenzaCertificatoFormattata(),
+                'certificato_valido' => $u->haCertificatoValido(),
+                'deve_cambiare_password' => $u->deveCambiarePassword(),
+                'prenotazioni_gruppo' => $gruppo_attive,
+                'lezioni_individuali' => $individuali_attive
+            ];
+
+            $allievi_dati[] = $record;
+            $allievi_dettagli[(string)$id_u] = $record;
+        }
+
+        $allievi_json = json_encode(
+            (object)$allievi_dettagli,
+            JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+        );
+
+        $view = new VAdmin();
+        $view->mostraAllievi($allievi_dati, $allievi_json);
     }
 
     // =========================================================================
@@ -462,7 +557,27 @@ class CAdmin {
                 exit;
             }
 
+            $nome = trim($_POST['nome'] ?? '');
+            $cognome = trim($_POST['cognome'] ?? '');
             $nuova_email = trim($_POST['email'] ?? '');
+
+            if ($nome === '') {
+                $view->mostraFormUtente($utente, "Inserisci il nome del profilo.");
+                return;
+            }
+            if ($cognome === '') {
+                $view->mostraFormUtente($utente, "Inserisci il cognome del profilo.");
+                return;
+            }
+            if ($nuova_email === '') {
+                $view->mostraFormUtente($utente, "Inserisci l'indirizzo email del profilo.");
+                return;
+            }
+            if (!filter_var($nuova_email, FILTER_VALIDATE_EMAIL)) {
+                $view->mostraFormUtente($utente, "Inserisci un indirizzo email valido.");
+                return;
+            }
+
             $esistente = FUtente::loadByEmail($nuova_email);
             if ($esistente && $esistente->getId() != $id) {
                 $view->mostraFormUtente($utente, "Errore: l'email inserita è già utilizzata da un altro utente.");
@@ -475,10 +590,22 @@ class CAdmin {
                 return;
             }
 
-            $utente->setNome(trim($_POST['nome'] ?? ''));
-            $utente->setCognome(trim($_POST['cognome'] ?? ''));
+            $data_nascita_raw = trim($_POST['data_nascita'] ?? '');
+            $data_nascita = null;
+            if ($data_nascita_raw !== '') {
+                $dt = DateTime::createFromFormat('Y-m-d', $data_nascita_raw);
+                if (!$dt || $dt->format('Y-m-d') !== $data_nascita_raw || $data_nascita_raw > date('Y-m-d')) {
+                    $view->mostraFormUtente($utente, "Inserisci una data di nascita valida (non nel futuro).");
+                    return;
+                }
+                $data_nascita = $data_nascita_raw;
+            }
+
+            $utente->setNome($nome);
+            $utente->setCognome($cognome);
             $utente->setEmail($nuova_email);
             $utente->setTelefono(trim($_POST['telefono'] ?? ''));
+            $utente->setDataNascita($data_nascita);
             $utente->setRuolo($ruolo);
             $utente->setCreditiResidui(0);
             $utente->setScadenzaCertificato(null);
@@ -545,6 +672,24 @@ class CAdmin {
             $nome = trim($_POST['nome'] ?? '');
             $cognome = trim($_POST['cognome'] ?? '');
             $email = trim($_POST['email'] ?? '');
+
+            if ($nome === '') {
+                $view->mostraFormUtente(null, "Inserisci il nome del nuovo profilo.");
+                return;
+            }
+            if ($cognome === '') {
+                $view->mostraFormUtente(null, "Inserisci il cognome del nuovo profilo.");
+                return;
+            }
+            if ($email === '') {
+                $view->mostraFormUtente(null, "Inserisci l'indirizzo email del nuovo profilo.");
+                return;
+            }
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $view->mostraFormUtente(null, "Inserisci un indirizzo email valido.");
+                return;
+            }
+
             $password = trim($_POST['password'] ?? '');
             if ($password === '') {
                 $password = self::generaPasswordIniziale($nome, $cognome);
@@ -554,6 +699,16 @@ class CAdmin {
                 return;
             }
             $telefono = trim($_POST['telefono'] ?? '');
+            $data_nascita_raw = trim($_POST['data_nascita'] ?? '');
+            $data_nascita = null;
+            if ($data_nascita_raw !== '') {
+                $dt = DateTime::createFromFormat('Y-m-d', $data_nascita_raw);
+                if (!$dt || $dt->format('Y-m-d') !== $data_nascita_raw || $data_nascita_raw > date('Y-m-d')) {
+                    $view->mostraFormUtente(null, "Inserisci una data di nascita valida (non nel futuro).");
+                    return;
+                }
+                $data_nascita = $data_nascita_raw;
+            }
             $ruolo = $_POST['ruolo'] ?? '';
 
             if (!in_array($ruolo, self::RUOLI_GESTITI, true)) {
@@ -592,7 +747,7 @@ class CAdmin {
                 }
             }
 
-            $nuovoUtente = new EUtente($nome, $cognome, $email, $password, $telefono, $ruolo, 0, null, $descrizione, null, $tariffa_individuale, true);
+            $nuovoUtente = new EUtente($nome, $cognome, $email, $password, $telefono, $ruolo, 0, null, $descrizione, null, $tariffa_individuale, true, $data_nascita);
             $id = FUtente::store($nuovoUtente);
 
             if ($id) {

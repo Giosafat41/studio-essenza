@@ -45,6 +45,8 @@
                         name="email"
                         class="form-control auth-input"
                         required
+                        data-msg-required="Inserisci la tua email per accedere."
+                        data-msg-type="Inserisci un indirizzo email valido (es. nome@esempio.it)."
                         autocomplete="email"
                         autofocus
                         placeholder="nome@esempio.it"
@@ -68,6 +70,7 @@
                         name="password"
                         class="form-control auth-input auth-input-password"
                         required
+                        data-msg-required="Inserisci la tua password per accedere."
                         autocomplete="current-password"
                         placeholder="Inserisci la tua password"
                     >

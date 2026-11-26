@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 5.8.5, created on 2026-11-24 17:35:45
+/* Smarty version 5.8.5, created on 2026-11-26 17:35:46
   from 'file:dashboard_allievo.tpl' */
 
 /* @var \Smarty\Template $_smarty_tpl */
 if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   'version' => '5.8.5',
-  'unifunc' => 'content_6b05bce1610cc6_60022757',
+  'unifunc' => 'content_6b085fe2a846d0_82689681',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '4d0f866858d35b7213b1c9de60c707881f593db5' => 
     array (
       0 => 'dashboard_allievo.tpl',
-      1 => 1795537819,
+      1 => 1795710162,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   array (
   ),
 ))) {
-function content_6b05bce1610cc6_60022757 (\Smarty\Template $_smarty_tpl) {
+function content_6b085fe2a846d0_82689681 (\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
 $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 ?>
@@ -28,13 +28,13 @@ $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 
 
 <?php 
-$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_7047741016b05bce15fbe86_23480986', "content");
+$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_21357388766b085fe2a68372_60040828', "content");
 ?>
 
 <?php $_smarty_tpl->getInheritance()->endChild($_smarty_tpl, "layout.tpl", $_smarty_current_dir);
 }
 /* {block "content"} */
-class Block_7047741016b05bce15fbe86_23480986 extends \Smarty\Runtime\Block
+class Block_21357388766b085fe2a68372_60040828 extends \Smarty\Runtime\Block
 {
 public function callBlock(\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
@@ -81,7 +81,7 @@ $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenz
                     </p>
                 </div>
             </div>
-            <div class="flex-shrink-0">
+            <div class="d-flex flex-column gap-2 flex-shrink-0">
                 <a href="index.php?controller=prenotazione&action=calendario" class="btn btn-primary dashboard-cta-btn w-100">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -93,9 +93,41 @@ $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenz
                     </svg>
                     <span>Prenota una lezione</span>
                 </a>
+                <a href="index.php?controller=utente&action=cambiaPassword" class="btn btn-outline-essenza btn-sm w-100">
+                    Cambia Password
+                </a>
             </div>
         </div>
     </section>
+
+    <!-- Avviso promemoria cambio password iniziale -->
+    <?php if (!( !$_smarty_tpl->hasVariable('mostra_avviso_password') || empty($_smarty_tpl->getValue('mostra_avviso_password')))) {?>
+        <div class="alert password-reminder-alert fade show d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4" id="avvisoCambioPassword" role="alert">
+            <div class="d-flex align-items-start gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                <div>
+                    <strong class="d-block mb-1">Ricordati di cambiare la tua password</strong>
+                    <span>Il tuo profilo è stato creato dalla segreteria con una password iniziale. Ti consigliamo di impostarne una personale.</span>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                <a href="index.php?controller=utente&action=cambiaPassword" class="btn btn-primary btn-sm px-3 text-nowrap">
+                    Cambia password
+                </a>
+                <button
+                    type="button"
+                    class="btn btn-outline-essenza btn-sm px-3 text-nowrap js-chiudi-avviso-password"
+                    data-bs-dismiss="alert"
+                    aria-label="Chiudi avviso"
+                >
+                    Chiudi
+                </button>
+            </div>
+        </div>
+    <?php }?>
 
     <!-- Messaggi di conferma / errore -->
     <?php if ((true && ($_smarty_tpl->hasVariable('messaggio_successo') && null !== ($_smarty_tpl->getValue('messaggio_successo') ?? null)))) {?>
@@ -382,6 +414,7 @@ $_smarty_tpl->getSmarty()->getRuntime('Foreach')->restore($_smarty_tpl, 1);?>
                             class="form-control admin-input"
                             accept="image/jpeg,image/png,image/webp,image/gif"
                             required
+                            data-msg-required="Seleziona un'immagine dal tuo dispositivo prima di salvare."
                         >
                         <div class="form-text mt-1">Formati consentiti: JPG, PNG, WEBP, GIF (max 5 MB).</div>
                     </div>
@@ -407,6 +440,16 @@ $_smarty_tpl->getSmarty()->getRuntime('Foreach')->restore($_smarty_tpl, 1);?>
 <?php echo '<script'; ?>
 >
 document.addEventListener('DOMContentLoaded', function () {
+    const btnChiudiAvviso = document.querySelector('.js-chiudi-avviso-password');
+    if (btnChiudiAvviso) {
+        btnChiudiAvviso.addEventListener('click', function () {
+            fetch('index.php?controller=utente&action=chiudiAvvisoPassword', {
+                method: 'POST',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            }).catch(function () {});
+        });
+    }
+
     const input = document.getElementById('inputFotoAllievo');
     const preview = document.getElementById('previewFotoAllievo');
     if (!input || !preview) return;

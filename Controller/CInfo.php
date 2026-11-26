@@ -40,9 +40,30 @@ class CInfo {
         $view = new VInfo();
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $nome = htmlspecialchars($_POST['nome']);
-            $email = htmlspecialchars($_POST['email']);
-            $messaggio = htmlspecialchars($_POST['messaggio']);
+            $nome_raw = trim($_POST['nome'] ?? '');
+            $email_raw = trim($_POST['email'] ?? '');
+            $messaggio_raw = trim($_POST['messaggio'] ?? '');
+
+            if ($nome_raw === '') {
+                $view->mostraContatti(null, "Inserisci il tuo nome.");
+                return;
+            }
+            if ($email_raw === '') {
+                $view->mostraContatti(null, "Inserisci il tuo indirizzo email.");
+                return;
+            }
+            if (!filter_var($email_raw, FILTER_VALIDATE_EMAIL)) {
+                $view->mostraContatti(null, "Inserisci un indirizzo email valido.");
+                return;
+            }
+            if ($messaggio_raw === '') {
+                $view->mostraContatti(null, "Scrivi il messaggio che desideri inviarci.");
+                return;
+            }
+
+            $nome = htmlspecialchars($nome_raw);
+            $email = htmlspecialchars($email_raw);
+            $messaggio = htmlspecialchars($messaggio_raw);
             
             // Mostra il template passando il messaggio di conferma
             $conferma = "Grazie $nome! Abbiamo ricevuto il tuo messaggio e ti risponderemo all'indirizzo $email.";

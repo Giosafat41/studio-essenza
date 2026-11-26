@@ -340,6 +340,7 @@
                             class="form-control admin-input"
                             accept="image/jpeg,image/png,image/webp,image/gif"
                             required
+                            data-msg-required="Seleziona un'immagine dal tuo dispositivo prima di salvare."
                         >
                         <div class="form-text mt-1">Formati consentiti: JPG, PNG, WEBP, GIF (max 5 MB).</div>
                     </div>

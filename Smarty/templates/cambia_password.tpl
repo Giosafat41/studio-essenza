@@ -67,6 +67,7 @@
                         name="password_attuale"
                         class="form-control auth-input auth-input-password"
                         required
+                        data-msg-required="Inserisci la tua password attuale."
                         autocomplete="current-password"
                         autofocus
                         placeholder="Inserisci la password attuale"
@@ -110,6 +111,8 @@
                         class="form-control auth-input auth-input-password"
                         required
                         minlength="6"
+                        data-msg-required="Inserisci una nuova password."
+                        data-msg-minlength="La nuova password deve contenere almeno 6 caratteri."
                         autocomplete="new-password"
                         placeholder="Almeno 6 caratteri"
                     >
@@ -152,6 +155,10 @@
                         class="form-control auth-input auth-input-password"
                         required
                         minlength="6"
+                        data-msg-required="Ripeti la nuova password per confermarla."
+                        data-msg-minlength="La conferma della password deve contenere almeno 6 caratteri."
+                        data-match-target="nuova_password"
+                        data-msg-match="La nuova password e la conferma non coincidono."
                         autocomplete="new-password"
                         placeholder="Ripeti la nuova password"
                     >

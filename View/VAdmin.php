@@ -10,12 +10,14 @@ class VAdmin extends StartSmarty {
         $totale_staff = 0,
         $totale_corsi = 0,
         $errore = null,
-        $successo = null
+        $successo = null,
+        $totale_allievi = 0
     ) {
         $this->smarty->assign('titolo_pagina', 'Pannello Admin - Studio Essenza');
         $this->smarty->assign('nome_admin', $nome_admin);
         $this->smarty->assign('lezioni_disponibili', $lezioni_disponibili);
         $this->smarty->assign('totale_staff', $totale_staff);
+        $this->smarty->assign('totale_allievi', $totale_allievi);
         $this->smarty->assign('totale_corsi', $totale_corsi);
         if ($errore) {
             $this->smarty->assign('messaggio_errore', $errore);
@@ -24,6 +26,14 @@ class VAdmin extends StartSmarty {
             $this->smarty->assign('messaggio_successo', $successo);
         }
         $this->smarty->display('admin_dashboard.tpl');
+    }
+
+    // Mostra l'elenco completo di tutti gli allievi iscritti con dettagli completi
+    public function mostraAllievi(array $allievi, string $allievi_json = '{}') {
+        $this->smarty->assign('titolo_pagina', 'Elenco Allievi - Studio Essenza');
+        $this->smarty->assign('allievi', $allievi);
+        $this->smarty->assign('allievi_json', $allievi_json);
+        $this->smarty->display('admin_allievi.tpl');
     }
 
     public function mostraCorsi(array $corsi, ?ECorso $corso_in_modifica = null, $successo = null, $errore = null) {
@@ -107,6 +117,7 @@ class VAdmin extends StartSmarty {
             'istruttore' => 'Istruttore'
         ]);
         $this->smarty->assign('ruolo_default', 'segretaria');
+        $this->smarty->assign('oggi_input', date('Y-m-d'));
 
         if ($utente) {
             $this->smarty->assign('titolo_pagina', 'Modifica Profilo Staff - Studio Essenza');

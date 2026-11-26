@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 5.8.5, created on 2026-11-17 16:11:34
+/* Smarty version 5.8.5, created on 2026-11-26 17:23:26
   from 'file:contatti.tpl' */
 
 /* @var \Smarty\Template $_smarty_tpl */
 if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   'version' => '5.8.5',
-  'unifunc' => 'content_6afc6ea6da09f0_23065724',
+  'unifunc' => 'content_6b085cfe19cb97_43785385',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     'd5c3c0328e57b7b8246f368b2d579966742c723a' => 
     array (
       0 => 'contatti.tpl',
-      1 => 1794927696,
+      1 => 1795710126,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   array (
   ),
 ))) {
-function content_6afc6ea6da09f0_23065724 (\Smarty\Template $_smarty_tpl) {
+function content_6b085cfe19cb97_43785385 (\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
 $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 ?>
@@ -28,11 +28,11 @@ $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 
 
 <?php 
-$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_15644482236afc6ea6d9b219_10691520', "content");
+$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_17421395456b085cfe19a714_17112024', "content");
 $_smarty_tpl->getInheritance()->endChild($_smarty_tpl, "layout.tpl", $_smarty_current_dir);
 }
 /* {block "content"} */
-class Block_15644482236afc6ea6d9b219_10691520 extends \Smarty\Runtime\Block
+class Block_17421395456b085cfe19a714_17112024 extends \Smarty\Runtime\Block
 {
 public function callBlock(\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
@@ -69,20 +69,27 @@ $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenz
                 </div>
             <?php }?>
 
+            <?php if ((true && ($_smarty_tpl->hasVariable('errore') && null !== ($_smarty_tpl->getValue('errore') ?? null)))) {?>
+                <div class="auth-alert-error d-flex align-items-start gap-2 mb-3" role="alert">
+                    <span><?php echo htmlspecialchars((string)$_smarty_tpl->getValue('errore'), ENT_QUOTES, 'UTF-8', true);?>
+</span>
+                </div>
+            <?php }?>
+
             <form action="index.php?controller=info&action=contatti" method="POST" class="auth-form">
                 <div class="form-group" style="margin-bottom: 15px;">
                     <label for="nome" style="display:block; margin-bottom:5px;">Il tuo Nome</label>
-                    <input type="text" id="nome" name="nome" required style="width:100%; padding:8px; box-sizing:border-box;">
+                    <input type="text" id="nome" name="nome" required data-msg-required="Inserisci il tuo nome." style="width:100%; padding:8px; box-sizing:border-box;">
                 </div>
                 
                 <div class="form-group" style="margin-bottom: 15px;">
                     <label for="email" style="display:block; margin-bottom:5px;">La tua Email</label>
-                    <input type="email" id="email" name="email" required style="width:100%; padding:8px; box-sizing:border-box;">
+                    <input type="email" id="email" name="email" required data-msg-required="Inserisci il tuo indirizzo email." data-msg-type="Inserisci un indirizzo email valido (es. nome@esempio.it)." style="width:100%; padding:8px; box-sizing:border-box;">
                 </div>
 
                 <div class="form-group" style="margin-bottom: 15px;">
                     <label for="messaggio" style="display:block; margin-bottom:5px;">Messaggio</label>
-                    <textarea id="messaggio" name="messaggio" rows="4" required style="width:100%; padding:8px; box-sizing:border-box;"></textarea>
+                    <textarea id="messaggio" name="messaggio" rows="4" required data-msg-required="Scrivi il messaggio che desideri inviarci." style="width:100%; padding:8px; box-sizing:border-box;"></textarea>
                 </div>
                 
                 <button type="submit" class="btn-primary" style="background-color: #7b8b6f; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Invia Messaggio</button>

@@ -18,12 +18,15 @@ class VInfo extends StartSmarty {
         $this->smarty->display('tariffe.tpl');
     }
 
-    // Mostra la pagina "Contatti" ed eventuale messaggio di conferma invio
-    public function mostraContatti($messaggio_conferma = null) {
+    // Mostra la pagina "Contatti" ed eventuale messaggio di conferma o errore
+    public function mostraContatti($messaggio_conferma = null, $messaggio_errore = null) {
         $this->smarty->assign('titolo_pagina', 'Contatti - Studio Essenza');
         
         if ($messaggio_conferma) {
             $this->smarty->assign('conferma', $messaggio_conferma);
+        }
+        if ($messaggio_errore) {
+            $this->smarty->assign('errore', $messaggio_errore);
         }
         
         $this->smarty->display('contatti.tpl');

@@ -108,6 +108,7 @@ CREATE TABLE `utente` (
   `email` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
   `telefono` varchar(20) DEFAULT NULL,
+  `data_nascita` date DEFAULT NULL,
   `ruolo` enum('allievo','istruttore','segretaria','admin') NOT NULL DEFAULT 'allievo',
   `crediti_residui` int(11) DEFAULT 0,
   `scadenza_certificato` date DEFAULT NULL,
@@ -122,15 +123,15 @@ CREATE TABLE `utente` (
 -- Dump dei dati per la tabella `utente`
 --
 
-INSERT INTO `utente` (`id`, `nome`, `cognome`, `email`, `password`, `telefono`, `ruolo`, `crediti_residui`, `scadenza_certificato`, `descrizione`, `immagine_profilo`, `tariffa_individuale`, `deve_cambiare_password`, `data_registrazione`) VALUES
-(2, 'admin', '1', 'admin@gmail.com', '$2y$10$..OrjtZy9fDaKZeD5r17OumuqExX3khco2Pt9sBmTWdrOuDMLHGxS', '123456789', 'admin', 0, NULL, NULL, NULL, NULL, 0, '2026-11-17 15:47:02'),
-(4, 'utente', '1', 'utente1@gmail.com', '$2y$10$1MKLEJFREUT76PXH7HMqQOyK6bXQ4XlVoG4q/9KUUWvtvIWH6TrVG', '', 'allievo', 0, NULL, NULL, NULL, NULL, 0, '2026-11-26 15:05:46'),
-(5, 'utente', '2', 'utente2@gmail.com', '$2y$10$SDayxFzKB43HpOu82/8sF.xfY97AIgA0X7ZAc7GPrjngifYVytAlm', '', 'allievo', 0, NULL, NULL, NULL, NULL, 1, '2026-11-26 15:11:58'),
-(6, 'istruttore', '1', 'istruttore1@gmail.com', '$2y$10$v5np/VIJh/voHqjp1BEPV.QhyBlMhDp6nfLwOzdgzZMyqf5miy2DS', '', 'istruttore', 0, NULL, 'molto bravo', NULL, NULL, 1, '2026-11-26 15:12:34'),
-(7, 'istruttore', '2', 'istruttore2@gmail.com', '$2y$10$Xvd/Y/vzPypIfH1BZsIAiuIBGoqZkzwyfSehZOw2yJQ8dMi0kiII.', '', 'istruttore', 0, NULL, 'ancora più bravo', NULL, NULL, 0, '2026-11-26 15:12:57'),
-(8, 'segretaria', '1', 'segretaria1@gmail.com', '$2y$10$bx7/RZWv6wEAoGSkkbNsauG72XKgYsPYx8X.Q5vhDopX.Bft72Cia', '', 'segretaria', 0, NULL, NULL, NULL, NULL, 0, '2026-11-26 16:00:22'),
-(9, 'segretaria', '2', 'segretaria2@gmail.com', '$2y$10$DFxZehfqXN0JPOppVQp2muHwNXR.yedAtYbGetJr.tJF6AFhca50q', '', 'segretaria', 0, NULL, NULL, NULL, NULL, 1, '2026-11-26 16:00:51'),
-(10, 'segretaria', '3', 'segretaria3@gmail.com', '$2y$10$8Xfmqv1R4uCjP78i3c.TUemLFrX/YpaqVP/eW5vk0iTSctKqsWL7u', '', 'segretaria', 0, NULL, NULL, NULL, NULL, 1, '2026-11-26 16:02:00');
+INSERT INTO `utente` (`id`, `nome`, `cognome`, `email`, `password`, `telefono`, `data_nascita`, `ruolo`, `crediti_residui`, `scadenza_certificato`, `descrizione`, `immagine_profilo`, `tariffa_individuale`, `deve_cambiare_password`, `data_registrazione`) VALUES
+(2, 'admin', '1', 'admin@gmail.com', '$2y$10$..OrjtZy9fDaKZeD5r17OumuqExX3khco2Pt9sBmTWdrOuDMLHGxS', '123456789', NULL, 'admin', 0, NULL, NULL, NULL, NULL, 0, '2026-11-17 15:47:02'),
+(4, 'utente', '1', 'utente1@gmail.com', '$2y$10$1MKLEJFREUT76PXH7HMqQOyK6bXQ4XlVoG4q/9KUUWvtvIWH6TrVG', '', NULL, 'allievo', 0, NULL, NULL, NULL, NULL, 0, '2026-11-26 15:05:46'),
+(5, 'utente', '2', 'utente2@gmail.com', '$2y$10$SDayxFzKB43HpOu82/8sF.xfY97AIgA0X7ZAc7GPrjngifYVytAlm', '', NULL, 'allievo', 0, NULL, NULL, NULL, NULL, 1, '2026-11-26 15:11:58'),
+(6, 'istruttore', '1', 'istruttore1@gmail.com', '$2y$10$v5np/VIJh/voHqjp1BEPV.QhyBlMhDp6nfLwOzdgzZMyqf5miy2DS', '', NULL, 'istruttore', 0, NULL, 'molto bravo', NULL, NULL, 1, '2026-11-26 15:12:34'),
+(7, 'istruttore', '2', 'istruttore2@gmail.com', '$2y$10$Xvd/Y/vzPypIfH1BZsIAiuIBGoqZkzwyfSehZOw2yJQ8dMi0kiII.', '', NULL, 'istruttore', 0, NULL, 'ancora più bravo', NULL, NULL, 0, '2026-11-26 15:12:57'),
+(8, 'segretaria', '1', 'segretaria1@gmail.com', '$2y$10$bx7/RZWv6wEAoGSkkbNsauG72XKgYsPYx8X.Q5vhDopX.Bft72Cia', '', NULL, 'segretaria', 0, NULL, NULL, NULL, NULL, 0, '2026-11-26 16:00:22'),
+(9, 'segretaria', '2', 'segretaria2@gmail.com', '$2y$10$DFxZehfqXN0JPOppVQp2muHwNXR.yedAtYbGetJr.tJF6AFhca50q', '', NULL, 'segretaria', 0, NULL, NULL, NULL, NULL, 1, '2026-11-26 16:00:51'),
+(10, 'segretaria', '3', 'segretaria3@gmail.com', '$2y$10$8Xfmqv1R4uCjP78i3c.TUemLFrX/YpaqVP/eW5vk0iTSctKqsWL7u', '', NULL, 'segretaria', 0, NULL, NULL, NULL, NULL, 1, '2026-11-26 16:02:00');
 
 --
 -- Indici per le tabelle scaricate

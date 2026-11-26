@@ -89,7 +89,7 @@
             <div>
                 <h2 class="dashboard-section-title mb-1">Lezioni Individuali (1-to-1) &mdash; I Nostri Istruttori</h2>
                 <p class="dashboard-subtitle" style="font-size: 14.5px;">
-                    Sessioni personalizzate da 60 minuti con pagamento separato. Ogni istruttore definisce la propria tariffa.
+                    Sessioni personalizzate da 60 minuti con pagamento separato.
                 </p>
             </div>
             <span class="dashboard-count-badge">Pagamento separato &bull; 60 min</span>

@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 5.8.5, created on 2026-11-24 17:35:45
+/* Smarty version 5.8.5, created on 2026-11-26 17:35:46
   from 'file:calendario.tpl' */
 
 /* @var \Smarty\Template $_smarty_tpl */
 if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   'version' => '5.8.5',
-  'unifunc' => 'content_6b05bce132f308_19659369',
+  'unifunc' => 'content_6b085fe2790276_35616718',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '3f2f24f1c95061c8a0b60d481d6e90d79af2886a' => 
     array (
       0 => 'calendario.tpl',
-      1 => 1795537818,
+      1 => 1795710922,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   array (
   ),
 ))) {
-function content_6b05bce132f308_19659369 (\Smarty\Template $_smarty_tpl) {
+function content_6b085fe2790276_35616718 (\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
 $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 ?>
@@ -28,13 +28,13 @@ $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 
 
 <?php 
-$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_17210272246b05bce13136d3_73588093', "content");
+$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_3804418326b085fe2778518_65260243', "content");
 ?>
 
 <?php $_smarty_tpl->getInheritance()->endChild($_smarty_tpl, "layout.tpl", $_smarty_current_dir);
 }
 /* {block "content"} */
-class Block_17210272246b05bce13136d3_73588093 extends \Smarty\Runtime\Block
+class Block_3804418326b085fe2778518_65260243 extends \Smarty\Runtime\Block
 {
 public function callBlock(\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
@@ -177,14 +177,7 @@ echo htmlspecialchars((string)$_smarty_tpl->getValue('istr')['tariffa_formattata
                                         <div class="fw-semibold"><?php echo htmlspecialchars((string)$_smarty_tpl->getValue('istr')['nome'], ENT_QUOTES, 'UTF-8', true);?>
  <?php echo htmlspecialchars((string)$_smarty_tpl->getValue('istr')['cognome'], ENT_QUOTES, 'UTF-8', true);?>
 </div>
-                                        <small class="opacity-75">
-                                            <?php if (!( !true || empty($_smarty_tpl->getValue('istr')['tariffa_formattata']))) {?>
-                                                <?php echo htmlspecialchars((string)$_smarty_tpl->getValue('istr')['tariffa_formattata'], ENT_QUOTES, 'UTF-8', true);?>
- / ora &bull; Istruttore certificato
-                                            <?php } else { ?>
-                                                Tariffa su richiesta &bull; Istruttore certificato
-                                            <?php }?>
-                                        </small>
+                                        <small class="opacity-75">Istruttore certificato</small>
                                     </div>
                                 </div>
                                 <span class="calendar-slot-badge <?php if ($_smarty_tpl->getValue('istr')['totale_slot'] == 0) {?>is-zero<?php }?>">
@@ -384,19 +377,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            const etichettaPrezzo = tariffaCorrente && tariffaCorrente !== 'Su richiesta'
-                ? `Lezione 1-to-1 &bull; ${tariffaCorrente}`
-                : 'Lezione 1-to-1 &bull; Su richiesta';
-
             let html = '<div class="row g-2">';
             giornoObj.orari.forEach(function (slot) {
                 html += `
                     <div class="col-12 col-sm-6">
                         <div class="calendar-slot-card">
-                            <div>
-                                <strong class="d-block" style="color: #4a4a4a;">${slot.ora_inizio} - ${slot.ora_fine}</strong>
-                                <small class="text-muted">${etichettaPrezzo}</small>
-                            </div>
+                            <strong style="color: #4a4a4a;">${slot.ora_inizio} - ${slot.ora_fine}</strong>
                             <form action="index.php?controller=prenotazione&action=prenotaIndividuale" method="POST" class="m-0">
                                 <input type="hidden" name="id_slot" value="${slot.id_slot}">
                                 <button type="submit" class="btn btn-sm btn-primary px-3">Prenota</button>

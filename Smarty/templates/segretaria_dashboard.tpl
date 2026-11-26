@@ -147,7 +147,7 @@
 
                             <div class="mb-3">
                                 <label for="id_lezione" class="form-label auth-label">Lezione disponibile</label>
-                                <select id="id_lezione" name="id_lezione" class="form-select admin-select" required>
+                                <select id="id_lezione" name="id_lezione" class="form-select admin-select" required data-msg-required="Seleziona una lezione dal menù a tendina prima di procedere.">
                                     <option value="" selected disabled>Seleziona una lezione...</option>
                                     {foreach from=$lezioni_disponibili item=lez}
                                         <option value="{$lez.id}">

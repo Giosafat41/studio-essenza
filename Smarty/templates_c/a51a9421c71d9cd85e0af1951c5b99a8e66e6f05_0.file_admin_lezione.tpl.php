@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 5.8.5, created on 2026-11-24 17:09:59
+/* Smarty version 5.8.5, created on 2026-11-26 17:23:26
   from 'file:admin_lezione.tpl' */
 
 /* @var \Smarty\Template $_smarty_tpl */
 if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   'version' => '5.8.5',
-  'unifunc' => 'content_6b05b6d791e4b3_31991086',
+  'unifunc' => 'content_6b085cfeb8ae18_21843901',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     'a51a9421c71d9cd85e0af1951c5b99a8e66e6f05' => 
     array (
       0 => 'admin_lezione.tpl',
-      1 => 1795536522,
+      1 => 1795710132,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   array (
   ),
 ))) {
-function content_6b05b6d791e4b3_31991086 (\Smarty\Template $_smarty_tpl) {
+function content_6b085cfeb8ae18_21843901 (\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
 $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 ?>
@@ -28,13 +28,13 @@ $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 
 
 <?php 
-$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_9325118446b05b6d79048e2_42105433', "content");
+$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_5928748856b085cfeb828c2_30043751', "content");
 ?>
 
 <?php $_smarty_tpl->getInheritance()->endChild($_smarty_tpl, "layout.tpl", $_smarty_current_dir);
 }
 /* {block "content"} */
-class Block_9325118446b05b6d79048e2_42105433 extends \Smarty\Runtime\Block
+class Block_5928748856b085cfeb828c2_30043751 extends \Smarty\Runtime\Block
 {
 public function callBlock(\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
@@ -42,14 +42,14 @@ $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenz
 
 <div class="container admin-form-page py-2 py-md-3">
 
-    <!-- Link ritorno al Pannello Segreteria -->
+    <!-- Link ritorno al Pannello Admin -->
     <div class="mb-3">
         <a href="index.php?controller=admin&action=dashboard" class="calendar-back-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <line x1="19" y1="12" x2="5" y2="12"></line>
                 <polyline points="12 19 5 12 12 5"></polyline>
             </svg>
-            <span>Torna al Pannello Segreteria</span>
+            <span>Torna al Pannello Admin</span>
         </a>
     </div>
 
@@ -81,12 +81,13 @@ $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenz
         <form action="index.php?controller=admin&action=aggiungiLezione" method="POST">
             <div class="mb-3">
                 <label for="id_corso" class="form-label auth-label">Tipo di Corso</label>
-                <select id="id_corso" name="id_corso" class="form-select admin-select" required>
+                <select id="id_corso" name="id_corso" class="form-select admin-select" required data-msg-required="Seleziona un corso dal menù a tendina.">
+                    <option value="" selected disabled>Seleziona un corso...</option>
                     <?php
 $_from = $_smarty_tpl->getSmarty()->getRuntime('Foreach')->init($_smarty_tpl, $_smarty_tpl->getValue('corsi'), 'corso');
-$foreach0DoElse = true;
+$foreach5DoElse = true;
 foreach ($_from ?? [] as $_smarty_tpl->getVariable('corso')->value) {
-$foreach0DoElse = false;
+$foreach5DoElse = false;
 ?>
                         <option value="<?php echo $_smarty_tpl->getValue('corso')->getId();?>
 "><?php echo htmlspecialchars((string)$_smarty_tpl->getValue('corso')->getNome(), ENT_QUOTES, 'UTF-8', true);?>
@@ -100,12 +101,13 @@ $_smarty_tpl->getSmarty()->getRuntime('Foreach')->restore($_smarty_tpl, 1);?>
 
             <div class="mb-3">
                 <label for="id_istruttore" class="form-label auth-label">Istruttore</label>
-                <select id="id_istruttore" name="id_istruttore" class="form-select admin-select" required>
+                <select id="id_istruttore" name="id_istruttore" class="form-select admin-select" required data-msg-required="Seleziona un istruttore dal menù a tendina.">
+                    <option value="" selected disabled>Seleziona un istruttore...</option>
                     <?php
 $_from = $_smarty_tpl->getSmarty()->getRuntime('Foreach')->init($_smarty_tpl, $_smarty_tpl->getValue('istruttori'), 'istr');
-$foreach1DoElse = true;
+$foreach6DoElse = true;
 foreach ($_from ?? [] as $_smarty_tpl->getVariable('istr')->value) {
-$foreach1DoElse = false;
+$foreach6DoElse = false;
 ?>
                         <option value="<?php echo $_smarty_tpl->getValue('istr')->getId();?>
 "><?php echo htmlspecialchars((string)$_smarty_tpl->getValue('istr')->getNome(), ENT_QUOTES, 'UTF-8', true);?>
@@ -120,12 +122,12 @@ $_smarty_tpl->getSmarty()->getRuntime('Foreach')->restore($_smarty_tpl, 1);?>
             <div class="row g-3 mb-3">
                 <div class="col-12 col-sm-6">
                     <label for="data_ora_inizio" class="form-label auth-label">Data e Ora di Inizio</label>
-                    <input type="datetime-local" id="data_ora_inizio" name="data_ora_inizio" class="form-control admin-input" required>
+                    <input type="datetime-local" id="data_ora_inizio" name="data_ora_inizio" class="form-control admin-input" required data-msg-required="Seleziona la data e l'ora di inizio della lezione.">
                 </div>
 
                 <div class="col-12 col-sm-6">
                     <label for="durata_minuti" class="form-label auth-label">Durata</label>
-                    <select id="durata_minuti" name="durata_minuti" class="form-select admin-select" required>
+                    <select id="durata_minuti" name="durata_minuti" class="form-select admin-select" required data-msg-required="Seleziona la durata della lezione.">
                         <option value="30">30 minuti</option>
                         <option value="60" selected>1 ora (60 min)</option>
                         <option value="90">1 ora e 30 min (90 min)</option>

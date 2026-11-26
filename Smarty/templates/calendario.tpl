@@ -118,13 +118,7 @@
                                     </div>
                                     <div class="text-start">
                                         <div class="fw-semibold">{$istr.nome|escape} {$istr.cognome|escape}</div>
-                                        <small class="opacity-75">
-                                            {if !empty($istr.tariffa_formattata)}
-                                                {$istr.tariffa_formattata|escape} / ora &bull; Istruttore certificato
-                                            {else}
-                                                Tariffa su richiesta &bull; Istruttore certificato
-                                            {/if}
-                                        </small>
+                                        <small class="opacity-75">Istruttore certificato</small>
                                     </div>
                                 </div>
                                 <span class="calendar-slot-badge {if $istr.totale_slot == 0}is-zero{/if}">
@@ -296,19 +290,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            const etichettaPrezzo = tariffaCorrente && tariffaCorrente !== 'Su richiesta'
-                ? `Lezione 1-to-1 &bull; ${tariffaCorrente}`
-                : 'Lezione 1-to-1 &bull; Su richiesta';
-
             let html = '<div class="row g-2">';
             giornoObj.orari.forEach(function (slot) {
                 html += `
                     <div class="col-12 col-sm-6">
                         <div class="calendar-slot-card">
-                            <div>
-                                <strong class="d-block" style="color: #4a4a4a;">${slot.ora_inizio} - ${slot.ora_fine}</strong>
-                                <small class="text-muted">${etichettaPrezzo}</small>
-                            </div>
+                            <strong style="color: #4a4a4a;">${slot.ora_inizio} - ${slot.ora_fine}</strong>
                             <form action="index.php?controller=prenotazione&action=prenotaIndividuale" method="POST" class="m-0">
                                 <input type="hidden" name="id_slot" value="${slot.id_slot}">
                                 <button type="submit" class="btn btn-sm btn-primary px-3">Prenota</button>

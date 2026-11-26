@@ -74,6 +74,7 @@
                             <th>Nome e Cognome</th>
                             <th>Email</th>
                             <th>Telefono</th>
+                            <th>Data di nascita</th>
                             <th>Ruolo</th>
                             {if !empty($mostra_colonne_allievo)}
                                 <th>Crediti</th>
@@ -101,6 +102,7 @@
                                 </td>
                                 <td>{$u->getEmail()|escape}</td>
                                 <td>{$u->getTelefono()|default:'-'|escape}</td>
+                                <td>{$u->getDataNascitaFormattata()|default:'-'|escape}</td>
                                 <td>
                                     <span class="admin-role-pill is-{$u->getRuolo()|escape}">
                                         {$u->getRuolo()|escape}
@@ -147,7 +149,29 @@
                                     </td>
                                 {/if}
                                 <td class="text-end text-nowrap">
-                                    <a href="index.php?controller={$controller_base|default:'admin'|escape}&action=modificaUtente&id={$u->getId()}" class="btn btn-sm btn-outline-essenza">
+                                    <button
+                                        type="button"
+                                        class="btn btn-sm btn-outline-essenza me-1"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalDettaglioUtente"
+                                        data-nome="{$u->getNome()|escape}"
+                                        data-cognome="{$u->getCognome()|escape}"
+                                        data-iniziali="{$u->getNome()|substr:0:1|upper}{$u->getCognome()|substr:0:1|upper}"
+                                        data-email="{$u->getEmail()|escape}"
+                                        data-telefono="{$u->getTelefono()|default:''|escape}"
+                                        data-nascita="{$u->getDataNascitaFormattata()|default:''|escape}"
+                                        data-registrazione="{$u->getDataRegistrazioneFormattata()|default:''|escape}"
+                                        data-ruolo="{$u->getRuolo()|escape}"
+                                        data-crediti="{$u->getCreditiResidui()}"
+                                        data-certificato="{$u->getScadenzaCertificatoFormattata()|default:''|escape}"
+                                        data-certificato-valido="{if $u->haCertificatoValido()}1{else}0{/if}"
+                                        data-tariffa="{$u->getTariffaFormattata()|default:''|escape}"
+                                        data-descrizione="{$u->getDescrizione()|default:''|escape}"
+                                        data-immagine="{$u->getImmagineProfilo()|default:''|escape}"
+                                    >
+                                        Dettagli
+                                    </button>
+                                    <a href="index.php?controller={$controller_base|default:'admin'|escape}&action=modificaUtente&id={$u->getId()}" class="btn btn-sm btn-primary">
                                         Modifica
                                     </a>
                                 </td>
@@ -160,4 +184,100 @@
     </section>
 
 </div>
+
+<!-- MODALE DETTAGLI PROFILO UTENTE -->
+<div class="modal fade" id="modalDettaglioUtente" tabindex="-1" aria-labelledby="modalDettaglioUtenteLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title fw-semibold" id="modalDettaglioUtenteLabel" style="color: #4a4a4a;">Dettagli Profilo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="d-flex align-items-center gap-3 pb-3 mb-3 border-bottom">
+                    <div class="profile-avatar" id="detUtenteAvatar"></div>
+                    <div>
+                        <h3 class="h5 fw-bold mb-1" id="detUtenteNome" style="color: #4a4a4a;"></h3>
+                        <span class="admin-role-pill" id="detUtenteRuolo"></span>
+                    </div>
+                </div>
+
+                <div class="row g-2 small">
+                    <div class="col-12"><strong>Email:</strong> <span id="detUtenteEmail"></span></div>
+                    <div class="col-12"><strong>Telefono:</strong> <span id="detUtenteTelefono"></span></div>
+                    <div class="col-12"><strong>Data di nascita:</strong> <span id="detUtenteNascita"></span></div>
+                    <div class="col-12"><strong>Registrato il:</strong> <span id="detUtenteRegistrazione"></span></div>
+
+                    <div class="col-12 d-none pt-2 mt-2 border-top" id="detUtenteExtraAllievo">
+                        <div class="mb-1"><strong>Crediti residui:</strong> <span id="detUtenteCrediti"></span></div>
+                        <div><strong>Certificato medico:</strong> <span id="detUtenteCertificato"></span></div>
+                    </div>
+
+                    <div class="col-12 d-none pt-2 mt-2 border-top" id="detUtenteExtraIstruttore">
+                        <div class="mb-1"><strong>Tariffa 1-to-1:</strong> <span id="detUtenteTariffa"></span></div>
+                        <div><strong>Descrizione:</strong> <span id="detUtenteDescrizione"></span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-top">
+                <button type="button" class="btn btn-outline-essenza" data-bs-dismiss="modal">Chiudi</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{literal}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const modalEl = document.getElementById('modalDettaglioUtente');
+    if (!modalEl) return;
+
+    modalEl.addEventListener('show.bs.modal', function (event) {
+        const btn = event.relatedTarget;
+        if (!btn) return;
+
+        const ruolo = btn.getAttribute('data-ruolo') || '';
+        const avatar = document.getElementById('detUtenteAvatar');
+        const imgPath = btn.getAttribute('data-immagine') || '';
+        avatar.textContent = '';
+        if (imgPath) {
+            const img = document.createElement('img');
+            img.src = '/studio-essenza/' + imgPath;
+            img.alt = (btn.getAttribute('data-nome') || '') + ' ' + (btn.getAttribute('data-cognome') || '');
+            avatar.appendChild(img);
+        } else {
+            avatar.textContent = btn.getAttribute('data-iniziali') || '';
+        }
+
+        document.getElementById('detUtenteNome').textContent = (btn.getAttribute('data-cognome') || '') + ' ' + (btn.getAttribute('data-nome') || '');
+        const ruoloEl = document.getElementById('detUtenteRuolo');
+        ruoloEl.className = 'admin-role-pill is-' + ruolo;
+        ruoloEl.textContent = ruolo;
+
+        document.getElementById('detUtenteEmail').textContent = btn.getAttribute('data-email') || '-';
+        document.getElementById('detUtenteTelefono').textContent = btn.getAttribute('data-telefono') || 'Non inserito';
+        document.getElementById('detUtenteNascita').textContent = btn.getAttribute('data-nascita') || 'Non inserita';
+        document.getElementById('detUtenteRegistrazione').textContent = btn.getAttribute('data-registrazione') || '-';
+
+        const extraAllievo = document.getElementById('detUtenteExtraAllievo');
+        const extraIstr = document.getElementById('detUtenteExtraIstruttore');
+        extraAllievo.classList.toggle('d-none', ruolo !== 'allievo');
+        extraIstr.classList.toggle('d-none', ruolo !== 'istruttore');
+
+        if (ruolo === 'allievo') {
+            document.getElementById('detUtenteCrediti').textContent = btn.getAttribute('data-crediti') || '0';
+            const cert = btn.getAttribute('data-certificato') || '';
+            const valido = btn.getAttribute('data-certificato-valido') === '1';
+            document.getElementById('detUtenteCertificato').textContent = cert
+                ? (valido ? 'Valido fino al ' + cert : 'Scaduto (' + cert + ')')
+                : 'Non presente';
+        }
+        if (ruolo === 'istruttore') {
+            document.getElementById('detUtenteTariffa').textContent = btn.getAttribute('data-tariffa') || 'Su richiesta';
+            document.getElementById('detUtenteDescrizione').textContent = btn.getAttribute('data-descrizione') || 'Nessuna descrizione inserita';
+        }
+    });
+});
+</script>
+{/literal}
 {/block}

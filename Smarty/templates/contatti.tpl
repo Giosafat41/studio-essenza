@@ -32,20 +32,26 @@
                 </div>
             {/if}
 
+            {if isset($errore)}
+                <div class="auth-alert-error d-flex align-items-start gap-2 mb-3" role="alert">
+                    <span>{$errore|escape}</span>
+                </div>
+            {/if}
+
             <form action="index.php?controller=info&action=contatti" method="POST" class="auth-form">
                 <div class="form-group" style="margin-bottom: 15px;">
                     <label for="nome" style="display:block; margin-bottom:5px;">Il tuo Nome</label>
-                    <input type="text" id="nome" name="nome" required style="width:100%; padding:8px; box-sizing:border-box;">
+                    <input type="text" id="nome" name="nome" required data-msg-required="Inserisci il tuo nome." style="width:100%; padding:8px; box-sizing:border-box;">
                 </div>
                 
                 <div class="form-group" style="margin-bottom: 15px;">
                     <label for="email" style="display:block; margin-bottom:5px;">La tua Email</label>
-                    <input type="email" id="email" name="email" required style="width:100%; padding:8px; box-sizing:border-box;">
+                    <input type="email" id="email" name="email" required data-msg-required="Inserisci il tuo indirizzo email." data-msg-type="Inserisci un indirizzo email valido (es. nome@esempio.it)." style="width:100%; padding:8px; box-sizing:border-box;">
                 </div>
 
                 <div class="form-group" style="margin-bottom: 15px;">
                     <label for="messaggio" style="display:block; margin-bottom:5px;">Messaggio</label>
-                    <textarea id="messaggio" name="messaggio" rows="4" required style="width:100%; padding:8px; box-sizing:border-box;"></textarea>
+                    <textarea id="messaggio" name="messaggio" rows="4" required data-msg-required="Scrivi il messaggio che desideri inviarci." style="width:100%; padding:8px; box-sizing:border-box;"></textarea>
                 </div>
                 
                 <button type="submit" class="btn-primary" style="background-color: #7b8b6f; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Invia Messaggio</button>

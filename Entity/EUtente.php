@@ -8,6 +8,7 @@ class EUtente {
     private $email;
     private $password;
     private $telefono;
+    private $data_nascita;
     private $ruolo;
     private $crediti_residui;
     private $scadenza_certificato;
@@ -18,12 +19,13 @@ class EUtente {
     private $data_registrazione;
 
     // ID e data di registrazione vengono generati dal DB
-    public function __construct($nome, $cognome, $email, $password, $telefono = null, $ruolo = 'allievo', $crediti_residui = 0, $scadenza_certificato = null, $descrizione = null, $immagine_profilo = null, $tariffa_individuale = null, $deve_cambiare_password = false) {
+    public function __construct($nome, $cognome, $email, $password, $telefono = null, $ruolo = 'allievo', $crediti_residui = 0, $scadenza_certificato = null, $descrizione = null, $immagine_profilo = null, $tariffa_individuale = null, $deve_cambiare_password = false, $data_nascita = null) {
         $this->nome = $nome;
         $this->cognome = $cognome;
         $this->email = $email;
         $this->password = $password;
         $this->telefono = $telefono;
+        $this->data_nascita = !empty($data_nascita) ? $data_nascita : null;
         $this->ruolo = $ruolo;
         $this->crediti_residui = $crediti_residui;
         $this->scadenza_certificato = $scadenza_certificato;
@@ -40,6 +42,10 @@ class EUtente {
     public function getEmail() { return $this->email; }
     public function getPassword() { return $this->password; }
     public function getTelefono() { return $this->telefono; }
+    public function getDataNascita() { return $this->data_nascita; }
+    public function getDataNascitaFormattata() {
+        return !empty($this->data_nascita) ? date('d/m/Y', strtotime($this->data_nascita)) : null;
+    }
     public function getRuolo() { return $this->ruolo; }
     public function getCreditiResidui() { return $this->crediti_residui; }
     public function getScadenzaCertificato() { return $this->scadenza_certificato; }
@@ -51,6 +57,9 @@ class EUtente {
     public function getTariffaIndividuale() { return $this->tariffa_individuale; }
     public function deveCambiarePassword() { return (bool)$this->deve_cambiare_password; }
     public function getDataRegistrazione() { return $this->data_registrazione; }
+    public function getDataRegistrazioneFormattata() {
+        return !empty($this->data_registrazione) ? date('d/m/Y', strtotime($this->data_registrazione)) : null;
+    }
     // --- SETTER METODI ---
     public function setId($id) { $this->id = $id; }
     public function setNome($nome) { $this->nome = $nome; }
@@ -58,6 +67,9 @@ class EUtente {
     public function setEmail($email) { $this->email = $email; }
     public function setPassword($password) { $this->password = $password; }
     public function setTelefono($telefono) { $this->telefono = $telefono; }
+    public function setDataNascita($data_nascita) {
+        $this->data_nascita = !empty($data_nascita) ? $data_nascita : null;
+    }
     public function setRuolo($ruolo) { $this->ruolo = $ruolo; }
     public function setCreditiResidui($crediti_residui) { $this->crediti_residui = $crediti_residui; }
     public function setScadenzaCertificato($scadenza_certificato) { $this->scadenza_certificato = $scadenza_certificato; }

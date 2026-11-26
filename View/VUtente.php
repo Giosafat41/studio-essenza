@@ -27,6 +27,7 @@ class VUtente extends StartSmarty {
     // Mostra il form di registrazione
     public function mostraRegistrazione($errore = null) {
         $this->smarty->assign('titolo_pagina', 'Registrati - Studio Essenza');
+        $this->smarty->assign('oggi_input', date('Y-m-d'));
         
         if ($errore) {
             $this->smarty->assign('errore', $errore);

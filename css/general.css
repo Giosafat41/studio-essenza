@@ -1521,3 +1521,54 @@ a, p, span, li, button, input, select, textarea, label, th, td {
     flex-shrink: 0;
     margin-top: 2px;
 }
+
+
+/* =========================================
+   AVVISI CUSTOM VALIDAZIONE FORM
+   ========================================= */
+
+.essenza-invalid {
+    border-color: #d9534f !important;
+    background-color: #fffafa !important;
+    box-shadow: 0 0 0 0.2rem rgba(217, 83, 79, 0.14) !important;
+}
+
+.essenza-invalid:focus {
+    border-color: #c9302c !important;
+    box-shadow: 0 0 0 0.22rem rgba(217, 83, 79, 0.2) !important;
+}
+
+.essenza-field-error {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    margin-top: 6px;
+    padding: 7px 11px;
+    background-color: #fdf2f2;
+    border: 1px solid #f2c9c8;
+    border-radius: 7px;
+    color: #a94442;
+    font-size: 13.5px;
+    font-weight: 500;
+    line-height: 1.4;
+    animation: essenzaFadeIn 0.18s ease-out;
+}
+
+.essenza-field-error-icon {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: #c9302c;
+}
+
+@keyframes essenzaFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-2px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

@@ -33,11 +33,46 @@ class CUtente {
         $view = new VUtente();
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $nome = $_POST['nome'];
-            $cognome = $_POST['cognome'];
-            $email = $_POST['email'];
-            $password = $_POST['password'];
-            $telefono = $_POST['telefono'];
+            $nome = trim($_POST['nome'] ?? '');
+            $cognome = trim($_POST['cognome'] ?? '');
+            $email = trim($_POST['email'] ?? '');
+            $password = $_POST['password'] ?? '';
+            $telefono = trim($_POST['telefono'] ?? '');
+            $data_nascita = trim($_POST['data_nascita'] ?? '');
+
+            if ($nome === '') {
+                $view->mostraRegistrazione("Inserisci il tuo nome.");
+                return;
+            }
+            if ($cognome === '') {
+                $view->mostraRegistrazione("Inserisci il tuo cognome.");
+                return;
+            }
+            if ($data_nascita === '') {
+                $view->mostraRegistrazione("Inserisci la tua data di nascita.");
+                return;
+            }
+            $dtNascita = DateTime::createFromFormat('Y-m-d', $data_nascita);
+            if (!$dtNascita || $dtNascita->format('Y-m-d') !== $data_nascita || $data_nascita > date('Y-m-d')) {
+                $view->mostraRegistrazione("Inserisci una data di nascita valida (non nel futuro).");
+                return;
+            }
+            if ($email === '') {
+                $view->mostraRegistrazione("Inserisci il tuo indirizzo email.");
+                return;
+            }
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $view->mostraRegistrazione("Inserisci un indirizzo email valido.");
+                return;
+            }
+            if ($password === '') {
+                $view->mostraRegistrazione("Scegli una password per creare il tuo account.");
+                return;
+            }
+            if (strlen($password) < 6) {
+                $view->mostraRegistrazione("La password deve contenere almeno 6 caratteri.");
+                return;
+            }
 
             // 1. Controllo di sicurezza: verifichiamo che l'email non sia già registrata
             $esiste = FUtente::loadByEmail($email);
@@ -47,7 +82,7 @@ class CUtente {
             }
 
             // 2. Crea l'Entity (la password verrà cifrata automaticamente all'interno di FUtente::store che abbiamo scritto prima)
-            $nuovoUtente = new EUtente($nome, $cognome, $email, $password, $telefono);
+            $nuovoUtente = new EUtente($nome, $cognome, $email, $password, $telefono, 'allievo', 0, null, null, null, null, false, $data_nascita);
             
             // 3. Salva nel Database
             $id = FUtente::store($nuovoUtente);
@@ -77,8 +112,21 @@ class CUtente {
         $view = new VUtente();
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $email = $_POST['email'];
-            $password = $_POST['password'];
+            $email = trim($_POST['email'] ?? '');
+            $password = $_POST['password'] ?? '';
+
+            if ($email === '') {
+                $view->mostraLogin("Inserisci la tua email per accedere.");
+                return;
+            }
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $view->mostraLogin("Inserisci un indirizzo email valido.");
+                return;
+            }
+            if ($password === '') {
+                $view->mostraLogin("Inserisci la tua password per accedere.");
+                return;
+            }
             
             // 1. Recupera l'utente dal database partendo dall'email
             $utente = FUtente::loadByEmail($email);

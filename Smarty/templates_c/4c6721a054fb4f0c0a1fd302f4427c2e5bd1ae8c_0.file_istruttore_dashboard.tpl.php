@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 5.8.5, created on 2026-11-24 17:35:44
+/* Smarty version 5.8.5, created on 2026-11-26 17:35:46
   from 'file:istruttore_dashboard.tpl' */
 
 /* @var \Smarty\Template $_smarty_tpl */
 if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   'version' => '5.8.5',
-  'unifunc' => 'content_6b05bce0e37e49_46261442',
+  'unifunc' => 'content_6b085fe2294576_25867946',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '4c6721a054fb4f0c0a1fd302f4427c2e5bd1ae8c' => 
     array (
       0 => 'istruttore_dashboard.tpl',
-      1 => 1795537812,
+      1 => 1795710162,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   array (
   ),
 ))) {
-function content_6b05bce0e37e49_46261442 (\Smarty\Template $_smarty_tpl) {
+function content_6b085fe2294576_25867946 (\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
 $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 ?>
@@ -28,11 +28,11 @@ $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 
 
 <?php 
-$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_2030439526b05bce0e08c06_83320612', "content");
+$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_1047289466b085fe2262822_45334129', "content");
 $_smarty_tpl->getInheritance()->endChild($_smarty_tpl, "layout.tpl", $_smarty_current_dir);
 }
 /* {block "content"} */
-class Block_2030439526b05bce0e08c06_83320612 extends \Smarty\Runtime\Block
+class Block_1047289466b085fe2262822_45334129 extends \Smarty\Runtime\Block
 {
 public function callBlock(\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
@@ -77,13 +77,45 @@ $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenz
 </p>
             </div>
         </div>
-        <div class="d-flex align-items-center gap-2">
+        <div class="d-flex align-items-center flex-wrap gap-2">
+            <a href="index.php?controller=utente&action=cambiaPassword" class="btn btn-outline-essenza">
+                Cambia Password
+            </a>
             <button type="button" class="btn btn-outline-essenza" data-bs-toggle="modal" data-bs-target="#modalFotoProfiloIstruttore">
                 Foto Profilo
             </button>
             <a href="index.php?controller=utente&action=logout" class="btn btn-outline-danger">Esci</a>
         </div>
     </div>
+
+    <!-- Avviso promemoria cambio password iniziale -->
+    <?php if (!( !$_smarty_tpl->hasVariable('mostra_avviso_password') || empty($_smarty_tpl->getValue('mostra_avviso_password')))) {?>
+        <div class="alert password-reminder-alert fade show d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4 shadow-sm" id="avvisoCambioPassword" role="alert">
+            <div class="d-flex align-items-start gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                <div>
+                    <strong class="d-block mb-1">Ricordati di cambiare la tua password</strong>
+                    <span>Il tuo profilo è stato creato dalla segreteria con una password iniziale. Ti consigliamo di impostarne una personale.</span>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                <a href="index.php?controller=utente&action=cambiaPassword" class="btn btn-primary btn-sm px-3 text-nowrap">
+                    Cambia password
+                </a>
+                <button
+                    type="button"
+                    class="btn btn-outline-essenza btn-sm px-3 text-nowrap js-chiudi-avviso-password"
+                    data-bs-dismiss="alert"
+                    aria-label="Chiudi avviso"
+                >
+                    Chiudi
+                </button>
+            </div>
+        </div>
+    <?php }?>
 
     <!-- Messaggi di conferma / errore -->
     <?php if ((true && ($_smarty_tpl->hasVariable('messaggio_successo') && null !== ($_smarty_tpl->getValue('messaggio_successo') ?? null)))) {?>
@@ -149,22 +181,26 @@ $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenz
                 </p>
 
                 <form action="index.php?controller=istruttore&action=aggiornaTariffa" method="POST">
-                    <label for="tariffa_individuale" class="form-label fw-semibold">Costo per lezione (1 ora)</label>
-                    <div class="input-group mb-3">
-                        <span class="input-group-text bg-light">&euro;</span>
-                        <input
-                            type="number"
-                            id="tariffa_individuale"
-                            name="tariffa_individuale"
-                            class="form-control"
-                            min="1"
-                            max="9999.99"
-                            step="0.50"
-                            placeholder="Es. 45"
-                            value="<?php if ($_smarty_tpl->getValue('tariffa_individuale') !== null) {
+                    <div class="mb-3">
+                        <label for="tariffa_individuale" class="form-label fw-semibold">Costo per lezione (1 ora)</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light">&euro;</span>
+                            <input
+                                type="number"
+                                id="tariffa_individuale"
+                                name="tariffa_individuale"
+                                class="form-control"
+                                min="1"
+                                max="9999.99"
+                                step="0.50"
+                                data-msg-min="La tariffa individuale deve essere almeno 1 €."
+                                data-msg-max="La tariffa individuale non può superare 9999,99 €."
+                                placeholder="Es. 45"
+                                value="<?php if ($_smarty_tpl->getValue('tariffa_individuale') !== null) {
 echo $_smarty_tpl->getValue('tariffa_individuale');
 }?>"
-                        >
+                            >
+                        </div>
                     </div>
                     <button type="submit" class="btn btn-primary w-100">Salva Tariffa</button>
                 </form>
@@ -180,14 +216,23 @@ echo $_smarty_tpl->getValue('tariffa_individuale');
                 <form action="index.php?controller=istruttore&action=aggiungiDisponibilita" method="POST">
                     <div class="mb-3">
                         <label for="data" class="form-label fw-semibold">Data</label>
-                        <input type="date" id="data" name="data" class="form-control" min="<?php echo $_smarty_tpl->getValue('oggi_input');?>
-" required>
+                        <input
+                            type="date"
+                            id="data"
+                            name="data"
+                            class="form-control"
+                            min="<?php echo $_smarty_tpl->getValue('oggi_input');?>
+"
+                            required
+                            data-msg-required="Seleziona una data per la disponibilità."
+                            data-msg-min="Non puoi selezionare una data già trascorsa."
+                        >
                     </div>
 
                     <div class="row g-2 mb-4">
                         <div class="col-6">
                             <label for="ora_inizio" class="form-label fw-semibold">Dalle</label>
-                            <select id="ora_inizio" name="ora_inizio" class="form-select" required>
+                            <select id="ora_inizio" name="ora_inizio" class="form-select" required data-msg-required="Seleziona l'orario di inizio.">
                                 <?php
 $_smarty_tpl->tpl_vars['__smarty_section_h'] = new \Smarty\Variable(array());
 if (true) {
@@ -207,7 +252,7 @@ echo ($_smarty_tpl->getValue('__smarty_section_h')['index'] ?? null);?>
                         </div>
                         <div class="col-6">
                             <label for="ora_fine" class="form-label fw-semibold">Alle</label>
-                            <select id="ora_fine" name="ora_fine" class="form-select" required>
+                            <select id="ora_fine" name="ora_fine" class="form-select" required data-msg-required="Seleziona l'orario di fine." data-gt-target="ora_inizio" data-msg-gt="L'orario di fine deve essere successivo a quello di inizio.">
                                 <?php
 $_smarty_tpl->tpl_vars['__smarty_section_h'] = new \Smarty\Variable(array());
 if (true) {
@@ -450,7 +495,7 @@ $_smarty_tpl->getSmarty()->getRuntime('Foreach')->restore($_smarty_tpl, 1);?>
                     </p>
                     <div class="mb-2">
                         <label for="motivazione" class="form-label fw-semibold">Motivazione dell'annullamento *</label>
-                        <textarea class="form-control" id="motivazione" name="motivazione" rows="3" required placeholder="Es. Imprevisto personale, riprogrammiamo nei prossimi giorni..."></textarea>
+                        <textarea class="form-control" id="motivazione" name="motivazione" rows="3" required data-msg-required="Inserisci la motivazione dell'annullamento prima di confermare." placeholder="Es. Imprevisto personale, riprogrammiamo nei prossimi giorni..."></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -495,6 +540,7 @@ $_smarty_tpl->getSmarty()->getRuntime('Foreach')->restore($_smarty_tpl, 1);?>
                             class="form-control admin-input"
                             accept="image/jpeg,image/png,image/webp,image/gif"
                             required
+                            data-msg-required="Seleziona un'immagine dal tuo dispositivo prima di salvare."
                         >
                         <div class="form-text mt-1">Questa foto comparirà anche nel carosello della homepage e nel calendario prenotazioni (max 5 MB).</div>
                     </div>
@@ -520,6 +566,16 @@ $_smarty_tpl->getSmarty()->getRuntime('Foreach')->restore($_smarty_tpl, 1);?>
 <?php echo '<script'; ?>
 >
 document.addEventListener('DOMContentLoaded', function () {
+    var btnChiudiAvviso = document.querySelector('.js-chiudi-avviso-password');
+    if (btnChiudiAvviso) {
+        btnChiudiAvviso.addEventListener('click', function () {
+            fetch('index.php?controller=utente&action=chiudiAvvisoPassword', {
+                method: 'POST',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            }).catch(function () {});
+        });
+    }
+
     var modalEl = document.getElementById('modalAnnullaIndividuale');
     if (modalEl) {
         modalEl.addEventListener('show.bs.modal', function (event) {

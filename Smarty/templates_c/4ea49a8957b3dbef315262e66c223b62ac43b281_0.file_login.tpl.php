@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 5.8.5, created on 2026-11-19 19:06:51
+/* Smarty version 5.8.5, created on 2026-11-26 17:23:25
   from 'file:login.tpl' */
 
 /* @var \Smarty\Template $_smarty_tpl */
 if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   'version' => '5.8.5',
-  'unifunc' => 'content_6aff3abbb03b04_50672787',
+  'unifunc' => 'content_6b085cfddd4271_86302163',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '4ea49a8957b3dbef315262e66c223b62ac43b281' => 
     array (
       0 => 'login.tpl',
-      1 => 1795111368,
+      1 => 1795710119,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   array (
   ),
 ))) {
-function content_6aff3abbb03b04_50672787 (\Smarty\Template $_smarty_tpl) {
+function content_6b085cfddd4271_86302163 (\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
 $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 ?>
@@ -28,13 +28,13 @@ $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 
 
 <?php 
-$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_9775154416aff3abbae9ab5_33410431', "content");
+$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_9073858786b085cfddb8bc0_11246245', "content");
 ?>
 
 <?php $_smarty_tpl->getInheritance()->endChild($_smarty_tpl, "layout.tpl", $_smarty_current_dir);
 }
 /* {block "content"} */
-class Block_9775154416aff3abbae9ab5_33410431 extends \Smarty\Runtime\Block
+class Block_9073858786b085cfddb8bc0_11246245 extends \Smarty\Runtime\Block
 {
 public function callBlock(\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
@@ -84,6 +84,8 @@ $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenz
                         name="email"
                         class="form-control auth-input"
                         required
+                        data-msg-required="Inserisci la tua email per accedere."
+                        data-msg-type="Inserisci un indirizzo email valido (es. nome@esempio.it)."
                         autocomplete="email"
                         autofocus
                         placeholder="nome@esempio.it"
@@ -107,6 +109,7 @@ $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenz
                         name="password"
                         class="form-control auth-input auth-input-password"
                         required
+                        data-msg-required="Inserisci la tua password per accedere."
                         autocomplete="current-password"
                         placeholder="Inserisci la tua password"
                     >

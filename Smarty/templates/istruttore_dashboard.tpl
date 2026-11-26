@@ -132,20 +132,24 @@
                 </p>
 
                 <form action="index.php?controller=istruttore&action=aggiornaTariffa" method="POST">
-                    <label for="tariffa_individuale" class="form-label fw-semibold">Costo per lezione (1 ora)</label>
-                    <div class="input-group mb-3">
-                        <span class="input-group-text bg-light">&euro;</span>
-                        <input
-                            type="number"
-                            id="tariffa_individuale"
-                            name="tariffa_individuale"
-                            class="form-control"
-                            min="1"
-                            max="9999.99"
-                            step="0.50"
-                            placeholder="Es. 45"
-                            value="{if $tariffa_individuale !== null}{$tariffa_individuale}{/if}"
-                        >
+                    <div class="mb-3">
+                        <label for="tariffa_individuale" class="form-label fw-semibold">Costo per lezione (1 ora)</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light">&euro;</span>
+                            <input
+                                type="number"
+                                id="tariffa_individuale"
+                                name="tariffa_individuale"
+                                class="form-control"
+                                min="1"
+                                max="9999.99"
+                                step="0.50"
+                                data-msg-min="La tariffa individuale deve essere almeno 1 €."
+                                data-msg-max="La tariffa individuale non può superare 9999,99 €."
+                                placeholder="Es. 45"
+                                value="{if $tariffa_individuale !== null}{$tariffa_individuale}{/if}"
+                            >
+                        </div>
                     </div>
                     <button type="submit" class="btn btn-primary w-100">Salva Tariffa</button>
                 </form>
@@ -161,13 +165,22 @@
                 <form action="index.php?controller=istruttore&action=aggiungiDisponibilita" method="POST">
                     <div class="mb-3">
                         <label for="data" class="form-label fw-semibold">Data</label>
-                        <input type="date" id="data" name="data" class="form-control" min="{$oggi_input}" required>
+                        <input
+                            type="date"
+                            id="data"
+                            name="data"
+                            class="form-control"
+                            min="{$oggi_input}"
+                            required
+                            data-msg-required="Seleziona una data per la disponibilità."
+                            data-msg-min="Non puoi selezionare una data già trascorsa."
+                        >
                     </div>
 
                     <div class="row g-2 mb-4">
                         <div class="col-6">
                             <label for="ora_inizio" class="form-label fw-semibold">Dalle</label>
-                            <select id="ora_inizio" name="ora_inizio" class="form-select" required>
+                            <select id="ora_inizio" name="ora_inizio" class="form-select" required data-msg-required="Seleziona l'orario di inizio.">
                                 {section name=h start=8 loop=21}
                                     <option value="{$smarty.section.h.index}">
                                         {if $smarty.section.h.index < 10}0{/if}{$smarty.section.h.index}:00
@@ -177,7 +190,7 @@
                         </div>
                         <div class="col-6">
                             <label for="ora_fine" class="form-label fw-semibold">Alle</label>
-                            <select id="ora_fine" name="ora_fine" class="form-select" required>
+                            <select id="ora_fine" name="ora_fine" class="form-select" required data-msg-required="Seleziona l'orario di fine." data-gt-target="ora_inizio" data-msg-gt="L'orario di fine deve essere successivo a quello di inizio.">
                                 {section name=h start=9 loop=22}
                                     <option value="{$smarty.section.h.index}" {if $smarty.section.h.index == 11}selected{/if}>
                                         {if $smarty.section.h.index < 10}0{/if}{$smarty.section.h.index}:00
@@ -362,7 +375,7 @@
                     </p>
                     <div class="mb-2">
                         <label for="motivazione" class="form-label fw-semibold">Motivazione dell'annullamento *</label>
-                        <textarea class="form-control" id="motivazione" name="motivazione" rows="3" required placeholder="Es. Imprevisto personale, riprogrammiamo nei prossimi giorni..."></textarea>
+                        <textarea class="form-control" id="motivazione" name="motivazione" rows="3" required data-msg-required="Inserisci la motivazione dell'annullamento prima di confermare." placeholder="Es. Imprevisto personale, riprogrammiamo nei prossimi giorni..."></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -403,6 +416,7 @@
                             class="form-control admin-input"
                             accept="image/jpeg,image/png,image/webp,image/gif"
                             required
+                            data-msg-required="Seleziona un'immagine dal tuo dispositivo prima di salvare."
                         >
                         <div class="form-text mt-1">Questa foto comparirà anche nel carosello della homepage e nel calendario prenotazioni (max 5 MB).</div>
                     </div>

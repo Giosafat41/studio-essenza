@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{$titolo_pagina|default:'Studio Essenza - Pilates Boutique'}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/studio-essenza/css/general.css?v=10">
+    <link rel="stylesheet" href="/studio-essenza/css/general.css?v=11">
 </head>
 <body>
 
@@ -52,5 +52,6 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/studio-essenza/js/form-validation.js?v=1"></script>
 </body>
 </html>

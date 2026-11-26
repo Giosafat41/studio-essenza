@@ -41,7 +41,8 @@
         <form action="index.php?controller=admin&action=aggiungiLezione" method="POST">
             <div class="mb-3">
                 <label for="id_corso" class="form-label auth-label">Tipo di Corso</label>
-                <select id="id_corso" name="id_corso" class="form-select admin-select" required>
+                <select id="id_corso" name="id_corso" class="form-select admin-select" required data-msg-required="Seleziona un corso dal menù a tendina.">
+                    <option value="" selected disabled>Seleziona un corso...</option>
                     {foreach from=$corsi item=corso}
                         <option value="{$corso->getId()}">{$corso->getNome()|escape} (Max {$corso->getCapienzaMax()} posti)</option>
                     {/foreach}
@@ -50,7 +51,8 @@
 
             <div class="mb-3">
                 <label for="id_istruttore" class="form-label auth-label">Istruttore</label>
-                <select id="id_istruttore" name="id_istruttore" class="form-select admin-select" required>
+                <select id="id_istruttore" name="id_istruttore" class="form-select admin-select" required data-msg-required="Seleziona un istruttore dal menù a tendina.">
+                    <option value="" selected disabled>Seleziona un istruttore...</option>
                     {foreach from=$istruttori item=istr}
                         <option value="{$istr->getId()}">{$istr->getNome()|escape} {$istr->getCognome()|escape}</option>
                     {/foreach}
@@ -60,12 +62,12 @@
             <div class="row g-3 mb-3">
                 <div class="col-12 col-sm-6">
                     <label for="data_ora_inizio" class="form-label auth-label">Data e Ora di Inizio</label>
-                    <input type="datetime-local" id="data_ora_inizio" name="data_ora_inizio" class="form-control admin-input" required>
+                    <input type="datetime-local" id="data_ora_inizio" name="data_ora_inizio" class="form-control admin-input" required data-msg-required="Seleziona la data e l'ora di inizio della lezione.">
                 </div>
 
                 <div class="col-12 col-sm-6">
                     <label for="durata_minuti" class="form-label auth-label">Durata</label>
-                    <select id="durata_minuti" name="durata_minuti" class="form-select admin-select" required>
+                    <select id="durata_minuti" name="durata_minuti" class="form-select admin-select" required data-msg-required="Seleziona la durata della lezione.">
                         <option value="30">30 minuti</option>
                         <option value="60" selected>1 ora (60 min)</option>
                         <option value="90">1 ora e 30 min (90 min)</option>
