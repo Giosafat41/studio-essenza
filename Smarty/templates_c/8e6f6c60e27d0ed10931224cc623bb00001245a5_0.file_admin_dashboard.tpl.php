@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 5.8.5, created on 2026-11-24 16:33:32
+/* Smarty version 5.8.5, created on 2026-11-26 15:10:04
   from 'file:admin_dashboard.tpl' */
 
 /* @var \Smarty\Template $_smarty_tpl */
 if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   'version' => '5.8.5',
-  'unifunc' => 'content_6b05ae4c1c5a18_92748976',
+  'unifunc' => 'content_6b083dbc11f0d8_61558386',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '8e6f6c60e27d0ed10931224cc623bb00001245a5' => 
     array (
       0 => 'admin_dashboard.tpl',
-      1 => 1795534405,
+      1 => 1795702202,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   array (
   ),
 ))) {
-function content_6b05ae4c1c5a18_92748976 (\Smarty\Template $_smarty_tpl) {
+function content_6b083dbc11f0d8_61558386 (\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
 $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 ?>
@@ -28,13 +28,13 @@ $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 
 
 <?php 
-$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_15327679056b05ae4c155a82_31760013', "content");
+$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_4780624236b083dbc104756_77496682', "content");
 ?>
 
 <?php $_smarty_tpl->getInheritance()->endChild($_smarty_tpl, "layout.tpl", $_smarty_current_dir);
 }
 /* {block "content"} */
-class Block_15327679056b05ae4c155a82_31760013 extends \Smarty\Runtime\Block
+class Block_4780624236b083dbc104756_77496682 extends \Smarty\Runtime\Block
 {
 public function callBlock(\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
@@ -118,7 +118,7 @@ $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenz
 
         <!-- Card 2: Gestione Palinsesto -->
         <div class="col-12 col-lg-4">
-            <section class="dashboard-card admin-action-card is-featured h-100 d-flex flex-column">
+            <section class="dashboard-card admin-action-card h-100 d-flex flex-column">
                 <div class="d-flex align-items-center justify-content-between mb-3">
                     <div class="admin-card-icon" aria-hidden="true">
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">

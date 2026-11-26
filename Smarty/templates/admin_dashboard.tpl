@@ -76,7 +76,7 @@
 
         <!-- Card 2: Gestione Palinsesto -->
         <div class="col-12 col-lg-4">
-            <section class="dashboard-card admin-action-card is-featured h-100 d-flex flex-column">
+            <section class="dashboard-card admin-action-card h-100 d-flex flex-column">
                 <div class="d-flex align-items-center justify-content-between mb-3">
                     <div class="admin-card-icon" aria-hidden="true">
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
