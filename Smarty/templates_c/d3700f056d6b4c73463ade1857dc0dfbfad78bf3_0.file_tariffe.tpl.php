@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 5.8.5, created on 2026-11-26 17:35:46
+/* Smarty version 5.8.5, created on 2026-11-26 17:42:19
   from 'file:tariffe.tpl' */
 
 /* @var \Smarty\Template $_smarty_tpl */
 if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   'version' => '5.8.5',
-  'unifunc' => 'content_6b085fe2142623_16747558',
+  'unifunc' => 'content_6b08616b558365_06012676',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     'd3700f056d6b4c73463ade1857dc0dfbfad78bf3' => 
     array (
       0 => 'tariffe.tpl',
-      1 => 1795538302,
+      1 => 1795711331,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   array (
   ),
 ))) {
-function content_6b085fe2142623_16747558 (\Smarty\Template $_smarty_tpl) {
+function content_6b08616b558365_06012676 (\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
 $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 ?>
@@ -28,13 +28,13 @@ $_smarty_tpl->getInheritance()->init($_smarty_tpl, true);
 
 
 <?php 
-$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_12784004006b085fe21211a0_42736403', "content");
+$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_19680037846b08616b533b00_68236472', "content");
 ?>
 
 <?php $_smarty_tpl->getInheritance()->endChild($_smarty_tpl, "layout.tpl", $_smarty_current_dir);
 }
 /* {block "content"} */
-class Block_12784004006b085fe21211a0_42736403 extends \Smarty\Runtime\Block
+class Block_19680037846b08616b533b00_68236472 extends \Smarty\Runtime\Block
 {
 public function callBlock(\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
@@ -127,7 +127,7 @@ $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenz
             <div>
                 <h2 class="dashboard-section-title mb-1">Lezioni Individuali (1-to-1) &mdash; I Nostri Istruttori</h2>
                 <p class="dashboard-subtitle" style="font-size: 14.5px;">
-                    Sessioni personalizzate da 60 minuti con pagamento separato. Ogni istruttore definisce la propria tariffa.
+                    Sessioni personalizzate da 60 minuti con pagamento separato.
                 </p>
             </div>
             <span class="dashboard-count-badge">Pagamento separato &bull; 60 min</span>
@@ -141,52 +141,67 @@ $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenz
                 </p>
             </div>
         <?php } else { ?>
-            <div class="row g-4 align-items-stretch">
-                <?php
+            <div class="tariffe-istruttori-slider" data-count="<?php echo $_smarty_tpl->getSmarty()->getModifierCallback('count')($_smarty_tpl->getValue('istruttori_tariffe'));?>
+">
+                <button type="button" class="tariffe-slider-btn is-prev d-none" id="tariffePrevBtn" aria-label="Scorri a sinistra">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+
+                <div class="tariffe-istruttori-track" id="tariffeIstruttoriTrack">
+                    <?php
 $_from = $_smarty_tpl->getSmarty()->getRuntime('Foreach')->init($_smarty_tpl, $_smarty_tpl->getValue('istruttori_tariffe'), 'istr');
 $foreach0DoElse = true;
 foreach ($_from ?? [] as $_smarty_tpl->getVariable('istr')->value) {
 $foreach0DoElse = false;
 ?>
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <article class="tariffe-istruttore-card h-100 d-flex flex-column text-center">
-                            <div class="avatar-istruttore mx-auto mb-3">
-                                <?php if (!( !true || empty($_smarty_tpl->getValue('istr')['immagine_profilo']))) {?>
-                                    <img src="/studio-essenza/<?php echo htmlspecialchars((string)$_smarty_tpl->getValue('istr')['immagine_profilo'], ENT_QUOTES, 'UTF-8', true);?>
+                        <div class="tariffe-istruttore-slide">
+                            <article class="tariffe-istruttore-card h-100 d-flex flex-column text-center">
+                                <div class="avatar-istruttore mx-auto mb-3">
+                                    <?php if (!( !true || empty($_smarty_tpl->getValue('istr')['immagine_profilo']))) {?>
+                                        <img src="/studio-essenza/<?php echo htmlspecialchars((string)$_smarty_tpl->getValue('istr')['immagine_profilo'], ENT_QUOTES, 'UTF-8', true);?>
 " alt="<?php echo htmlspecialchars((string)$_smarty_tpl->getValue('istr')['nome'], ENT_QUOTES, 'UTF-8', true);?>
  <?php echo htmlspecialchars((string)$_smarty_tpl->getValue('istr')['cognome'], ENT_QUOTES, 'UTF-8', true);?>
 ">
-                                <?php } else { ?>
-                                    <?php echo htmlspecialchars((string)$_smarty_tpl->getValue('istr')['iniziali'], ENT_QUOTES, 'UTF-8', true);?>
+                                    <?php } else { ?>
+                                        <?php echo htmlspecialchars((string)$_smarty_tpl->getValue('istr')['iniziali'], ENT_QUOTES, 'UTF-8', true);?>
 
-                                <?php }?>
-                            </div>
+                                    <?php }?>
+                                </div>
 
-                            <h3 class="tariffe-card-title mb-1"><?php echo htmlspecialchars((string)$_smarty_tpl->getValue('istr')['nome'], ENT_QUOTES, 'UTF-8', true);?>
+                                <h3 class="tariffe-card-title mb-1"><?php echo htmlspecialchars((string)$_smarty_tpl->getValue('istr')['nome'], ENT_QUOTES, 'UTF-8', true);?>
  <?php echo htmlspecialchars((string)$_smarty_tpl->getValue('istr')['cognome'], ENT_QUOTES, 'UTF-8', true);?>
 </h3>
-                            <span class="dashboard-count-badge mx-auto mb-3">Istruttore Certificato</span>
+                                <span class="dashboard-count-badge mx-auto mb-3">Istruttore Certificato</span>
 
-                            <?php if (!( !true || empty($_smarty_tpl->getValue('istr')['descrizione']))) {?>
-                                <p class="tariffe-card-desc mb-3"><?php echo nl2br((string) htmlspecialchars((string)$_smarty_tpl->getValue('istr')['descrizione'], ENT_QUOTES, 'UTF-8', true), (bool) 1);?>
+                                <?php if (!( !true || empty($_smarty_tpl->getValue('istr')['descrizione']))) {?>
+                                    <p class="tariffe-card-desc mb-3"><?php echo nl2br((string) htmlspecialchars((string)$_smarty_tpl->getValue('istr')['descrizione'], ENT_QUOTES, 'UTF-8', true), (bool) 1);?>
 </p>
-                            <?php }?>
-
-                            <div class="tariffe-istruttore-pricebox mt-auto">
-                                <?php if (!( !true || empty($_smarty_tpl->getValue('istr')['tariffa_formattata']))) {?>
-                                    <div class="tariffe-istruttore-amount"><?php echo htmlspecialchars((string)$_smarty_tpl->getValue('istr')['tariffa_formattata'], ENT_QUOTES, 'UTF-8', true);?>
-</div>
-                                    <span class="tariffe-istruttore-sub">per lezione individuale (60 min)</span>
-                                <?php } else { ?>
-                                    <div class="tariffe-istruttore-amount is-muted">Su richiesta</div>
-                                    <span class="tariffe-istruttore-sub">Tariffa da concordare in studio</span>
                                 <?php }?>
-                            </div>
-                        </article>
-                    </div>
-                <?php
+
+                                <div class="tariffe-istruttore-pricebox mt-auto">
+                                    <?php if (!( !true || empty($_smarty_tpl->getValue('istr')['tariffa_formattata']))) {?>
+                                        <div class="tariffe-istruttore-amount"><?php echo htmlspecialchars((string)$_smarty_tpl->getValue('istr')['tariffa_formattata'], ENT_QUOTES, 'UTF-8', true);?>
+</div>
+                                        <span class="tariffe-istruttore-sub">per lezione individuale (60 min)</span>
+                                    <?php } else { ?>
+                                        <div class="tariffe-istruttore-amount is-muted">Su richiesta</div>
+                                        <span class="tariffe-istruttore-sub">Tariffa da concordare in studio</span>
+                                    <?php }?>
+                                </div>
+                            </article>
+                        </div>
+                    <?php
 }
 $_smarty_tpl->getSmarty()->getRuntime('Foreach')->restore($_smarty_tpl, 1);?>
+                </div>
+
+                <button type="button" class="tariffe-slider-btn is-next d-none" id="tariffeNextBtn" aria-label="Scorri a destra">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </button>
             </div>
         <?php }?>
     </section>
@@ -208,6 +223,54 @@ $_smarty_tpl->getSmarty()->getRuntime('Foreach')->restore($_smarty_tpl, 1);?>
     </div>
 
 </div>
+
+
+<?php echo '<script'; ?>
+>
+document.addEventListener('DOMContentLoaded', function () {
+    const track = document.getElementById('tariffeIstruttoriTrack');
+    const prevBtn = document.getElementById('tariffePrevBtn');
+    const nextBtn = document.getElementById('tariffeNextBtn');
+
+    if (!track || !prevBtn || !nextBtn) return;
+
+    function getStep() {
+        const firstSlide = track.querySelector('.tariffe-istruttore-slide');
+        if (!firstSlide) return 312;
+        const style = window.getComputedStyle(track);
+        const gap = parseFloat(style.columnGap || style.gap) || 24;
+        return firstSlide.getBoundingClientRect().width + gap;
+    }
+
+    function aggiornaControlli() {
+        const maxScroll = track.scrollWidth - track.clientWidth;
+        const hasOverflow = maxScroll > 4;
+
+        track.classList.toggle('is-scrollable', hasOverflow);
+        prevBtn.classList.toggle('d-none', !hasOverflow);
+        nextBtn.classList.toggle('d-none', !hasOverflow);
+
+        if (hasOverflow) {
+            prevBtn.disabled = track.scrollLeft <= 2;
+            nextBtn.disabled = track.scrollLeft >= maxScroll - 2;
+        }
+    }
+
+    prevBtn.addEventListener('click', function () {
+        track.scrollBy({ left: -getStep(), behavior: 'smooth' });
+    });
+
+    nextBtn.addEventListener('click', function () {
+        track.scrollBy({ left: getStep(), behavior: 'smooth' });
+    });
+
+    track.addEventListener('scroll', aggiornaControlli, { passive: true });
+    window.addEventListener('resize', aggiornaControlli);
+    aggiornaControlli();
+});
+<?php echo '</script'; ?>
+>
+
 <?php
 }
 }

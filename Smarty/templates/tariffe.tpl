@@ -103,37 +103,51 @@
                 </p>
             </div>
         {else}
-            <div class="row g-4 align-items-stretch">
-                {foreach $istruttori_tariffe as $istr}
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <article class="tariffe-istruttore-card h-100 d-flex flex-column text-center">
-                            <div class="avatar-istruttore mx-auto mb-3">
-                                {if !empty($istr.immagine_profilo)}
-                                    <img src="/studio-essenza/{$istr.immagine_profilo|escape}" alt="{$istr.nome|escape} {$istr.cognome|escape}">
-                                {else}
-                                    {$istr.iniziali|escape}
+            <div class="tariffe-istruttori-slider" data-count="{$istruttori_tariffe|@count}">
+                <button type="button" class="tariffe-slider-btn is-prev d-none" id="tariffePrevBtn" aria-label="Scorri a sinistra">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+
+                <div class="tariffe-istruttori-track" id="tariffeIstruttoriTrack">
+                    {foreach $istruttori_tariffe as $istr}
+                        <div class="tariffe-istruttore-slide">
+                            <article class="tariffe-istruttore-card h-100 d-flex flex-column text-center">
+                                <div class="avatar-istruttore mx-auto mb-3">
+                                    {if !empty($istr.immagine_profilo)}
+                                        <img src="/studio-essenza/{$istr.immagine_profilo|escape}" alt="{$istr.nome|escape} {$istr.cognome|escape}">
+                                    {else}
+                                        {$istr.iniziali|escape}
+                                    {/if}
+                                </div>
+
+                                <h3 class="tariffe-card-title mb-1">{$istr.nome|escape} {$istr.cognome|escape}</h3>
+                                <span class="dashboard-count-badge mx-auto mb-3">Istruttore Certificato</span>
+
+                                {if !empty($istr.descrizione)}
+                                    <p class="tariffe-card-desc mb-3">{$istr.descrizione|escape|nl2br}</p>
                                 {/if}
-                            </div>
 
-                            <h3 class="tariffe-card-title mb-1">{$istr.nome|escape} {$istr.cognome|escape}</h3>
-                            <span class="dashboard-count-badge mx-auto mb-3">Istruttore Certificato</span>
+                                <div class="tariffe-istruttore-pricebox mt-auto">
+                                    {if !empty($istr.tariffa_formattata)}
+                                        <div class="tariffe-istruttore-amount">{$istr.tariffa_formattata|escape}</div>
+                                        <span class="tariffe-istruttore-sub">per lezione individuale (60 min)</span>
+                                    {else}
+                                        <div class="tariffe-istruttore-amount is-muted">Su richiesta</div>
+                                        <span class="tariffe-istruttore-sub">Tariffa da concordare in studio</span>
+                                    {/if}
+                                </div>
+                            </article>
+                        </div>
+                    {/foreach}
+                </div>
 
-                            {if !empty($istr.descrizione)}
-                                <p class="tariffe-card-desc mb-3">{$istr.descrizione|escape|nl2br}</p>
-                            {/if}
-
-                            <div class="tariffe-istruttore-pricebox mt-auto">
-                                {if !empty($istr.tariffa_formattata)}
-                                    <div class="tariffe-istruttore-amount">{$istr.tariffa_formattata|escape}</div>
-                                    <span class="tariffe-istruttore-sub">per lezione individuale (60 min)</span>
-                                {else}
-                                    <div class="tariffe-istruttore-amount is-muted">Su richiesta</div>
-                                    <span class="tariffe-istruttore-sub">Tariffa da concordare in studio</span>
-                                {/if}
-                            </div>
-                        </article>
-                    </div>
-                {/foreach}
+                <button type="button" class="tariffe-slider-btn is-next d-none" id="tariffeNextBtn" aria-label="Scorri a destra">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </button>
             </div>
         {/if}
     </section>
@@ -155,4 +169,50 @@
     </div>
 
 </div>
+
+{literal}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const track = document.getElementById('tariffeIstruttoriTrack');
+    const prevBtn = document.getElementById('tariffePrevBtn');
+    const nextBtn = document.getElementById('tariffeNextBtn');
+
+    if (!track || !prevBtn || !nextBtn) return;
+
+    function getStep() {
+        const firstSlide = track.querySelector('.tariffe-istruttore-slide');
+        if (!firstSlide) return 312;
+        const style = window.getComputedStyle(track);
+        const gap = parseFloat(style.columnGap || style.gap) || 24;
+        return firstSlide.getBoundingClientRect().width + gap;
+    }
+
+    function aggiornaControlli() {
+        const maxScroll = track.scrollWidth - track.clientWidth;
+        const hasOverflow = maxScroll > 4;
+
+        track.classList.toggle('is-scrollable', hasOverflow);
+        prevBtn.classList.toggle('d-none', !hasOverflow);
+        nextBtn.classList.toggle('d-none', !hasOverflow);
+
+        if (hasOverflow) {
+            prevBtn.disabled = track.scrollLeft <= 2;
+            nextBtn.disabled = track.scrollLeft >= maxScroll - 2;
+        }
+    }
+
+    prevBtn.addEventListener('click', function () {
+        track.scrollBy({ left: -getStep(), behavior: 'smooth' });
+    });
+
+    nextBtn.addEventListener('click', function () {
+        track.scrollBy({ left: getStep(), behavior: 'smooth' });
+    });
+
+    track.addEventListener('scroll', aggiornaControlli, { passive: true });
+    window.addEventListener('resize', aggiornaControlli);
+    aggiornaControlli();
+});
+</script>
+{/literal}
 {/block}

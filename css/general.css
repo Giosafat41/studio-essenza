@@ -1463,6 +1463,120 @@ a, p, span, li, button, input, select, textarea, label, th, td {
     font-weight: 600;
 }
 
+.tariffe-istruttori-slider {
+    position: relative;
+}
+
+.tariffe-istruttori-track {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    gap: 24px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    padding: 4px 2px 10px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(123, 139, 111, 0.35) transparent;
+}
+
+.tariffe-istruttori-track::-webkit-scrollbar {
+    height: 6px;
+}
+
+.tariffe-istruttori-track::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.tariffe-istruttori-track::-webkit-scrollbar-thumb {
+    background-color: rgba(123, 139, 111, 0.32);
+    border-radius: 50rem;
+}
+
+.tariffe-istruttore-slide {
+    flex: 0 0 288px;
+    scroll-snap-align: start;
+}
+
+/* Centratura automatica per 1, 2 o 3 card senza mai tagliare la prima card in caso di overflow */
+.tariffe-istruttore-slide:first-child {
+    margin-left: auto;
+}
+
+.tariffe-istruttore-slide:last-child {
+    margin-right: auto;
+}
+
+.tariffe-istruttori-slider[data-count="1"] .tariffe-istruttore-slide {
+    flex: 0 0 320px;
+}
+
+.tariffe-istruttori-slider[data-count="2"] .tariffe-istruttori-track {
+    gap: 40px;
+}
+
+.tariffe-istruttori-slider[data-count="2"] .tariffe-istruttore-slide {
+    flex: 0 0 300px;
+}
+
+.tariffe-slider-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid #d5dcd0;
+    background-color: #ffffff;
+    color: #5f6e54;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+}
+
+.tariffe-slider-btn.is-prev {
+    left: -14px;
+}
+
+.tariffe-slider-btn.is-next {
+    right: -14px;
+}
+
+.tariffe-slider-btn:hover:not(:disabled) {
+    background-color: #7b8b6f;
+    border-color: #7b8b6f;
+    color: #ffffff;
+}
+
+.tariffe-slider-btn:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
+
+@media (max-width: 576px) {
+    .tariffe-istruttore-slide,
+    .tariffe-istruttori-slider[data-count="1"] .tariffe-istruttore-slide,
+    .tariffe-istruttori-slider[data-count="2"] .tariffe-istruttore-slide {
+        flex: 0 0 85%;
+    }
+
+    .tariffe-istruttori-slider[data-count="2"] .tariffe-istruttori-track {
+        gap: 16px;
+    }
+
+    .tariffe-slider-btn.is-prev {
+        left: -6px;
+    }
+
+    .tariffe-slider-btn.is-next {
+        right: -6px;
+    }
+}
+
 .tariffe-istruttore-card {
     background-color: #fcfbfa;
     border: 1px solid #eceae4;

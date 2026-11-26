@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 5.8.5, created on 2026-11-26 17:23:25
+/* Smarty version 5.8.5, created on 2026-11-26 17:41:14
   from 'file:layout.tpl' */
 
 /* @var \Smarty\Template $_smarty_tpl */
 if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   'version' => '5.8.5',
-  'unifunc' => 'content_6b085cfde8e3c7_23446191',
+  'unifunc' => 'content_6b08612a96bca8_96562790',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '05e2566920914a1d025ccd8269adbf91cfed9be6' => 
     array (
       0 => 'layout.tpl',
-      1 => 1795710013,
+      1 => 1795711255,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->getCompiled()->isFresh($_smarty_tpl, array (
   array (
   ),
 ))) {
-function content_6b085cfde8e3c7_23446191 (\Smarty\Template $_smarty_tpl) {
+function content_6b08612a96bca8_96562790 (\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
 $_smarty_tpl->getInheritance()->init($_smarty_tpl, false);
 ?>
@@ -32,7 +32,7 @@ $_smarty_tpl->getInheritance()->init($_smarty_tpl, false);
     <title><?php echo (($tmp = $_smarty_tpl->getValue('titolo_pagina') ?? null)===null||$tmp==='' ? 'Studio Essenza - Pilates Boutique' ?? null : $tmp);?>
 </title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/studio-essenza/css/general.css?v=11">
+    <link rel="stylesheet" href="/studio-essenza/css/general.css?v=12">
 </head>
 <body>
 
@@ -71,7 +71,7 @@ $_smarty_tpl->getInheritance()->init($_smarty_tpl, false);
     <!-- CONTENUTO DINAMICO: Qui verranno inserite le pagine specifiche -->
     <main class="main-content">
         <?php 
-$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_4197033006b085cfde8d6c4_68017656', "content");
+$_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_3380364446b08612a969388_02180482', "content");
 ?>
 
     </main>
@@ -91,7 +91,7 @@ $_smarty_tpl->getInheritance()->instanceBlock($_smarty_tpl, 'Block_4197033006b08
 </html>
 <?php }
 /* {block "content"} */
-class Block_4197033006b085cfde8d6c4_68017656 extends \Smarty\Runtime\Block
+class Block_3380364446b08612a969388_02180482 extends \Smarty\Runtime\Block
 {
 public function callBlock(\Smarty\Template $_smarty_tpl) {
 $_smarty_current_dir = 'C:\\Users\\Gian\\Documents\\xampp\\htdocs\\studio-essenza\\Smarty\\templates';
