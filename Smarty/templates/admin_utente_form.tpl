@@ -71,7 +71,49 @@
             {if !isset($utente)}
                 <div class="mb-3">
                     <label for="password" class="form-label auth-label">Password Iniziale</label>
-                    <input type="password" id="password" name="password" class="form-control admin-input" required placeholder="Imposta una password per l'utente">
+                    <div class="d-flex flex-column flex-sm-row gap-2 align-items-stretch">
+                        <div class="auth-input-group flex-grow-1">
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                class="form-control admin-input auth-input-password admin-input-readonly"
+                                required
+                                readonly
+                                autocomplete="new-password"
+                                placeholder="nome.cognome"
+                            >
+                            <button
+                                type="button"
+                                class="auth-toggle-password"
+                                id="togglePassword"
+                                aria-label="Mostra password"
+                                aria-pressed="false"
+                                title="Mostra o nascondi password"
+                            >
+                                <svg class="icon-eye" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                                <svg class="icon-eye-off d-none" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path>
+                                    <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path>
+                                    <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path>
+                                    <line x1="2" y1="2" x2="22" y2="22"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <button
+                            type="button"
+                            id="btnModificaPassword"
+                            class="btn btn-outline-essenza admin-action-btn text-nowrap px-3"
+                        >
+                            Modifica
+                        </button>
+                    </div>
+                    <div class="form-text mt-1" id="passwordHelperText">
+                        Generata automaticamente come <strong>nome.cognome</strong>. Clicca su "Modifica" per personalizzarla.
+                    </div>
                 </div>
             {/if}
 
@@ -205,6 +247,85 @@
 {literal}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    const toggleBtn = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    const btnModificaPassword = document.getElementById('btnModificaPassword');
+    const passwordHelperText = document.getElementById('passwordHelperText');
+    const nomeInput = document.getElementById('nome');
+    const cognomeInput = document.getElementById('cognome');
+
+    if (toggleBtn && passwordInput) {
+        const eyeIcon = toggleBtn.querySelector('.icon-eye');
+        const eyeOffIcon = toggleBtn.querySelector('.icon-eye-off');
+
+        toggleBtn.addEventListener('click', function () {
+            const isHidden = passwordInput.type === 'password';
+            passwordInput.type = isHidden ? 'text' : 'password';
+
+            eyeIcon.classList.toggle('d-none', isHidden);
+            eyeOffIcon.classList.toggle('d-none', !isHidden);
+
+            toggleBtn.setAttribute('aria-pressed', String(isHidden));
+            toggleBtn.setAttribute('aria-label', isHidden ? 'Nascondi password' : 'Mostra password');
+        });
+    }
+
+    if (passwordInput && btnModificaPassword && nomeInput && cognomeInput) {
+        let modificaManuale = false;
+
+        function pulisciPartePassword(valore) {
+            return (valore || '')
+                .trim()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase()
+                .replace(/[^a-z0-9]/g, '');
+        }
+
+        function aggiornaPasswordAutomatica() {
+            if (modificaManuale) return;
+            const parteNome = pulisciPartePassword(nomeInput.value);
+            const parteCognome = pulisciPartePassword(cognomeInput.value);
+            if (parteNome && parteCognome) {
+                passwordInput.value = parteNome + '.' + parteCognome;
+            } else if (parteNome) {
+                passwordInput.value = parteNome + '.';
+            } else if (parteCognome) {
+                passwordInput.value = '.' + parteCognome;
+            } else {
+                passwordInput.value = '';
+            }
+        }
+
+        nomeInput.addEventListener('input', aggiornaPasswordAutomatica);
+        cognomeInput.addEventListener('input', aggiornaPasswordAutomatica);
+
+        btnModificaPassword.addEventListener('click', function () {
+            modificaManuale = !modificaManuale;
+            passwordInput.readOnly = !modificaManuale;
+            passwordInput.classList.toggle('admin-input-readonly', !modificaManuale);
+
+            if (modificaManuale) {
+                btnModificaPassword.textContent = 'Ripristina';
+                btnModificaPassword.title = 'Torna alla password automatica nome.cognome';
+                if (passwordHelperText) {
+                    passwordHelperText.innerHTML = 'Modalità modifica attiva. Clicca su "Ripristina" per tornare a <strong>nome.cognome</strong>.';
+                }
+                passwordInput.focus();
+                passwordInput.select();
+            } else {
+                btnModificaPassword.textContent = 'Modifica';
+                btnModificaPassword.title = 'Personalizza la password iniziale';
+                if (passwordHelperText) {
+                    passwordHelperText.innerHTML = 'Generata automaticamente come <strong>nome.cognome</strong>. Clicca su "Modifica" per personalizzarla.';
+                }
+                aggiornaPasswordAutomatica();
+            }
+        });
+
+        aggiornaPasswordAutomatica();
+    }
+
     const ruoloSelect = document.getElementById('ruolo');
     const campiAllievo = document.getElementById('campi-allievo');
     const campoIstruttore = document.getElementById('campo-istruttore');

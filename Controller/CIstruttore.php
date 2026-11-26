@@ -105,6 +105,10 @@ class CIstruttore {
 
         $msg = isset($_GET['msg']) ? $_GET['msg'] : null;
         $err = isset($_GET['err']) ? $_GET['err'] : null;
+        $mostra_avviso_password = (
+            $istruttore->deveCambiarePassword()
+            && empty($_SESSION['avviso_password_chiuso'])
+        );
 
         $view = new VIstruttore();
         $view->mostraDashboard(
@@ -115,7 +119,8 @@ class CIstruttore {
             $conteggio_prenotate,
             $conteggio_disponibili,
             $msg,
-            $err
+            $err,
+            $mostra_avviso_password
         );
     }
 

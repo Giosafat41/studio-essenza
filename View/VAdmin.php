@@ -4,13 +4,16 @@ require_once('StartSmarty.php');
 
 class VAdmin extends StartSmarty {
     
-    public function mostraDashboard($nome_admin, array $lezioni_disponibili = [], $totale_utenti = 0, $errore = null) {
+    public function mostraDashboard($nome_admin, array $lezioni_disponibili = [], $totale_utenti = 0, $errore = null, $successo = null) {
         $this->smarty->assign('titolo_pagina', 'Segreteria - Studio Essenza');
         $this->smarty->assign('nome_admin', $nome_admin);
         $this->smarty->assign('lezioni_disponibili', $lezioni_disponibili);
         $this->smarty->assign('totale_utenti', $totale_utenti);
         if ($errore) {
             $this->smarty->assign('messaggio_errore', $errore);
+        }
+        if ($successo) {
+            $this->smarty->assign('messaggio_successo', $successo);
         }
         $this->smarty->display('admin_dashboard.tpl');
     }

@@ -39,13 +39,15 @@ class CAdmin {
 
         $totale_utenti = count(FUtente::loadAll());
         $messaggio_errore = isset($_GET['err']) ? $_GET['err'] : null;
+        $messaggio_successo = isset($_GET['msg']) ? $_GET['msg'] : null;
 
         $view = new VAdmin();
         $view->mostraDashboard(
             $admin->getNome(),
             $lezioni_disponibili,
             $totale_utenti,
-            $messaggio_errore
+            $messaggio_errore,
+            $messaggio_successo
         );
     }
 
@@ -268,6 +270,7 @@ class CAdmin {
                 $utente->setScadenzaCertificato(null);
                 $utente->setDescrizione(null);
                 $utente->setTariffaIndividuale(null);
+                $utente->setDeveCambiarePassword(false);
                 if ($utente->getImmagineProfilo()) {
                     UImmagine::eliminaImmagineProfilo($utente->getImmagineProfilo());
                     $utente->setImmagineProfilo(null);
@@ -289,6 +292,35 @@ class CAdmin {
         }
     }
 
+    // Normalizza nome e cognome nel formato "nome.cognome" per la password iniziale
+    private static function generaPasswordIniziale(string $nome, string $cognome): string {
+        $pulisci = function (string $testo): string {
+            $testo = trim($testo);
+            if ($testo === '') {
+                return '';
+            }
+            $mappa = [
+                'à' => 'a', 'á' => 'a', 'â' => 'a', 'ã' => 'a', 'ä' => 'a', 'À' => 'a', 'Á' => 'a', 'Â' => 'a', 'Ä' => 'a',
+                'è' => 'e', 'é' => 'e', 'ê' => 'e', 'ë' => 'e', 'È' => 'e', 'É' => 'e', 'Ê' => 'e', 'Ë' => 'e',
+                'ì' => 'i', 'í' => 'i', 'î' => 'i', 'ï' => 'i', 'Ì' => 'i', 'Í' => 'i', 'Î' => 'i', 'Ï' => 'i',
+                'ò' => 'o', 'ó' => 'o', 'ô' => 'o', 'õ' => 'o', 'ö' => 'o', 'Ò' => 'o', 'Ó' => 'o', 'Ô' => 'o', 'Ö' => 'o',
+                'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ü' => 'u', 'Ù' => 'u', 'Ú' => 'u', 'Û' => 'u', 'Ü' => 'u',
+                'ç' => 'c', 'Ç' => 'c', 'ñ' => 'n', 'Ñ' => 'n'
+            ];
+            $testo = strtr($testo, $mappa);
+            $testo = strtolower($testo);
+            return preg_replace('/[^a-z0-9]/', '', $testo) ?? '';
+        };
+
+        $parteNome = $pulisci($nome);
+        $parteCognome = $pulisci($cognome);
+
+        if ($parteNome !== '' && $parteCognome !== '') {
+            return $parteNome . '.' . $parteCognome;
+        }
+        return $parteNome . $parteCognome;
+    }
+
     // 3. Crea un nuovo utente direttamente dal pannello Admin
     public function creaUtente() {
         if (session_status() == PHP_SESSION_NONE) session_start();
@@ -303,7 +335,14 @@ class CAdmin {
             $nome = trim($_POST['nome']);
             $cognome = trim($_POST['cognome']);
             $email = trim($_POST['email']);
-            $password = $_POST['password'];
+            $password = trim($_POST['password'] ?? '');
+            if ($password === '') {
+                $password = self::generaPasswordIniziale($nome, $cognome);
+            }
+            if ($password === '') {
+                $view->mostraFormUtente(null, "Imposta una password iniziale valida per il nuovo utente.");
+                return;
+            }
             $telefono = trim($_POST['telefono']);
             $ruolo = $_POST['ruolo'];
             $tariffa_individuale = null;
@@ -346,7 +385,9 @@ class CAdmin {
                 }
             }
 
-            $nuovoUtente = new EUtente($nome, $cognome, $email, $password, $telefono, $ruolo, $crediti, $scadenza, $descrizione, null, $tariffa_individuale);
+            // Avviso cambio password attivo solo per profili allievo e istruttore creati dall'admin
+            $deve_cambiare_password = ($ruolo !== 'admin');
+            $nuovoUtente = new EUtente($nome, $cognome, $email, $password, $telefono, $ruolo, $crediti, $scadenza, $descrizione, null, $tariffa_individuale, $deve_cambiare_password);
             $id = FUtente::store($nuovoUtente);
 
             if ($id) {
@@ -360,7 +401,7 @@ class CAdmin {
                 // Assicura che tutti i campi (inclusa eventuale immagine profilo) siano aggiornati
                 FUtente::update($nuovoUtente);
 
-                header("Location: index.php?controller=admin&action=utenti&msg=" . urlencode("Nuovo utente ({$nome} {$cognome}) creato con successo."));
+                header("Location: index.php?controller=admin&action=utenti&msg=" . urlencode("Nuovo utente ({$nome} {$cognome}) creato con successo. Password iniziale: {$password}"));
                 exit;
             } else {
                 $view->mostraFormUtente(null, "Errore durante la creazione dell'utente.");

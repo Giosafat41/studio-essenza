@@ -306,6 +306,11 @@ a, p, span, li, button, input, select, textarea, label, th, td {
     padding-right: 44px;
 }
 
+.auth-input-password::-ms-reveal,
+.auth-input-password::-ms-clear {
+    display: none;
+}
+
 .auth-toggle-password {
     position: absolute;
     right: 8px;
@@ -1240,6 +1245,33 @@ a, p, span, li, button, input, select, textarea, label, th, td {
     border: 1px solid #e2dfd9;
     border-radius: 8px;
     transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.admin-input.auth-input-password {
+    padding-right: 44px;
+}
+
+.admin-input-readonly {
+    background-color: #f2f1ed !important;
+    color: #5f6e54 !important;
+    cursor: default;
+}
+
+.password-reminder-alert {
+    background-color: #fdf6ec;
+    border: 1px solid #efd6b0;
+    border-left: 4px solid #c8842b;
+    color: #7c4f15;
+    border-radius: 10px;
+    padding: 16px 20px;
+    font-size: 14.5px;
+    line-height: 1.5;
+}
+
+.password-reminder-alert svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: #c8842b;
 }
 
 .admin-select {

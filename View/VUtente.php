@@ -41,7 +41,8 @@ class VUtente extends StartSmarty {
         array $mie_prenotazioni = [],
         array $lezioni_individuali = [],
         $messaggio_successo = null,
-        $messaggio_errore = null
+        $messaggio_errore = null,
+        bool $mostra_avviso_password = false
     ) {
         $iniziali = strtoupper(
             substr($utente->getNome(), 0, 1) . substr($utente->getCognome(), 0, 1)
@@ -54,6 +55,7 @@ class VUtente extends StartSmarty {
         $this->smarty->assign('crediti', $utente->getCreditiResidui());
         $this->smarty->assign('mie_prenotazioni', $mie_prenotazioni);
         $this->smarty->assign('lezioni_individuali', $lezioni_individuali);
+        $this->smarty->assign('mostra_avviso_password', $mostra_avviso_password);
 
         // Passiamo un booleano per attivare un avviso visivo se i crediti sono bassi
         $crediti_bassi = ($utente->getCreditiResidui() <= 1);
@@ -67,6 +69,19 @@ class VUtente extends StartSmarty {
         }
 
         $this->smarty->display('dashboard_allievo.tpl');
+    }
+
+    // Mostra il form di cambio password
+    public function mostraCambiaPassword(string $url_ritorno, bool $avviso_attivo = false, $errore = null) {
+        $this->smarty->assign('titolo_pagina', 'Cambia Password - Studio Essenza');
+        $this->smarty->assign('url_ritorno', $url_ritorno);
+        $this->smarty->assign('avviso_attivo', $avviso_attivo);
+
+        if ($errore) {
+            $this->smarty->assign('errore', $errore);
+        }
+
+        $this->smarty->display('cambia_password.tpl');
     }
 }
 ?>

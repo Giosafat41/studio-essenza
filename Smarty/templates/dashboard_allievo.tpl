@@ -39,7 +39,7 @@
                     </p>
                 </div>
             </div>
-            <div class="flex-shrink-0">
+            <div class="d-flex flex-column gap-2 flex-shrink-0">
                 <a href="index.php?controller=prenotazione&action=calendario" class="btn btn-primary dashboard-cta-btn w-100">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -51,9 +51,41 @@
                     </svg>
                     <span>Prenota una lezione</span>
                 </a>
+                <a href="index.php?controller=utente&action=cambiaPassword" class="btn btn-outline-essenza btn-sm w-100">
+                    Cambia Password
+                </a>
             </div>
         </div>
     </section>
+
+    <!-- Avviso promemoria cambio password iniziale -->
+    {if !empty($mostra_avviso_password)}
+        <div class="alert password-reminder-alert fade show d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4" id="avvisoCambioPassword" role="alert">
+            <div class="d-flex align-items-start gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                <div>
+                    <strong class="d-block mb-1">Ricordati di cambiare la tua password</strong>
+                    <span>Il tuo profilo è stato creato dalla segreteria con una password iniziale. Ti consigliamo di impostarne una personale.</span>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                <a href="index.php?controller=utente&action=cambiaPassword" class="btn btn-primary btn-sm px-3 text-nowrap">
+                    Cambia password
+                </a>
+                <button
+                    type="button"
+                    class="btn btn-outline-essenza btn-sm px-3 text-nowrap js-chiudi-avviso-password"
+                    data-bs-dismiss="alert"
+                    aria-label="Chiudi avviso"
+                >
+                    Chiudi
+                </button>
+            </div>
+        </div>
+    {/if}
 
     <!-- Messaggi di conferma / errore -->
     {if isset($messaggio_successo)}
@@ -332,6 +364,16 @@
 {literal}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    const btnChiudiAvviso = document.querySelector('.js-chiudi-avviso-password');
+    if (btnChiudiAvviso) {
+        btnChiudiAvviso.addEventListener('click', function () {
+            fetch('index.php?controller=utente&action=chiudiAvvisoPassword', {
+                method: 'POST',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            }).catch(function () {});
+        });
+    }
+
     const input = document.getElementById('inputFotoAllievo');
     const preview = document.getElementById('previewFotoAllievo');
     if (!input || !preview) return;

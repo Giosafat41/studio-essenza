@@ -1,7 +1,25 @@
 <?php
 
 class FUtente {
-    
+
+    private static $schemaChecked = false;
+
+    // Garantisce che la colonna deve_cambiare_password esista anche su database già popolati
+    private static function ensurePasswordFlagColumn(PDO $db) {
+        if (self::$schemaChecked) {
+            return;
+        }
+        self::$schemaChecked = true;
+        try {
+            $check = $db->query("SHOW COLUMNS FROM Utente LIKE 'deve_cambiare_password'");
+            if ($check && !$check->fetch(PDO::FETCH_ASSOC)) {
+                $db->exec("ALTER TABLE Utente ADD COLUMN deve_cambiare_password TINYINT(1) NOT NULL DEFAULT 0 AFTER tariffa_individuale");
+            }
+        } catch (PDOException $e) {
+            // Ignora eventuali race condition se la colonna è già stata aggiunta
+        }
+    }
+
     private static function buildEntity(array $row) {
         $u = new EUtente(
             $row['nome'],
@@ -14,7 +32,8 @@ class FUtente {
             $row['scadenza_certificato'],
             $row['descrizione'] ?? null,
             $row['immagine_profilo'] ?? null,
-            $row['tariffa_individuale'] ?? null
+            $row['tariffa_individuale'] ?? null,
+            !empty($row['deve_cambiare_password'])
         );
         $u->setId($row['id']);
         if (isset($row['data_registrazione'])) {
@@ -26,9 +45,10 @@ class FUtente {
     // Salva un oggetto EUtente nel database
     public static function store(EUtente $utente) {
         $db = FDatabase::getInstance()->getDb();
-        
-        $query = "INSERT INTO Utente (nome, cognome, email, password, telefono, ruolo, crediti_residui, scadenza_certificato, descrizione, immagine_profilo, tariffa_individuale) 
-                  VALUES (:nome, :cognome, :email, :password, :telefono, :ruolo, :crediti_residui, :scadenza_certificato, :descrizione, :immagine_profilo, :tariffa_individuale)";
+        self::ensurePasswordFlagColumn($db);
+
+        $query = "INSERT INTO Utente (nome, cognome, email, password, telefono, ruolo, crediti_residui, scadenza_certificato, descrizione, immagine_profilo, tariffa_individuale, deve_cambiare_password) 
+                  VALUES (:nome, :cognome, :email, :password, :telefono, :ruolo, :crediti_residui, :scadenza_certificato, :descrizione, :immagine_profilo, :tariffa_individuale, :deve_cambiare_password)";
         
         $stmt = $db->prepare($query);
         
@@ -48,6 +68,7 @@ class FUtente {
         $stmt->bindValue(':immagine_profilo', ($immagine !== null && trim($immagine) !== '') ? trim($immagine) : null);
         $tariffa = $utente->getTariffaIndividuale();
         $stmt->bindValue(':tariffa_individuale', $tariffa !== null ? number_format((float)$tariffa, 2, '.', '') : null);
+        $stmt->bindValue(':deve_cambiare_password', $utente->deveCambiarePassword() ? 1 : 0, PDO::PARAM_INT);
         
         $stmt->execute();
         
@@ -59,6 +80,7 @@ class FUtente {
     // Recupera un utente dal database tramite il suo ID e restituisce un oggetto EUtente
     public static function load($id) {
         $db = FDatabase::getInstance()->getDb();
+        self::ensurePasswordFlagColumn($db);
         
         $query = "SELECT * FROM Utente WHERE id = :id";
         $stmt = $db->prepare($query);
@@ -72,6 +94,7 @@ class FUtente {
     // Aggiorna tutti i dati anagrafici e operativi di un utente
     public static function update(EUtente $utente) {
         $db = FDatabase::getInstance()->getDb();
+        self::ensurePasswordFlagColumn($db);
         
         $query = "UPDATE Utente 
                   SET nome = :nome,
@@ -83,7 +106,8 @@ class FUtente {
                       scadenza_certificato = :scadenza,
                       descrizione = :descrizione,
                       immagine_profilo = :immagine_profilo,
-                      tariffa_individuale = :tariffa_individuale 
+                      tariffa_individuale = :tariffa_individuale,
+                      deve_cambiare_password = :deve_cambiare_password 
                   WHERE id = :id";
         $stmt = $db->prepare($query);
         
@@ -102,14 +126,33 @@ class FUtente {
         $stmt->bindValue(':descrizione', ($descrizione !== null && trim($descrizione) !== '') ? trim($descrizione) : null);
         $stmt->bindValue(':immagine_profilo', ($immagine !== null && trim($immagine) !== '') ? trim($immagine) : null);
         $stmt->bindValue(':tariffa_individuale', $tariffa !== null ? number_format((float)$tariffa, 2, '.', '') : null);
+        $stmt->bindValue(':deve_cambiare_password', $utente->deveCambiarePassword() ? 1 : 0, PDO::PARAM_INT);
         $stmt->bindValue(':id', $utente->getId(), PDO::PARAM_INT);
         
+        return $stmt->execute();
+    }
+
+    // Aggiorna la password cifrata di un utente e azzera (di default) l'avviso di cambio password
+    public static function updatePassword(int $id, string $nuova_password, bool $deve_cambiare_password = false) {
+        $db = FDatabase::getInstance()->getDb();
+        self::ensurePasswordFlagColumn($db);
+
+        $query = "UPDATE Utente
+                  SET password = :password,
+                      deve_cambiare_password = :deve_cambiare_password
+                  WHERE id = :id";
+        $stmt = $db->prepare($query);
+        $stmt->bindValue(':password', password_hash($nuova_password, PASSWORD_DEFAULT));
+        $stmt->bindValue(':deve_cambiare_password', $deve_cambiare_password ? 1 : 0, PDO::PARAM_INT);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+
         return $stmt->execute();
     }
 
     // Recupera un utente dal database tramite la sua email (necessario per il login)
     public static function loadByEmail($email) {
         $db = FDatabase::getInstance()->getDb();
+        self::ensurePasswordFlagColumn($db);
         
         $query = "SELECT * FROM Utente WHERE email = :email";
         $stmt = $db->prepare($query);

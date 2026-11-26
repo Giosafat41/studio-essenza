@@ -12,7 +12,8 @@ class VIstruttore extends StartSmarty {
         int $conteggio_prenotate,
         int $conteggio_disponibili,
         $messaggio_successo = null,
-        $messaggio_errore = null
+        $messaggio_errore = null,
+        bool $mostra_avviso_password = false
     ) {
         $iniziali = strtoupper(
             substr($istruttore->getNome(), 0, 1) . substr($istruttore->getCognome(), 0, 1)
@@ -33,6 +34,7 @@ class VIstruttore extends StartSmarty {
         $this->smarty->assign('lezioni_individuali', $lezioni_individuali);
         $this->smarty->assign('conteggio_prenotate', $conteggio_prenotate);
         $this->smarty->assign('conteggio_disponibili', $conteggio_disponibili);
+        $this->smarty->assign('mostra_avviso_password', $mostra_avviso_password);
 
         if ($messaggio_successo) {
             $this->smarty->assign('messaggio_successo', $messaggio_successo);

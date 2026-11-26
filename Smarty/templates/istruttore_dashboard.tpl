@@ -34,13 +34,45 @@
                 <p class="text-muted mb-0">Benvenuto/a, <strong>{$nome_istruttore|escape} {$cognome_istruttore|escape}</strong> &bull; {$email_istruttore|escape}</p>
             </div>
         </div>
-        <div class="d-flex align-items-center gap-2">
+        <div class="d-flex align-items-center flex-wrap gap-2">
+            <a href="index.php?controller=utente&action=cambiaPassword" class="btn btn-outline-essenza">
+                Cambia Password
+            </a>
             <button type="button" class="btn btn-outline-essenza" data-bs-toggle="modal" data-bs-target="#modalFotoProfiloIstruttore">
                 Foto Profilo
             </button>
             <a href="index.php?controller=utente&action=logout" class="btn btn-outline-danger">Esci</a>
         </div>
     </div>
+
+    <!-- Avviso promemoria cambio password iniziale -->
+    {if !empty($mostra_avviso_password)}
+        <div class="alert password-reminder-alert fade show d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4 shadow-sm" id="avvisoCambioPassword" role="alert">
+            <div class="d-flex align-items-start gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                <div>
+                    <strong class="d-block mb-1">Ricordati di cambiare la tua password</strong>
+                    <span>Il tuo profilo è stato creato dalla segreteria con una password iniziale. Ti consigliamo di impostarne una personale.</span>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                <a href="index.php?controller=utente&action=cambiaPassword" class="btn btn-primary btn-sm px-3 text-nowrap">
+                    Cambia password
+                </a>
+                <button
+                    type="button"
+                    class="btn btn-outline-essenza btn-sm px-3 text-nowrap js-chiudi-avviso-password"
+                    data-bs-dismiss="alert"
+                    aria-label="Chiudi avviso"
+                >
+                    Chiudi
+                </button>
+            </div>
+        </div>
+    {/if}
 
     <!-- Messaggi di conferma / errore -->
     {if isset($messaggio_successo)}
@@ -395,6 +427,16 @@
 {literal}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    var btnChiudiAvviso = document.querySelector('.js-chiudi-avviso-password');
+    if (btnChiudiAvviso) {
+        btnChiudiAvviso.addEventListener('click', function () {
+            fetch('index.php?controller=utente&action=chiudiAvvisoPassword', {
+                method: 'POST',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            }).catch(function () {});
+        });
+    }
+
     var modalEl = document.getElementById('modalAnnullaIndividuale');
     if (modalEl) {
         modalEl.addEventListener('show.bs.modal', function (event) {

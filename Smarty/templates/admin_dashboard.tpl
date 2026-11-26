@@ -35,7 +35,13 @@
         </div>
     </section>
 
-    <!-- Eventuale messaggio di errore -->
+    <!-- Eventuali messaggi di conferma o errore -->
+    {if isset($messaggio_successo)}
+        <div class="alert auth-alert-success fade show d-flex align-items-center justify-content-between gap-2 mb-4" role="alert">
+            <span>{$messaggio_successo|escape}</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Chiudi"></button>
+        </div>
+    {/if}
     {if isset($messaggio_errore)}
         <div class="alert auth-alert-error fade show d-flex align-items-center justify-content-between gap-2 mb-4" role="alert">
             <span>{$messaggio_errore|escape}</span>
@@ -76,7 +82,7 @@
 
         <!-- Card 2: Gestione Palinsesto -->
         <div class="col-12 col-lg-4">
-            <section class="dashboard-card admin-action-card is-featured h-100 d-flex flex-column">
+            <section class="dashboard-card admin-action-card h-100 d-flex flex-column">
                 <div class="d-flex align-items-center justify-content-between mb-3">
                     <div class="admin-card-icon" aria-hidden="true">
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">

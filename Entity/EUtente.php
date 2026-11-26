@@ -14,10 +14,11 @@ class EUtente {
     private $descrizione;
     private $immagine_profilo;
     private $tariffa_individuale;
+    private $deve_cambiare_password;
     private $data_registrazione;
 
     // ID e data di registrazione vengono generati dal DB
-    public function __construct($nome, $cognome, $email, $password, $telefono = null, $ruolo = 'allievo', $crediti_residui = 0, $scadenza_certificato = null, $descrizione = null, $immagine_profilo = null, $tariffa_individuale = null) {
+    public function __construct($nome, $cognome, $email, $password, $telefono = null, $ruolo = 'allievo', $crediti_residui = 0, $scadenza_certificato = null, $descrizione = null, $immagine_profilo = null, $tariffa_individuale = null, $deve_cambiare_password = false) {
         $this->nome = $nome;
         $this->cognome = $cognome;
         $this->email = $email;
@@ -29,6 +30,7 @@ class EUtente {
         $this->descrizione = $descrizione;
         $this->immagine_profilo = $immagine_profilo;
         $this->tariffa_individuale = ($tariffa_individuale !== null && $tariffa_individuale !== '') ? (float)$tariffa_individuale : null;
+        $this->deve_cambiare_password = (bool)$deve_cambiare_password;
     }
 
     // --- GETTER METODI ---
@@ -44,6 +46,7 @@ class EUtente {
     public function getDescrizione() { return $this->descrizione; }
     public function getImmagineProfilo() { return $this->immagine_profilo; }
     public function getTariffaIndividuale() { return $this->tariffa_individuale; }
+    public function deveCambiarePassword() { return (bool)$this->deve_cambiare_password; }
     public function getDataRegistrazione() { return $this->data_registrazione; }
     // --- SETTER METODI ---
     public function setId($id) { $this->id = $id; }
@@ -60,6 +63,7 @@ class EUtente {
     public function setTariffaIndividuale($tariffa_individuale) {
         $this->tariffa_individuale = ($tariffa_individuale !== null && $tariffa_individuale !== '') ? round((float)$tariffa_individuale, 2) : null;
     }
+    public function setDeveCambiarePassword($deve_cambiare_password) { $this->deve_cambiare_password = (bool)$deve_cambiare_password; }
     public function setDataRegistrazione($data_registrazione) { $this->data_registrazione = $data_registrazione; }
 
     // Restituisce la tariffa formattata (es. "45 €" oppure "45,50 €"), oppure null se non impostata

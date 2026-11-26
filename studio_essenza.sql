@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Nov 19, 2026 alle 15:55
+-- Creato il: Nov 26, 2026 alle 16:16
 -- Versione del server: 10.4.32-MariaDB
 -- Versione PHP: 8.2.12
 
@@ -98,6 +98,7 @@ CREATE TABLE `utente` (
   `descrizione` text DEFAULT NULL,
   `immagine_profilo` varchar(255) DEFAULT NULL,
   `tariffa_individuale` decimal(6,2) DEFAULT NULL,
+  `deve_cambiare_password` tinyint(1) NOT NULL DEFAULT 0,
   `data_registrazione` timestamp NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -105,10 +106,12 @@ CREATE TABLE `utente` (
 -- Dump dei dati per la tabella `utente`
 --
 
-INSERT INTO `utente` (`id`, `nome`, `cognome`, `email`, `password`, `telefono`, `ruolo`, `crediti_residui`, `scadenza_certificato`, `descrizione`, `immagine_profilo`, `tariffa_individuale`, `data_registrazione`) VALUES
-(1, 'Letizia', 'Di Iulio', 'marileti2102@gmail.com', '$2y$10$HIYHmOmRzpz/Sj8cNLxkEOlyVkEYqdNz.nDVZyeuwiboK1rsPgrwO', '388993908', 'allievo', 10, '2027-11-18', NULL, NULL, NULL, '2026-11-11 11:51:16'),
-(2, 'admin', 'admin', 'admin@gmail.com', '$2y$10$..OrjtZy9fDaKZeD5r17OumuqExX3khco2Pt9sBmTWdrOuDMLHGxS', '123456789', 'admin', 0, NULL, NULL, NULL, NULL, '2026-11-17 15:47:02'),
-(3, 'Mario', 'Mariotto', 'mario.mariotto@gmail.com', '$2y$10$3n/P4FTdQeglDJ0/TpdEAuqQNxKBzOVZEig9FFRvhMC7qBq8jPP9m', '321456', 'allievo', 10, '2027-11-17', NULL, NULL, NULL, '2026-11-17 16:54:54');
+INSERT INTO `utente` (`id`, `nome`, `cognome`, `email`, `password`, `telefono`, `ruolo`, `crediti_residui`, `scadenza_certificato`, `descrizione`, `immagine_profilo`, `tariffa_individuale`, `deve_cambiare_password`, `data_registrazione`) VALUES
+(2, 'admin', '1', 'admin@gmail.com', '$2y$10$..OrjtZy9fDaKZeD5r17OumuqExX3khco2Pt9sBmTWdrOuDMLHGxS', '123456789', 'admin', 0, NULL, NULL, NULL, NULL, 0, '2026-11-17 15:47:02'),
+(4, 'utente', '1', 'utente1@gmail.com', '$2y$10$1MKLEJFREUT76PXH7HMqQOyK6bXQ4XlVoG4q/9KUUWvtvIWH6TrVG', '', 'allievo', 0, NULL, NULL, NULL, NULL, 0, '2026-11-26 15:05:46'),
+(5, 'utente', '2', 'utente2@gmail.com', '$2y$10$SDayxFzKB43HpOu82/8sF.xfY97AIgA0X7ZAc7GPrjngifYVytAlm', '', 'allievo', 0, NULL, NULL, NULL, NULL, 1, '2026-11-26 15:11:58'),
+(6, 'istruttore', '1', 'istruttore1@gmail.com', '$2y$10$v5np/VIJh/voHqjp1BEPV.QhyBlMhDp6nfLwOzdgzZMyqf5miy2DS', '', 'istruttore', 0, NULL, 'molto bravo', NULL, NULL, 1, '2026-11-26 15:12:34'),
+(7, 'istruttore', '2', 'istruttore2@gmail.com', '$2y$10$Xvd/Y/vzPypIfH1BZsIAiuIBGoqZkzwyfSehZOw2yJQ8dMi0kiII.', '', 'istruttore', 0, NULL, 'ancora più bravo', NULL, NULL, 0, '2026-11-26 15:12:57');
 
 --
 -- Indici per le tabelle scaricate
@@ -183,7 +186,7 @@ ALTER TABLE `prenotazione`
 -- AUTO_INCREMENT per la tabella `utente`
 --
 ALTER TABLE `utente`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Limiti per le tabelle scaricate
